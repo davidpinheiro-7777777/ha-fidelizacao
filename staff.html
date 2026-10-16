@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1A5C4A">
+<title>Hã — Staff</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500&display=swap">
+<style>
+:root{--green:#1A5C4A;--yellow:#F5C842;--safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--green);color:#fff;font-family:'Inter',sans-serif;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(var(--safe-top) + 24px) 32px calc(var(--safe-bot) + 24px);overscroll-behavior:none}
+img.logo{height:52px;filter:brightness(0) invert(1);margin-bottom:8px}
+.label{font-size:12px;letter-spacing:2px;color:rgba(255,255,255,.6);margin-bottom:40px}
+.code-card{background:rgba(0,0,0,.25);border-radius:24px;padding:40px 48px;margin-bottom:20px}
+.code-label{font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.5);margin-bottom:16px}
+.code{font-family:'Nunito',sans-serif;font-size:52px;font-weight:900;color:var(--yellow);letter-spacing:10px;line-height:1}
+.validity{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:48px}
+.validity span{color:var(--yellow)}
+.countdown{font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;background:rgba(0,0,0,.2);border-radius:12px;padding:12px 24px;display:inline-block}
+.countdown span{color:var(--yellow)}
+.pin-screen{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%}
+.pin-title{font-family:'Nunito',sans-serif;font-size:24px;font-weight:900}
+.pin-sub{font-size:14px;color:rgba(255,255,255,.6)}
+.pin-input{background:rgba(0,0,0,.3);border:2px solid rgba(255,255,255,.2);border-radius:14px;color:#fff;font-family:'Nunito',sans-serif;font-size:32px;font-weight:800;letter-spacing:8px;padding:16px;text-align:center;outline:none;width:200px;-webkit-text-security:disc}
+.pin-input:focus{border-color:var(--yellow)}
+.btn-pin{background:var(--yellow);border:none;border-radius:12px;color:var(--green);cursor:pointer;font-family:'Nunito',sans-serif;font-size:17px;font-weight:900;padding:16px 40px}
+.pin-error{color:#FCA;font-size:13px;display:none}
+.pin-error.visible{display:block}
+</style>
+</head>
+<body>
+
+<!-- PIN -->
+<div class="pin-screen" id="pin-screen">
+  <img class="logo" src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã">
+  <div class="pin-title">Área de Staff</div>
+  <div class="pin-sub">Introduz o PIN para aceder</div>
+  <input class="pin-input" type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="····">
+  <div class="pin-error" id="pin-error">PIN incorrecto. Tenta novamente.</div>
+  <button class="btn-pin" onclick="verificarPin()">Entrar</button>
+</div>
+
+<!-- CÓDIGO DO DIA -->
+<div id="code-screen" style="display:none;flex-direction:column;align-items:center">
+  <img class="logo" src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã">
+  <div class="label">CÓDIGO DO DIA — STAFF</div>
+  <div class="code-card">
+    <div class="code-label">MOSTRA AO CLIENTE</div>
+    <div class="code" id="code-display">——</div>
+  </div>
+  <div class="validity">Válido até à <span>meia-noite</span> de hoje</div>
+  <div class="countdown">Expira em <span id="countdown">--:--:--</span></div>
+</div>
+
+<script>
+const PIN_CORRECTO = '1234'; // ← altera para o PIN que quiseres
+const API_URL = 'API_URL_PLACEHOLDER';
+
+function verificarPin() {
+  const pin = document.getElementById('pin-input').value;
+  const err = document.getElementById('pin-error');
+  if (pin === PIN_CORRECTO) {
+    document.getElementById('pin-screen').style.display = 'none';
+    document.getElementById('code-screen').style.display = 'flex';
+    carregarCodigo();
+    iniciarCountdown();
+  } else {
+    err.classList.add('visible');
+    document.getElementById('pin-input').value = '';
+  }
+}
+
+document.getElementById('pin-input').addEventListener('keyup', e => {
+  if (e.key === 'Enter') verificarPin();
+});
+
+async function carregarCodigo() {
+  try {
+    const res = await fetch(API_URL + '?action=qr');
+    const data = await res.json();
+    if (data.ok) document.getElementById('code-display').textContent = data.qr;
+  } catch(e) {
+    // Fallback: gera localmente com a mesma lógica
+    const hoje = new Date().toISOString().slice(0,10).replace(/-/g,'');
+    document.getElementById('code-display').textContent = hoje.slice(-4).toUpperCase();
+  }
+}
+
+function iniciarCountdown() {
+  function tick() {
+    const agora = new Date();
+    const meianoite = new Date();
+    meianoite.setHours(24,0,0,0);
+    const diff = meianoite - agora;
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('countdown').textContent =
+      String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    if (diff <= 0) { carregarCodigo(); }
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+</script>
+</body>
+</html>
