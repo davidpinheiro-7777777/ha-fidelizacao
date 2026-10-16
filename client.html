@@ -256,7 +256,11 @@ let scanProcessing = false;
 
 function save() { try { localStorage.setItem('ha', JSON.stringify({ id: S.id, nome: S.nome, apelido: S.apelido })); } catch(e){} }
 function load() { try { return JSON.parse(localStorage.getItem('ha') || 'null'); } catch(e){ return null; } }
-async function post(p) { const r = await fetch(API, { method: 'POST', body: new URLSearchParams(p) }); return r.json(); }
+async function post(p) {
+  const params = new URLSearchParams(p);
+  const r = await fetch(API + '?' + params.toString());
+  return r.json();
+}
 
 function goTo(id) {
   if (id !== 'scan') fecharCamera();

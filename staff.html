@@ -148,7 +148,7 @@ function verificarPin() {
 
 async function carregarQR() {
   try {
-    const res = await fetch(API, { method: 'POST', body: new URLSearchParams({ action: 'qrcode' }) });
+    const res = await fetch(API + '?action=qrcode');
     const data = await res.json();
     if (data.ok && data.qr) {
       gerarQRCode(data.qr);
