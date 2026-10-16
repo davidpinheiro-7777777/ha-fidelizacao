@@ -147,28 +147,17 @@ function verificarPin() {
 }
 
 async function carregarQR() {
-  let codigo;
   try {
     const res = await fetch(API, { method: 'POST', body: new URLSearchParams({ action: 'qrcode' }) });
     const data = await res.json();
-    codigo = data.ok ? data.qr : gerarCodigoLocal();
+    if (data.ok && data.qr) {
+      gerarQRCode(data.qr);
+    } else {
+      document.getElementById('qr-code').innerHTML = '<p style="color:red;font-size:13px">Erro ao gerar código. Recarrega a página.</p>';
+    }
   } catch(e) {
-    codigo = gerarCodigoLocal();
+    document.getElementById('qr-code').innerHTML = '<p style="color:red;font-size:13px">Sem ligação ao servidor. Verifica a internet e recarrega.</p>';
   }
-  gerarQRCode(codigo);
-}
-
-function gerarCodigoLocal() {
-  // Fallback com a mesma lógica do servidor
-  const SECRET = 'HA-CARNAXIDE-2024';
-  const d = new Date();
-  const hoje = d.getFullYear().toString() +
-    String(d.getMonth()+1).padStart(2,'0') +
-    String(d.getDate()).padStart(2,'0');
-  const str = hoje + SECRET;
-  let h = 0;
-  for (let i = 0; i < str.length; i++) h = Math.imul(31, h) + str.charCodeAt(i) | 0;
-  return (h >>> 0).toString(16).padStart(8,'0').toUpperCase();
 }
 
 function gerarQRCode(codigo) {
