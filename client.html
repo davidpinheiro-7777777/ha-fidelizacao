@@ -6,555 +6,143 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Hã — Clube de Fidelização</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap">
-<base target="_top">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
 :root {
-  --bg: #F7F5F0;
-  --surface: #FFFFFF;
-  --surface2: #EFEFEB;
-  --border: #E0DDD6;
-  --green: #1A5C4A;
-  --green-light: #A8D8B0;
-  --yellow: #F5C842;
-  --text: #1A1A1A;
-  --muted: #999;
+  --bg: #F7F5F0; --surface: #FFF; --surface2: #EFEFEB; --border: #E0DDD6;
+  --green: #1A5C4A; --green-light: #A8D8B0; --yellow: #F5C842;
+  --text: #1A1A1A; --muted: #999;
 }
-
-html, body {
-  width: 100%;
-  min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  -webkit-text-size-adjust: 100%;
-  overflow-x: hidden;
-}
-
-/* ── WRAPPER CENTRAL ── */
-.app {
-  width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-  min-height: 100vh;
-  background: var(--bg);
-  position: relative;
-  overflow-x: hidden;
-}
-
-/* ── ECRÃS ── */
-.screen {
-  display: none;
-  flex-direction: column;
-  width: 100%;
-  min-height: 100vh;
-  padding-bottom: 72px;
-}
+html, body { width: 100%; min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; overflow-x: hidden; }
+.app { width: 100%; max-width: 480px; margin: 0 auto; min-height: 100vh; background: var(--bg); overflow-x: hidden; }
+.screen { display: none; flex-direction: column; width: 100%; min-height: 100vh; padding-bottom: 72px; }
 .screen.active { display: flex; }
 
-/* ══════════════════════════════
-   REGISTO
-══════════════════════════════ */
-#screen-registo {
-  padding: 40px 24px 40px;
-  align-items: stretch;
-}
-
-.reg-logo {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 12px;
-}
-.reg-logo img { height: 72px; width: auto; }
-
-.reg-title {
-  font-family: 'Nunito', sans-serif;
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--green);
-  text-align: center;
-  margin-bottom: 4px;
-}
-
-.reg-sub {
-  font-size: 13px;
-  color: var(--muted);
-  text-align: center;
-  margin-bottom: 28px;
-}
-
-.form-row {
-  display: flex;
-  gap: 12px;
-  width: 100%;
-}
+/* ── REGISTO / LOGIN ── */
+#screen-registo, #screen-login { padding: 40px 24px; align-items: stretch; }
+.reg-logo { display: flex; justify-content: center; margin-bottom: 12px; }
+.reg-logo img { height: 72px; }
+.reg-title { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 800; color: var(--green); text-align: center; margin-bottom: 4px; }
+.reg-sub { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 28px; }
+.form-row { display: flex; gap: 12px; width: 100%; }
 .form-row .field { flex: 1; min-width: 0; }
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 14px;
-  width: 100%;
-}
-
-.field label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-  letter-spacing: 0.3px;
-}
-
-.field input {
-  width: 100%;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 16px;
-  padding: 13px 14px;
-  outline: none;
-  transition: border-color .18s;
-  -webkit-appearance: none;
-  appearance: none;
-}
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; width: 100%; }
+.field label { font-size: 11px; font-weight: 600; color: var(--muted); }
+.field input { width: 100%; background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 16px; padding: 13px 14px; outline: none; transition: border-color .18s; -webkit-appearance: none; }
 .field input:focus { border-color: var(--green); }
 .field input::placeholder { color: #C8C5C0; }
-input[type="date"] { color: var(--text) !important; min-height: 50px; }
+input[type="date"] { color: var(--text) !important; }
 input[type="date"]::-webkit-datetime-edit { color: var(--text); }
-input[type="date"]::-webkit-datetime-edit-fields-wrapper { color: var(--text); }
 input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height: 24px; }
-.field input[type="date"] { color: var(--text); }
-.field input[type="date"]:not(:valid) { color: #C8C5C0; }
-
-.btn-main {
-  width: 100%;
-  background: var(--green);
-  border: none;
-  border-radius: 12px;
-  color: #fff;
-  font-family: 'Nunito', sans-serif;
-  font-size: 17px;
-  font-weight: 800;
-  padding: 16px;
-  margin-top: 8px;
-  cursor: pointer;
-  transition: background .18s;
-}
+.btn-main { width: 100%; background: var(--green); border: none; border-radius: 12px; color: #fff; font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 800; padding: 16px; margin-top: 8px; cursor: pointer; transition: background .18s; }
 .btn-main:active { background: #134438; }
 .btn-main:disabled { background: #aaa; cursor: not-allowed; }
-
-.reg-terms {
-  font-size: 11px;
-  color: #C0BDB8;
-  text-align: center;
-  margin-top: 16px;
-  line-height: 1.7;
-}
-
-.msg-error {
-  background: #FEE;
-  border: 1px solid #FCC;
-  border-radius: 10px;
-  color: #C00;
-  font-size: 13px;
-  padding: 12px 14px;
-  margin-bottom: 14px;
-  display: none;
-}
+.reg-terms { font-size: 11px; color: #C0BDB8; text-align: center; margin-top: 16px; line-height: 1.7; }
+.link-action { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
+.link-action span { color: var(--green); font-weight: 600; cursor: pointer; }
+.msg-error { background: #FEE; border: 1px solid #FCC; border-radius: 10px; color: #C00; font-size: 13px; padding: 12px 14px; margin-bottom: 14px; display: none; }
 .msg-error.show { display: block; }
 
-/* ══════════════════════════════
-   CARTÃO
-══════════════════════════════ */
+/* ── CARTÃO ── */
 #screen-cartao { padding: 0; }
-
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 20px 14px;
-  width: 100%;
-}
-.topbar img { height: 34px; width: auto; }
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 14px; width: 100%; }
+.topbar img { height: 34px; }
 .topbar-greet { font-size: 13px; color: var(--muted); font-weight: 500; }
-
-/* O cartão */
-.loyalty-card {
-  margin: 0 16px;
-  background: var(--green);
-  border-radius: 20px;
-  overflow: hidden;
-  width: calc(100% - 32px);
-}
-
+.loyalty-card { margin: 0 16px; background: var(--green); border-radius: 20px; overflow: hidden; width: calc(100% - 32px); }
 .lc-head { padding: 20px 20px 0; }
-
-.lc-row1 {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
+.lc-row1 { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
 .lc-row1 img { height: 40px; filter: brightness(0) invert(1); }
-
-.lc-badge {
-  background: var(--yellow);
-  color: var(--green);
-  font-family: 'Nunito', sans-serif;
-  font-size: 10px;
-  font-weight: 900;
-  padding: 5px 10px;
-  border-radius: 20px;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-.lc-member {
-  font-family: 'Nunito', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--green-light);
-  letter-spacing: 1.5px;
-  margin-bottom: 4px;
-}
-
-.lc-name {
-  font-family: 'Nunito', sans-serif;
-  font-size: 20px;
-  font-weight: 900;
-  color: #fff;
-  margin-bottom: 18px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.stamps-area {
-  background: rgba(0,0,0,.18);
-  border-radius: 14px 14px 0 0;
-  padding: 14px 16px 6px;
-}
-
-.stamps-label {
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--green-light);
-  letter-spacing: 1.5px;
-  margin-bottom: 10px;
-}
-
-.stamps-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 7px;
-  margin-bottom: 10px;
-}
-
-.stamp {
-  aspect-ratio: 1;
-  border-radius: 8px;
-  overflow: hidden;
-}
-.stamp.empty {
-  background: rgba(255,255,255,.08);
-  border: 1.5px dashed rgba(255,255,255,.2);
-}
-.stamp.filled {
-  background-size: 400% 200%;
-  background-repeat: no-repeat;
-}
-
-.lc-foot {
-  background: rgba(0,0,0,.18);
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+.lc-badge { background: var(--yellow); color: var(--green); font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 900; padding: 5px 10px; border-radius: 20px; white-space: nowrap; }
+.lc-member { font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 700; color: var(--green-light); letter-spacing: 1.5px; margin-bottom: 4px; }
+.lc-name { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; color: #fff; margin-bottom: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stamps-area { background: rgba(0,0,0,.18); border-radius: 14px 14px 0 0; padding: 14px 16px 6px; }
+.stamps-label { font-size: 9px; font-weight: 700; color: var(--green-light); letter-spacing: 1.5px; margin-bottom: 10px; }
+.stamps-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; margin-bottom: 10px; }
+.stamp { aspect-ratio: 1; border-radius: 8px; overflow: hidden; }
+.stamp.empty { background: rgba(255,255,255,.08); border: 1.5px dashed rgba(255,255,255,.2); }
+.stamp.filled { background-size: 400% 200%; background-repeat: no-repeat; }
+.lc-foot { background: rgba(0,0,0,.18); padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; }
 .lc-foot-label { font-size: 11px; color: rgba(255,255,255,.5); }
-.lc-foot-count {
-  font-family: 'Nunito', sans-serif;
-  font-size: 20px;
-  font-weight: 900;
-  color: var(--yellow);
-}
-
-/* Banner grátis */
-.free-meal {
-  margin: 12px 16px 0;
-  width: calc(100% - 32px);
-  background: var(--yellow);
-  border-radius: 14px;
-  padding: 14px 18px;
-  display: none;
-  align-items: center;
-  gap: 12px;
-}
+.lc-foot-count { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; color: var(--yellow); }
+.free-meal { margin: 12px 16px 0; width: calc(100% - 32px); background: var(--yellow); border-radius: 14px; padding: 14px 18px; display: none; align-items: center; gap: 12px; }
 .free-meal.show { display: flex; }
 .free-meal-icon { font-size: 30px; flex-shrink: 0; }
-.free-meal-text strong {
-  display: block;
-  font-family: 'Nunito', sans-serif;
-  font-size: 16px;
-  font-weight: 900;
-  color: var(--green);
-  margin-bottom: 1px;
-}
+.free-meal-text strong { display: block; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900; color: var(--green); margin-bottom: 1px; }
 .free-meal-text span { font-size: 12px; color: #555; }
-
-/* Botão scan */
-.scan-btn {
-  margin: 12px 16px 0;
-  width: calc(100% - 32px);
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 14px;
-  padding: 15px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  transition: border-color .15s;
-}
+.scan-btn { margin: 12px 16px 0; width: calc(100% - 32px); background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 15px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
 .scan-btn:active { border-color: var(--green); }
-.scan-btn-icon {
-  width: 42px; height: 42px;
-  background: var(--green);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
+.scan-btn-icon { width: 42px; height: 42px; background: var(--green); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
 .scan-btn-text strong { display: block; font-size: 14px; font-weight: 600; margin-bottom: 2px; }
 .scan-btn-text span { font-size: 12px; color: var(--muted); }
-.scan-btn-arrow { margin-left: auto; color: var(--muted); font-size: 22px; line-height: 1; }
+.scan-btn-arrow { margin-left: auto; color: var(--muted); font-size: 22px; }
 
-/* ══════════════════════════════
-   NOVIDADES
-══════════════════════════════ */
+/* ── NOVIDADES ── */
 #screen-novidades { padding: 20px 0 0; }
-
-.screen-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 20px 14px;
-  width: 100%;
-}
+.screen-head { display: flex; align-items: center; gap: 10px; padding: 0 20px 14px; }
 .screen-head img { height: 26px; }
-.screen-head-title {
-  font-family: 'Nunito', sans-serif;
-  font-size: 22px;
-  font-weight: 900;
-  color: var(--green);
-}
-
-.news-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 0 16px;
-  width: 100%;
-}
-
-.news-card {
-  background: var(--surface);
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  width: 100%;
-}
-.news-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  display: block;
-  background: var(--surface2);
-}
+.screen-head-title { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: var(--green); }
+.news-list { display: flex; flex-direction: column; gap: 14px; padding: 0 16px; width: 100%; }
+.news-card { background: var(--surface); border-radius: 14px; overflow: hidden; border: 1px solid var(--border); }
+.news-card img { width: 100%; height: 180px; object-fit: cover; display: block; }
 .news-card-body { padding: 14px; }
-.news-badge {
-  display: inline-block;
-  background: var(--yellow);
-  color: var(--green);
-  font-family: 'Nunito', sans-serif;
-  font-size: 10px;
-  font-weight: 900;
-  padding: 3px 8px;
-  border-radius: 4px;
-  margin-bottom: 8px;
-}
-.news-card-title {
-  font-family: 'Nunito', sans-serif;
-  font-size: 18px;
-  font-weight: 900;
-  color: var(--green);
-  line-height: 1.2;
-  margin-bottom: 6px;
-}
+.news-badge { display: inline-block; background: var(--yellow); color: var(--green); font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; }
+.news-card-title { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 900; color: var(--green); line-height: 1.2; margin-bottom: 6px; }
 .news-card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
 .news-empty { text-align: center; color: var(--muted); padding: 40px 20px; font-size: 14px; }
 
-/* ══════════════════════════════
-   SCAN
-══════════════════════════════ */
-#screen-scan {
-  justify-content: center;
-  align-items: center;
-  padding: 40px 28px 80px;
-  gap: 24px;
-  text-align: center;
-  width: 100%;
-}
+/* ── SCAN ── */
+#screen-scan { padding: 0; background: #000; }
+.scan-header { position: absolute; top: 0; left: 0; right: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: 20px; background: linear-gradient(to bottom, rgba(0,0,0,.7), transparent); }
+.scan-header-title { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 900; color: #fff; }
+.btn-close { background: rgba(255,255,255,.2); border: none; border-radius: 50%; width: 36px; height: 36px; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.camera-wrap { position: relative; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+#camera-video { width: 100%; height: 100%; object-fit: cover; }
+#camera-canvas { display: none; }
+.scan-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.scan-frame { width: 220px; height: 220px; position: relative; }
+.scan-frame::before { content: ''; position: absolute; inset: 0; border: 2px solid rgba(255,255,255,.3); border-radius: 16px; }
+.corner { position: absolute; width: 28px; height: 28px; border-color: #fff; border-style: solid; }
+.corner.tl { top: 0; left: 0; border-width: 3px 0 0 3px; border-radius: 8px 0 0 0; }
+.corner.tr { top: 0; right: 0; border-width: 3px 3px 0 0; border-radius: 0 8px 0 0; }
+.corner.bl { bottom: 0; left: 0; border-width: 0 0 3px 3px; border-radius: 0 0 0 8px; }
+.corner.br { bottom: 0; right: 0; border-width: 0 3px 3px 0; border-radius: 0 0 8px 0; }
+.scan-hint { position: absolute; bottom: 100px; left: 0; right: 0; text-align: center; color: #fff; font-size: 14px; text-shadow: 0 1px 4px rgba(0,0,0,.8); padding: 0 32px; }
 
-.scan-title {
-  font-family: 'Nunito', sans-serif;
-  font-size: 24px;
-  font-weight: 900;
-  color: var(--green);
-}
-.scan-sub { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 280px; }
+/* Estado de sucesso/erro no scan */
+.scan-result { position: absolute; inset: 0; background: rgba(0,0,0,.85); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 32px; text-align: center; }
+.scan-result.show { display: flex; }
+.scan-result-icon { font-size: 64px; }
+.scan-result-title { font-family: 'Nunito', sans-serif; font-size: 26px; font-weight: 900; color: #fff; }
+.scan-result-sub { font-size: 14px; color: rgba(255,255,255,.7); }
+.btn-scan-back { background: #fff; border: none; border-radius: 12px; color: var(--green); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; padding: 14px 36px; cursor: pointer; margin-top: 8px; }
 
-.scan-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  max-width: 300px;
-}
-.scan-input {
-  width: 100%;
-  background: var(--surface);
-  border: 2px solid var(--border);
-  border-radius: 14px;
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: 6px;
-  padding: 16px;
-  text-align: center;
-  outline: none;
-  text-transform: uppercase;
-  transition: border-color .18s;
-  -webkit-appearance: none;
-}
-.scan-input:focus { border-color: var(--green); }
-
-.scan-success {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
-.scan-success.show { display: flex; }
-.scan-ok-icon { font-size: 56px; }
-.scan-ok-title {
-  font-family: 'Nunito', sans-serif;
-  font-size: 24px;
-  font-weight: 900;
-  color: var(--green);
-}
-.scan-ok-sub { font-size: 14px; color: var(--muted); }
-.btn-back {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 13px 32px;
-  cursor: pointer;
-  margin-top: 6px;
-}
-
-/* ══════════════════════════════
-   BOTTOM NAV
-══════════════════════════════ */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 480px;
-  background: rgba(247,245,240,.97);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-top: 1px solid var(--border);
-  display: flex;
-  z-index: 200;
-}
-
-.nav-item {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 8px;
-  cursor: pointer;
-}
-
-.nav-label {
-  font-family: 'Nunito', sans-serif;
-  font-size: 14px;
-  font-weight: 900;
-  color: var(--muted);
-  text-align: center;
-  letter-spacing: 0.2px;
-}
+/* ── NAV ── */
+.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: rgba(247,245,240,.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--border); display: flex; z-index: 200; }
+.nav-item { flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px 8px; cursor: pointer; }
+.nav-label { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 900; color: var(--muted); text-align: center; }
 .nav-item.active .nav-label { color: var(--green); }
-.nav-item:not(.active) { opacity: 0.35; }
-
-/* Loading */
+.nav-item:not(.active) { opacity: .35; }
 .loading { padding: 32px; text-align: center; color: var(--muted); font-size: 14px; }
 </style>
-
-<style>
-/* FORÇA LARGURA TOTAL NO IFRAME DO APPS SCRIPT */
-html, body, .app {
-  width: 100% !important;
-  min-width: 100% !important;
-  max-width: 100% !important;
-}
-</style>
-<script>
-// Força o iframe do Apps Script a expandir para largura total
-try {
-  // Tenta redimensionar o iframe pai
-  if (window.frameElement) {
-    window.frameElement.style.width = '100%';
-    window.frameElement.style.minWidth = '100%';
-    window.frameElement.style.maxWidth = '100%';
-    window.frameElement.style.border = 'none';
-  }
-} catch(e) {}
-
-// Força o body a ocupar toda a largura disponível
-document.addEventListener('DOMContentLoaded', function() {
-  document.documentElement.style.cssText = 'width:100%!important;min-width:100%!important';
-  document.body.style.cssText = 'width:100%!important;min-width:100%!important;margin:0!important;padding:0!important';
-  var app = document.querySelector('.app');
-  if (app) {
-    app.style.cssText = 'width:100%!important;min-width:100%!important;max-width:100%!important';
-  }
-});
-</script>
-
 </head>
 <body>
 <div class="app">
 
-<!-- ═══════ REGISTO ═══════ -->
-<section id="screen-registo" class="screen active">
-  <div class="reg-logo">
-    <img src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã">
-  </div>
+<!-- LOGIN -->
+<section id="screen-login" class="screen active">
+  <div class="reg-logo"><img src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã"></div>
+  <div class="reg-title">Bem-vindo de volta!</div>
+  <div class="reg-sub">Introduz o teu email para entrar</div>
+  <div class="msg-error" id="login-error"></div>
+  <div class="field"><label>Email</label><input type="email" id="l-email" placeholder="joao@email.com" autocomplete="email"></div>
+  <button class="btn-main" id="btn-login" onclick="login()">Entrar</button>
+  <p class="link-action">Ainda não tens conta? <span onclick="goToRegisto()">Regista-te aqui</span></p>
+</section>
+
+<!-- REGISTO -->
+<section id="screen-registo" class="screen">
+  <div class="reg-logo"><img src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã"></div>
   <div class="reg-title">Clube de Fidelização</div>
   <div class="reg-sub">Regista-te e começa a acumular refeições</div>
   <div class="msg-error" id="reg-error"></div>
@@ -564,18 +152,18 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
   <div class="field"><label>Telemóvel</label><input type="tel" id="f-tel" placeholder="9XX XXX XXX" autocomplete="tel"></div>
   <div class="field"><label>Email</label><input type="email" id="f-email" placeholder="joao@email.com" autocomplete="email"></div>
-  <div class="field"><label>Data de Nascimento</label><input type="date" id="f-nasc" autocomplete="bday" style="color:var(--text);min-height:50px"></div>
+  <div class="field"><label>Data de Nascimento</label><input type="date" id="f-nasc" autocomplete="bday"></div>
   <button class="btn-main" id="btn-reg" onclick="registar()">Entrar no Clube</button>
+  <p class="link-action">Já tens conta? <span onclick="goToLogin()">Entra aqui</span></p>
   <p class="reg-terms">Os teus dados são usados exclusivamente<br>para o programa de fidelização do Hã.</p>
 </section>
 
-<!-- ═══════ CARTÃO ═══════ -->
+<!-- CARTÃO -->
 <section id="screen-cartao" class="screen">
   <div class="topbar">
     <img src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã">
     <div class="topbar-greet" id="greeting">Olá!</div>
   </div>
-
   <div class="loyalty-card">
     <div class="lc-head">
       <div class="lc-row1">
@@ -594,7 +182,6 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="lc-foot-count" id="progress">0 / 10</div>
     </div>
   </div>
-
   <div class="free-meal" id="free-meal">
     <div class="free-meal-icon">🎉</div>
     <div class="free-meal-text">
@@ -602,78 +189,110 @@ document.addEventListener('DOMContentLoaded', function() {
       <span>Mostra este ecrã ao balcão para resgatar</span>
     </div>
   </div>
-
-  <div class="scan-btn" onclick="goTo('scan')">
+  <div class="scan-btn" onclick="abrirCamera()">
     <div class="scan-btn-icon">📷</div>
     <div class="scan-btn-text">
       <strong>Registar refeição</strong>
-      <span>Introduz o código que o empregado te mostra</span>
+      <span>Aponta para o QR code no balcão</span>
     </div>
     <div class="scan-btn-arrow">›</div>
   </div>
 </section>
 
-<!-- ═══════ NOVIDADES ═══════ -->
+<!-- NOVIDADES -->
 <section id="screen-novidades" class="screen">
   <div class="screen-head">
     <img src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã">
     <div class="screen-head-title">Novidades</div>
   </div>
-  <div class="news-list" id="news-list">
-    <div class="loading">A carregar...</div>
-  </div>
+  <div class="news-list" id="news-list"><div class="loading">A carregar...</div></div>
 </section>
 
-<!-- ═══════ SCAN ═══════ -->
-<section id="screen-scan" class="screen">
-  <div id="scan-form-wrap" style="display:flex;flex-direction:column;align-items:center;gap:24px;width:100%">
-    <div class="scan-title">Registar Refeição</div>
-    <div class="scan-sub">Introduz o código de 8 caracteres que o empregado te mostra no balcão</div>
-    <div class="scan-form">
-      <div class="msg-error" id="scan-error"></div>
-      <input class="scan-input" type="text" id="qr-input" maxlength="8" placeholder="XXXXXXXX" autocomplete="off" autocorrect="off" spellcheck="false">
-      <button class="btn-main" id="btn-scan" onclick="submeterScan()">Confirmar</button>
+<!-- SCAN (câmara) -->
+<section id="screen-scan" class="screen" style="position:relative;padding-bottom:0">
+  <div class="camera-wrap">
+    <video id="camera-video" autoplay playsinline muted></video>
+    <canvas id="camera-canvas"></canvas>
+    <div class="scan-overlay">
+      <div class="scan-frame">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+      </div>
+    </div>
+    <div class="scan-header">
+      <div class="scan-header-title">Aponta para o QR code</div>
+      <button class="btn-close" onclick="fecharCamera()">✕</button>
+    </div>
+    <div class="scan-hint">Aponta a câmara para o QR code que o empregado te mostra</div>
+    <div class="scan-result" id="scan-result">
+      <div class="scan-result-icon" id="scan-result-icon">✅</div>
+      <div class="scan-result-title" id="scan-result-title">Refeição registada!</div>
+      <div class="scan-result-sub" id="scan-result-sub"></div>
+      <button class="btn-scan-back" onclick="fecharScanResult()">Ver o meu cartão</button>
     </div>
   </div>
-  <div class="scan-success" id="scan-success">
-    <div class="scan-ok-icon" id="scan-icon">✅</div>
-    <div class="scan-ok-title" id="scan-title-ok">Refeição registada!</div>
-    <div class="scan-ok-sub" id="scan-sub-ok"></div>
-    <button class="btn-back" onclick="voltarCartao()">Ver o meu cartão</button>
-  </div>
 </section>
 
-<!-- ═══════ NAV ═══════ -->
+<!-- NAV -->
 <nav class="bottom-nav">
   <div class="nav-item active" onclick="goTo('cartao')"><div class="nav-label">O MEU CARTÃO</div></div>
   <div class="nav-item" onclick="goTo('novidades')"><div class="nav-label">NOVIDADES</div></div>
 </nav>
 
-</div><!-- /app -->
+</div>
 
 <script>
 const API = 'https://script.google.com/macros/s/AKfycby-DIRvkbbIJAPGhojyPcLeIqeEDsso2LexcecM04DLJI40_phxsMXLUjC28PF3f767/exec';
 const MURAL = 'https://ha-restaurante.com/wp-content/uploads/2024/05/mural.jpg';
 const STAMP_POS = ['0% 0%','33.3% 0%','66.6% 0%','100% 0%','0% 100%','33.3% 100%','66.6% 100%','100% 100%'];
 const NAV = { cartao: 0, novidades: 1 };
-
 const S = { id: null, nome: '', apelido: '', visitas: 0 };
+
+let videoStream = null;
+let scanInterval = null;
+let scanProcessing = false;
 
 function save() { try { localStorage.setItem('ha', JSON.stringify({ id: S.id, nome: S.nome, apelido: S.apelido })); } catch(e){} }
 function load() { try { return JSON.parse(localStorage.getItem('ha') || 'null'); } catch(e){ return null; } }
-
-async function post(params) {
-  const r = await fetch(API, { method: 'POST', body: new URLSearchParams(params) });
-  return r.json();
-}
+async function post(p) { const r = await fetch(API, { method: 'POST', body: new URLSearchParams(p) }); return r.json(); }
 
 function goTo(id) {
+  if (id !== 'scan') fecharCamera();
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach((el, i) => el.classList.toggle('active', i === (NAV[id] ?? -1)));
   if (id === 'cartao') renderCartao();
   if (id === 'novidades') loadNovidades();
 }
+
+function goToRegisto() { document.getElementById('screen-login').classList.remove('active'); document.getElementById('screen-registo').classList.add('active'); }
+function goToLogin() { document.getElementById('screen-registo').classList.remove('active'); document.getElementById('screen-login').classList.add('active'); }
+
+async function login() {
+  const email = document.getElementById('l-email').value.trim();
+  const err = document.getElementById('login-error');
+  err.classList.remove('show');
+  if (!email) { err.textContent = 'Introduz o teu email.'; err.classList.add('show'); return; }
+  const btn = document.getElementById('btn-login');
+  btn.disabled = true; btn.textContent = 'A verificar...';
+  try {
+    const res = await post({ action: 'cliente', email });
+    if (res.ok) {
+      S.id = res.id; S.nome = res.nome; S.apelido = res.apelido; S.visitas = res.visitas;
+      save();
+      document.getElementById('screen-login').classList.remove('active');
+      goTo('cartao');
+    } else {
+      err.textContent = 'Email não encontrado. Ainda não tens conta?';
+      err.classList.add('show');
+    }
+  } catch(e) { err.textContent = 'Sem ligação. Verifica a internet.'; err.classList.add('show'); }
+  btn.disabled = false; btn.textContent = 'Entrar';
+}
+
+document.getElementById('l-email').addEventListener('keyup', e => { if (e.key === 'Enter') login(); });
 
 async function registar() {
   const nome = document.getElementById('f-nome').value.trim();
@@ -683,12 +302,7 @@ async function registar() {
   const nasc = document.getElementById('f-nasc').value;
   const err = document.getElementById('reg-error');
   err.classList.remove('show');
-
-  if (!nome || !apelido || !tel || !email || !nasc) {
-    err.textContent = 'Preenche todos os campos para continuares.';
-    err.classList.add('show'); return;
-  }
-
+  if (!nome || !apelido || !tel || !email || !nasc) { err.textContent = 'Preenche todos os campos.'; err.classList.add('show'); return; }
   const btn = document.getElementById('btn-reg');
   btn.disabled = true; btn.textContent = 'A registar...';
   try {
@@ -698,14 +312,8 @@ async function registar() {
       save();
       document.getElementById('screen-registo').classList.remove('active');
       goTo('cartao');
-    } else {
-      err.textContent = res.erro || 'Erro ao registar. Tenta novamente.';
-      err.classList.add('show');
-    }
-  } catch(e) {
-    err.textContent = 'Sem ligação. Verifica a internet e tenta novamente.';
-    err.classList.add('show');
-  }
+    } else { err.textContent = res.erro || 'Erro ao registar.'; err.classList.add('show'); }
+  } catch(e) { err.textContent = 'Sem ligação. Tenta novamente.'; err.classList.add('show'); }
   btn.disabled = false; btn.textContent = 'Entrar no Clube';
 }
 
@@ -722,9 +330,7 @@ function renderCartao() {
       d.style.backgroundImage = "url('" + MURAL + "')";
       d.style.backgroundSize = '400% 200%';
       d.style.backgroundPosition = STAMP_POS[i % 8];
-    } else {
-      d.className = 'stamp empty';
-    }
+    } else { d.className = 'stamp empty'; }
     grid.appendChild(d);
   }
   document.getElementById('free-meal').classList.toggle('show', S.visitas >= 10);
@@ -740,54 +346,99 @@ async function loadNovidades() {
         <div class="news-card">
           ${n.foto ? `<img src="${n.foto}" alt="${n.titulo}" loading="lazy">` : ''}
           <div class="news-card-body">
-            <span class="news-badge">${n.data}</span>
+            ${n.preco ? `<span class="news-badge">${formatPreco(n.preco)}</span>` : ''}
             <div class="news-card-title">${n.titulo}</div>
             <div class="news-card-desc">${n.descricao}</div>
           </div>
         </div>`).join('');
-    } else {
-      lista.innerHTML = '<div class="news-empty">Sem novidades de momento. Volta em breve! 🍔</div>';
-    }
+    } else { lista.innerHTML = '<div class="news-empty">Sem novidades de momento. Volta em breve! 🍔</div>'; }
+  } catch(e) { lista.innerHTML = '<div class="news-empty">Sem ligação. Tenta mais tarde.</div>'; }
+}
+
+// ── CÂMARA / QR ──────────────────────────────────────────
+async function abrirCamera() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-scan').classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('scan-result').classList.remove('show');
+
+  try {
+    videoStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+    });
+    const video = document.getElementById('camera-video');
+    video.srcObject = videoStream;
+    await video.play();
+    scanInterval = setInterval(lerQR, 300);
   } catch(e) {
-    lista.innerHTML = '<div class="news-empty">Sem ligação. Tenta mais tarde.</div>';
+    alert('Não foi possível aceder à câmara. Verifica as permissões nas definições do teu telemóvel.');
+    fecharCamera();
+    goTo('cartao');
   }
 }
 
-async function submeterScan() {
-  const qr = document.getElementById('qr-input').value.trim().toUpperCase();
-  const err = document.getElementById('scan-error');
-  err.classList.remove('show');
-  if (qr.length < 4) { err.textContent = 'Introduz o código completo.'; err.classList.add('show'); return; }
-  const btn = document.getElementById('btn-scan');
-  btn.disabled = true; btn.textContent = 'A validar...';
+function fecharCamera() {
+  if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
+  if (videoStream) { videoStream.getTracks().forEach(t => t.stop()); videoStream = null; }
+}
+
+function lerQR() {
+  if (scanProcessing) return;
+  const video = document.getElementById('camera-video');
+  if (!video.videoWidth) return;
+  const canvas = document.getElementById('camera-canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+  if (code) {
+    scanProcessing = true;
+    clearInterval(scanInterval);
+    submeterQR(code.data);
+  }
+}
+
+async function submeterQR(qr) {
   try {
     const res = await post({ action: 'scan', qr, id: S.id });
+    const resultEl = document.getElementById('scan-result');
     if (res.ok) {
       S.visitas = res.visitas; save();
-      document.getElementById('scan-form-wrap').style.display = 'none';
-      document.getElementById('scan-icon').textContent = res.refeicaoGratis ? '🎉' : '✅';
-      document.getElementById('scan-title-ok').textContent = res.refeicaoGratis ? 'Refeição grátis!' : 'Refeição registada!';
-      document.getElementById('scan-sub-ok').textContent = res.mensagem;
-      document.getElementById('scan-success').classList.add('show');
+      document.getElementById('scan-result-icon').textContent = res.refeicaoGratis ? '🎉' : '✅';
+      document.getElementById('scan-result-title').textContent = res.refeicaoGratis ? 'Refeição grátis!' : 'Refeição registada!';
+      document.getElementById('scan-result-sub').textContent = res.mensagem;
     } else {
-      err.textContent = res.erro || 'Código inválido. Pede o código do dia ao empregado.';
-      err.classList.add('show');
+      document.getElementById('scan-result-icon').textContent = '❌';
+      document.getElementById('scan-result-title').textContent = 'QR code inválido';
+      document.getElementById('scan-result-sub').textContent = 'Este código não é válido ou já expirou. Pede ao empregado que mostre o código do dia.';
     }
+    resultEl.classList.add('show');
   } catch(e) {
-    err.textContent = 'Sem ligação. Verifica a internet.';
-    err.classList.add('show');
+    document.getElementById('scan-result-icon').textContent = '⚠️';
+    document.getElementById('scan-result-title').textContent = 'Sem ligação';
+    document.getElementById('scan-result-sub').textContent = 'Verifica a internet e tenta novamente.';
+    document.getElementById('scan-result').classList.add('show');
   }
-  btn.disabled = false; btn.textContent = 'Confirmar';
 }
 
-function voltarCartao() {
-  document.getElementById('scan-form-wrap').style.display = '';
-  document.getElementById('scan-success').classList.remove('show');
-  document.getElementById('qr-input').value = '';
+function fecharScanResult() {
+  fecharCamera();
   goTo('cartao');
+  scanProcessing = false;
 }
 
-// INIT
+// ── FORMATAÇÃO ──────────────────────────────────────────
+function formatPreco(val) {
+  if (!val) return '';
+  // Converte qualquer formato (4.5, 4,5, 4.50) para "4,50€"
+  const num = parseFloat(String(val).replace(',', '.'));
+  if (isNaN(num)) return val;
+  return num.toFixed(2).replace('.', ',') + '€';
+}
+
+// ── INIT ──────────────────────────────────────────────────
 (function() {
   const saved = load();
   if (saved && saved.id) {
@@ -795,10 +446,11 @@ function voltarCartao() {
     post({ action: 'cliente', id: saved.id }).then(res => {
       if (res.ok) { S.visitas = res.visitas; renderCartao(); }
     }).catch(() => {});
-    document.getElementById('screen-registo').classList.remove('active');
+    document.getElementById('screen-login').classList.remove('active');
     document.getElementById('screen-cartao').classList.add('active');
     renderCartao();
   }
+  // Se não está logado, fica no ecrã de login (já é o active por defeito)
 })();
 </script>
 </body>
