@@ -346,7 +346,7 @@ async function loadNovidades() {
         <div class="news-card">
           ${n.foto ? `<img src="${n.foto}" alt="${n.titulo}" loading="lazy">` : ''}
           <div class="news-card-body">
-            ${n.preco ? `<span class="news-badge">${formatPreco(n.preco)}</span>` : ''}
+            ${(n.preco !== undefined && n.preco !== '' && n.preco !== null) ? `<span class="news-badge">${formatPreco(n.preco)}</span>` : ''}
             <div class="news-card-title">${n.titulo}</div>
             <div class="news-card-desc">${n.descricao}</div>
           </div>
@@ -431,10 +431,11 @@ function fecharScanResult() {
 
 // ── FORMATAÇÃO ──────────────────────────────────────────
 function formatPreco(val) {
-  if (!val) return '';
-  // Converte qualquer formato (4.5, 4,5, 4.50) para "4,50€"
-  const num = parseFloat(String(val).replace(',', '.'));
-  if (isNaN(num)) return val;
+  if (val === undefined || val === null || val === '') return '';
+  // Converte qualquer formato (4.5, 4,5, 4.50, "4.5€") para "4,50€"
+  const str = String(val).replace('€','').replace(',','.').trim();
+  const num = parseFloat(str);
+  if (isNaN(num)) return String(val);
   return num.toFixed(2).replace('.', ',') + '€';
 }
 
