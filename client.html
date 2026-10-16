@@ -6,7 +6,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Hã — Clube de Fidelização</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 :root {
@@ -208,30 +207,35 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
   <div class="news-list" id="news-list"><div class="loading">A carregar...</div></div>
 </section>
 
-<!-- SCAN (câmara) -->
-<section id="screen-scan" class="screen" style="position:relative;padding-bottom:0">
-  <div class="camera-wrap">
-    <video id="camera-video" autoplay playsinline muted></video>
-    <canvas id="camera-canvas"></canvas>
-    <div class="scan-overlay">
-      <div class="scan-frame">
-        <div class="corner tl"></div>
-        <div class="corner tr"></div>
-        <div class="corner bl"></div>
-        <div class="corner br"></div>
-      </div>
+<!-- SCAN -->
+<section id="screen-scan" class="screen" style="position:relative;padding-bottom:0;background:#000">
+  <video id="camera-video" autoplay playsinline muted style="width:100%;height:100vh;object-fit:cover;display:block"></video>
+  <canvas id="camera-canvas" style="display:none"></canvas>
+
+  <div style="position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:20px;background:linear-gradient(to bottom,rgba(0,0,0,.7),transparent)">
+    <div style="font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;color:#fff">Registar Refeição</div>
+    <button onclick="fecharCamera()" style="background:rgba(255,255,255,.2);border:none;border-radius:50%;width:36px;height:36px;color:#fff;font-size:18px;cursor:pointer">✕</button>
+  </div>
+
+  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+    <div style="width:240px;height:240px;position:relative">
+      <div style="position:absolute;inset:0;border:2px solid rgba(255,255,255,.3);border-radius:16px"></div>
+      <div style="position:absolute;top:0;left:0;width:28px;height:28px;border-top:3px solid #fff;border-left:3px solid #fff;border-radius:8px 0 0 0"></div>
+      <div style="position:absolute;top:0;right:0;width:28px;height:28px;border-top:3px solid #fff;border-right:3px solid #fff;border-radius:0 8px 0 0"></div>
+      <div style="position:absolute;bottom:0;left:0;width:28px;height:28px;border-bottom:3px solid #fff;border-left:3px solid #fff;border-radius:0 0 0 8px"></div>
+      <div style="position:absolute;bottom:0;right:0;width:28px;height:28px;border-bottom:3px solid #fff;border-right:3px solid #fff;border-radius:0 0 8px 0"></div>
     </div>
-    <div class="scan-header">
-      <div class="scan-header-title">Aponta para o QR code</div>
-      <button class="btn-close" onclick="fecharCamera()">✕</button>
-    </div>
-    <div class="scan-hint">Aponta a câmara para o QR code que o empregado te mostra</div>
-    <div class="scan-result" id="scan-result">
-      <div class="scan-result-icon" id="scan-result-icon">✅</div>
-      <div class="scan-result-title" id="scan-result-title">Refeição registada!</div>
-      <div class="scan-result-sub" id="scan-result-sub"></div>
-      <button class="btn-scan-back" onclick="fecharScanResult()">Ver o meu cartão</button>
-    </div>
+  </div>
+
+  <div style="position:absolute;bottom:120px;left:0;right:0;text-align:center;color:#fff;font-size:14px;text-shadow:0 1px 4px rgba(0,0,0,.8);padding:0 32px">
+    Aponta a câmara para o QR code que o empregado te mostra
+  </div>
+
+  <div id="scan-result" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.85);flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px;text-align:center">
+    <div style="font-size:64px" id="scan-result-icon">✅</div>
+    <div style="font-family:'Nunito',sans-serif;font-size:26px;font-weight:900;color:#fff" id="scan-result-title">Refeição registada!</div>
+    <div style="font-size:14px;color:rgba(255,255,255,.7)" id="scan-result-sub"></div>
+    <button onclick="fecharScanResult()" style="background:#fff;border:none;border-radius:12px;color:var(--green);font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;padding:14px 36px;cursor:pointer;margin-top:8px">Ver o meu cartão</button>
   </div>
 </section>
 
@@ -249,10 +253,6 @@ const MURAL = 'https://ha-restaurante.com/wp-content/uploads/2024/05/mural.jpg';
 const STAMP_POS = ['0% 0%','33.3% 0%','66.6% 0%','100% 0%','0% 100%','33.3% 100%','66.6% 100%','100% 100%'];
 const NAV = { cartao: 0, novidades: 1 };
 const S = { id: null, nome: '', apelido: '', visitas: 0 };
-
-let videoStream = null;
-let scanInterval = null;
-let scanProcessing = false;
 
 function save() { try { localStorage.setItem('ha', JSON.stringify({ id: S.id, nome: S.nome, apelido: S.apelido })); } catch(e){} }
 function load() { try { return JSON.parse(localStorage.getItem('ha') || 'null'); } catch(e){ return null; } }
@@ -359,12 +359,16 @@ async function loadNovidades() {
   } catch(e) { lista.innerHTML = '<div class="news-empty">Sem ligação. Tenta mais tarde.</div>'; }
 }
 
-// ── CÂMARA / QR ──────────────────────────────────────────
+let videoStream = null;
+let scanInterval = null;
+let scanProcessing = false;
+
 async function abrirCamera() {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-scan').classList.add('active');
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  document.getElementById('scan-result').classList.remove('show');
+  document.getElementById('scan-result').style.display = 'none';
+  scanProcessing = false;
 
   try {
     videoStream = await navigator.mediaDevices.getUserMedia({
@@ -373,7 +377,44 @@ async function abrirCamera() {
     const video = document.getElementById('camera-video');
     video.srcObject = videoStream;
     await video.play();
-    scanInterval = setInterval(lerQR, 300);
+
+    // Usa BarcodeDetector (API nativa) se disponível, senão jsQR
+    if ('BarcodeDetector' in window) {
+      const detector = new BarcodeDetector({ formats: ['qr_code'] });
+      scanInterval = setInterval(async () => {
+        if (scanProcessing || !video.videoWidth) return;
+        try {
+          const codes = await detector.detect(video);
+          if (codes.length > 0) {
+            scanProcessing = true;
+            clearInterval(scanInterval);
+            submeterQR(codes[0].rawValue);
+          }
+        } catch(e) {}
+      }, 300);
+    } else {
+      // Fallback: jsQR via canvas
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js';
+      script.onload = () => {
+        scanInterval = setInterval(() => {
+          if (scanProcessing || !video.videoWidth) return;
+          const canvas = document.getElementById('camera-canvas');
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(video, 0, 0);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imageData.data, imageData.width, imageData.height);
+          if (code && code.data) {
+            scanProcessing = true;
+            clearInterval(scanInterval);
+            submeterQR(code.data);
+          }
+        }, 300);
+      };
+      document.head.appendChild(script);
+    }
   } catch(e) {
     alert('Não foi possível aceder à câmara. Verifica as permissões nas definições do teu telemóvel.');
     fecharCamera();
@@ -384,24 +425,7 @@ async function abrirCamera() {
 function fecharCamera() {
   if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
   if (videoStream) { videoStream.getTracks().forEach(t => t.stop()); videoStream = null; }
-}
-
-function lerQR() {
-  if (scanProcessing) return;
-  const video = document.getElementById('camera-video');
-  if (!video.videoWidth) return;
-  const canvas = document.getElementById('camera-canvas');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(video, 0, 0);
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
-  if (code) {
-    scanProcessing = true;
-    clearInterval(scanInterval);
-    submeterQR(code.data);
-  }
+  scanProcessing = false;
 }
 
 async function submeterQR(qr) {
@@ -415,22 +439,21 @@ async function submeterQR(qr) {
       document.getElementById('scan-result-sub').textContent = res.mensagem;
     } else {
       document.getElementById('scan-result-icon').textContent = '❌';
-      document.getElementById('scan-result-title').textContent = 'QR code inválido';
-      document.getElementById('scan-result-sub').textContent = 'Este código não é válido ou já expirou. Pede ao empregado que mostre o código do dia.';
+      document.getElementById('scan-result-title').textContent = 'Código inválido';
+      document.getElementById('scan-result-sub').textContent = 'Pede ao empregado que mostre o código do dia.';
     }
-    resultEl.classList.add('show');
+    resultEl.style.display = 'flex';
   } catch(e) {
     document.getElementById('scan-result-icon').textContent = '⚠️';
     document.getElementById('scan-result-title').textContent = 'Sem ligação';
     document.getElementById('scan-result-sub').textContent = 'Verifica a internet e tenta novamente.';
-    document.getElementById('scan-result').classList.add('show');
+    document.getElementById('scan-result').style.display = 'flex';
   }
 }
 
 function fecharScanResult() {
   fecharCamera();
   goTo('cartao');
-  scanProcessing = false;
 }
 
 // ── FORMATAÇÃO ──────────────────────────────────────────
