@@ -2,222 +2,561 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Hã — Clube de Fidelização</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap">
+<base target="_top">
 <style>
-/* ── RESET AGRESSIVO PARA APPS SCRIPT ── */
-html, body {
-  margin: 0 !important;
-  padding: 0 !important;
-  width: 100% !important;
-  min-height: 100vh !important;
-  overflow-x: hidden !important;
-  -webkit-text-size-adjust: 100% !important;
-}
-
-:root {
-  --bg:#F7F5F0; --surface:#FFF; --surface2:#EFEFEB; --border:#E0DDD6;
-  --green:#1A5C4A; --green-mid:#3DA85A; --green-light:#A8D8B0;
-  --yellow:#F5C842; --text:#1A1A1A; --muted:#888;
-  --safe-top:env(safe-area-inset-top,0px);
-  --safe-bot:env(safe-area-inset-bottom,0px);
-}
-
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-body {
+:root {
+  --bg: #F7F5F0;
+  --surface: #FFFFFF;
+  --surface2: #EFEFEB;
+  --border: #E0DDD6;
+  --green: #1A5C4A;
+  --green-light: #A8D8B0;
+  --yellow: #F5C842;
+  --text: #1A1A1A;
+  --muted: #999;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
   background: var(--bg);
   color: var(--text);
   font-family: 'Inter', sans-serif;
-  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
+/* ── WRAPPER CENTRAL ── */
+.app {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--bg);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ── ECRÃS ── */
 .screen {
   display: none;
   flex-direction: column;
-  min-height: 100vh;
   width: 100%;
-  padding-bottom: calc(68px + var(--safe-bot));
+  min-height: 100vh;
+  padding-bottom: 72px;
 }
 .screen.active { display: flex; }
 
-/* ── REGISTO ── */
+/* ══════════════════════════════
+   REGISTO
+══════════════════════════════ */
 #screen-registo {
-  padding: calc(var(--safe-top) + 32px) 20px 40px;
-  background: var(--bg);
+  padding: 40px 24px 40px;
+  align-items: stretch;
 }
-.reg-logo { display:flex; justify-content:center; margin-bottom:10px; }
-.reg-logo img { height:72px; }
-.reg-headline { font-family:'Nunito',sans-serif; font-size:20px; font-weight:800; text-align:center; color:var(--green); margin-bottom:4px; }
-.reg-sub { font-size:13px; color:var(--muted); text-align:center; margin-bottom:28px; }
-.form-row { display:flex; gap:10px; width:100%; }
-.form-row .field { flex:1; min-width:0; }
-.field { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; width:100%; }
-.field label { font-size:11px; color:var(--muted); font-weight:500; }
+
+.reg-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.reg-logo img { height: 72px; width: auto; }
+
+.reg-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--green);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.reg-sub {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+.form-row .field { flex: 1; min-width: 0; }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  width: 100%;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.3px;
+}
+
 .field input {
-  background:var(--surface); border:1.5px solid var(--border); border-radius:10px;
-  color:var(--text); font-family:'Inter',sans-serif; font-size:16px;
-  padding:12px 14px; outline:none; transition:border-color .18s;
-  width:100%; -webkit-appearance:none; appearance:none;
+  width: 100%;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  padding: 13px 14px;
+  outline: none;
+  transition: border-color .18s;
+  -webkit-appearance: none;
+  appearance: none;
 }
-.field input:focus { border-color:var(--green); }
-.field input::placeholder { color:#C0BDB8; }
-.btn-primary {
-  background:var(--green); border:none; border-radius:10px; color:#fff;
-  cursor:pointer; font-family:'Nunito',sans-serif; font-size:17px; font-weight:800;
-  padding:15px; width:100%; margin-top:4px; transition:background .18s;
-  -webkit-appearance:none;
+.field input:focus { border-color: var(--green); }
+.field input::placeholder { color: #C8C5C0; }
+
+.btn-main {
+  width: 100%;
+  background: var(--green);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  padding: 16px;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: background .18s;
 }
-.btn-primary:active { background:#134438; }
-.btn-primary:disabled { background:#999; cursor:not-allowed; }
-.reg-terms { font-size:11px; color:#BBB; text-align:center; margin-top:14px; line-height:1.7; }
-.reg-error { background:#FEE; border:1px solid #FCC; border-radius:10px; color:#C00; font-size:13px; padding:12px; margin-bottom:12px; display:none; }
-.reg-error.visible { display:block; }
+.btn-main:active { background: #134438; }
+.btn-main:disabled { background: #aaa; cursor: not-allowed; }
 
-/* ── CARTÃO ── */
-#screen-cartao { background:var(--bg); }
-.card-topbar { display:flex; align-items:center; justify-content:space-between; padding:calc(var(--safe-top) + 14px) 16px 10px; }
-.card-topbar img { height:32px; }
-.card-topbar-greet { font-size:13px; color:var(--muted); font-weight:500; }
-.loyalty-card { margin:0 12px; background:var(--green); border-radius:20px; overflow:hidden; }
-.lc-top { padding:20px 20px 0; }
-.lc-top-row { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:14px; }
-.lc-brand img { height:40px; filter:brightness(0) invert(1); }
-.lc-badge { background:var(--yellow); color:var(--green); font-family:'Nunito',sans-serif; font-size:10px; font-weight:900; padding:4px 10px; border-radius:20px; white-space:nowrap; }
-.lc-member { font-family:'Nunito',sans-serif; font-size:11px; font-weight:700; color:var(--green-light); letter-spacing:1px; margin-bottom:3px; }
-.lc-name { font-family:'Nunito',sans-serif; font-size:20px; font-weight:900; color:#fff; margin-bottom:18px; }
-.stamps-wrap { background:rgba(0,0,0,.18); border-radius:14px 14px 0 0; padding:14px 14px 4px; }
-.stamps-label { font-size:10px; font-weight:600; color:var(--green-light); letter-spacing:1.5px; margin-bottom:10px; }
-.stamps-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:7px; margin-bottom:10px; }
-.stamp { aspect-ratio:1; border-radius:9px; overflow:hidden; }
-.stamp.empty { background:rgba(255,255,255,.08); border:1.5px dashed rgba(255,255,255,.25); }
-.stamp.filled { background-size:400% 200%; background-repeat:no-repeat; }
-.lc-footer { background:rgba(0,0,0,.18); padding:11px 18px; display:flex; align-items:center; justify-content:space-between; }
-.lc-footer-label { font-size:12px; color:rgba(255,255,255,.55); }
-.lc-footer-count { font-family:'Nunito',sans-serif; font-size:22px; font-weight:900; color:var(--yellow); }
-.free-meal { margin:12px 12px 0; background:var(--yellow); border-radius:14px; padding:14px 18px; display:none; align-items:center; gap:12px; }
-.free-meal.visible { display:flex; }
-.free-meal-icon { font-size:30px; flex-shrink:0; }
-.free-meal-text strong { display:block; font-family:'Nunito',sans-serif; font-size:16px; font-weight:900; color:var(--green); margin-bottom:1px; }
-.free-meal-text span { font-size:12px; color:#555; }
-.scan-trigger { margin:12px 12px 0; background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:14px 16px; display:flex; align-items:center; gap:12px; cursor:pointer; }
-.scan-trigger:active { border-color:var(--green); }
-.scan-trigger-icon { width:42px; height:42px; background:var(--green); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
-.scan-trigger-text strong { display:block; font-size:14px; font-weight:600; margin-bottom:2px; }
-.scan-trigger-text span { font-size:12px; color:var(--muted); }
-.scan-trigger-arrow { margin-left:auto; color:var(--muted); font-size:20px; }
+.reg-terms {
+  font-size: 11px;
+  color: #C0BDB8;
+  text-align: center;
+  margin-top: 16px;
+  line-height: 1.7;
+}
 
-/* ── NOVIDADES ── */
-#screen-novidades { background:var(--bg); padding:calc(var(--safe-top) + 14px) 0 0; }
-.screen-topbar { display:flex; align-items:center; gap:10px; padding:0 16px 12px; }
-.screen-topbar img { height:26px; }
-.screen-topbar-title { font-family:'Nunito',sans-serif; font-size:22px; font-weight:900; color:var(--green); }
-.news-list { display:flex; flex-direction:column; gap:14px; padding:0 12px; }
-.news-card { background:var(--surface); border-radius:14px; overflow:hidden; border:1px solid var(--border); }
-.news-card-img { width:100%; height:190px; object-fit:cover; display:block; background:var(--surface2); }
-.news-card-body { padding:14px; }
-.news-badge { display:inline-block; background:var(--yellow); color:var(--green); font-family:'Nunito',sans-serif; font-size:10px; font-weight:900; padding:3px 8px; border-radius:4px; margin-bottom:8px; }
-.news-title { font-family:'Nunito',sans-serif; font-size:19px; font-weight:900; line-height:1.2; margin-bottom:7px; color:var(--green); }
-.news-desc { font-size:13px; color:var(--muted); line-height:1.6; }
-.news-empty { text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
-.loading { display:flex; align-items:center; justify-content:center; min-height:60px; color:var(--muted); font-size:14px; }
+.msg-error {
+  background: #FEE;
+  border: 1px solid #FCC;
+  border-radius: 10px;
+  color: #C00;
+  font-size: 13px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  display: none;
+}
+.msg-error.show { display: block; }
 
-/* ── SCAN ── */
-#screen-scan { background:var(--bg); justify-content:center; align-items:center; padding:calc(var(--safe-top) + 24px) 24px calc(80px + var(--safe-bot)); gap:24px; text-align:center; }
-.scan-heading { font-family:'Nunito',sans-serif; font-size:24px; font-weight:900; color:var(--green); }
-.scan-sub { font-size:14px; color:var(--muted); line-height:1.6; max-width:100%; }
-.qr-input-wrap { display:flex; flex-direction:column; gap:12px; width:100%; }
-.qr-input { background:var(--surface); border:2px solid var(--border); border-radius:12px; color:var(--text); font-family:'Inter',sans-serif; font-size:26px; font-weight:700; letter-spacing:6px; padding:16px; text-align:center; outline:none; width:100%; text-transform:uppercase; -webkit-appearance:none; }
-.qr-input:focus { border-color:var(--green); }
-.btn-scan { background:var(--green); border:none; border-radius:12px; color:#fff; cursor:pointer; font-family:'Nunito',sans-serif; font-size:17px; font-weight:800; padding:16px; width:100%; -webkit-appearance:none; }
-.btn-scan:disabled { background:#999; }
-.scan-error { background:#FEE; border:1px solid #FCC; border-radius:10px; color:#C00; font-size:13px; padding:12px; display:none; width:100%; }
-.scan-error.visible { display:block; }
-.scan-success { display:none; flex-direction:column; align-items:center; gap:16px; }
-.scan-success.visible { display:flex; }
-.scan-ok-icon { font-size:60px; }
-.scan-ok-title { font-family:'Nunito',sans-serif; font-size:24px; font-weight:900; color:var(--green); }
-.scan-ok-sub { font-size:14px; color:var(--muted); text-align:center; }
-.btn-back { background:var(--surface); border:1.5px solid var(--border); border-radius:10px; color:var(--text); cursor:pointer; font-family:'Inter',sans-serif; font-size:14px; font-weight:500; padding:13px 32px; }
+/* ══════════════════════════════
+   CARTÃO
+══════════════════════════════ */
+#screen-cartao { padding: 0; }
 
-/* ── NAV ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 14px;
+  width: 100%;
+}
+.topbar img { height: 34px; width: auto; }
+.topbar-greet { font-size: 13px; color: var(--muted); font-weight: 500; }
+
+/* O cartão */
+.loyalty-card {
+  margin: 0 16px;
+  background: var(--green);
+  border-radius: 20px;
+  overflow: hidden;
+  width: calc(100% - 32px);
+}
+
+.lc-head { padding: 20px 20px 0; }
+
+.lc-row1 {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.lc-row1 img { height: 40px; filter: brightness(0) invert(1); }
+
+.lc-badge {
+  background: var(--yellow);
+  color: var(--green);
+  font-family: 'Nunito', sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 5px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.lc-member {
+  font-family: 'Nunito', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--green-light);
+  letter-spacing: 1.5px;
+  margin-bottom: 4px;
+}
+
+.lc-name {
+  font-family: 'Nunito', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stamps-area {
+  background: rgba(0,0,0,.18);
+  border-radius: 14px 14px 0 0;
+  padding: 14px 16px 6px;
+}
+
+.stamps-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--green-light);
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+
+.stamps-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.stamp {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.stamp.empty {
+  background: rgba(255,255,255,.08);
+  border: 1.5px dashed rgba(255,255,255,.2);
+}
+.stamp.filled {
+  background-size: 400% 200%;
+  background-repeat: no-repeat;
+}
+
+.lc-foot {
+  background: rgba(0,0,0,.18);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.lc-foot-label { font-size: 11px; color: rgba(255,255,255,.5); }
+.lc-foot-count {
+  font-family: 'Nunito', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--yellow);
+}
+
+/* Banner grátis */
+.free-meal {
+  margin: 12px 16px 0;
+  width: calc(100% - 32px);
+  background: var(--yellow);
+  border-radius: 14px;
+  padding: 14px 18px;
+  display: none;
+  align-items: center;
+  gap: 12px;
+}
+.free-meal.show { display: flex; }
+.free-meal-icon { font-size: 30px; flex-shrink: 0; }
+.free-meal-text strong {
+  display: block;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--green);
+  margin-bottom: 1px;
+}
+.free-meal-text span { font-size: 12px; color: #555; }
+
+/* Botão scan */
+.scan-btn {
+  margin: 12px 16px 0;
+  width: calc(100% - 32px);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 15px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.scan-btn:active { border-color: var(--green); }
+.scan-btn-icon {
+  width: 42px; height: 42px;
+  background: var(--green);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.scan-btn-text strong { display: block; font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.scan-btn-text span { font-size: 12px; color: var(--muted); }
+.scan-btn-arrow { margin-left: auto; color: var(--muted); font-size: 22px; line-height: 1; }
+
+/* ══════════════════════════════
+   NOVIDADES
+══════════════════════════════ */
+#screen-novidades { padding: 20px 0 0; }
+
+.screen-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px 14px;
+  width: 100%;
+}
+.screen-head img { height: 26px; }
+.screen-head-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--green);
+}
+
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0 16px;
+  width: 100%;
+}
+
+.news-card {
+  background: var(--surface);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  width: 100%;
+}
+.news-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+  background: var(--surface2);
+}
+.news-card-body { padding: 14px; }
+.news-badge {
+  display: inline-block;
+  background: var(--yellow);
+  color: var(--green);
+  font-family: 'Nunito', sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.news-card-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--green);
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+.news-card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.news-empty { text-align: center; color: var(--muted); padding: 40px 20px; font-size: 14px; }
+
+/* ══════════════════════════════
+   SCAN
+══════════════════════════════ */
+#screen-scan {
+  justify-content: center;
+  align-items: center;
+  padding: 40px 28px 80px;
+  gap: 24px;
+  text-align: center;
+  width: 100%;
+}
+
+.scan-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--green);
+}
+.scan-sub { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 280px; }
+
+.scan-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 300px;
+}
+.scan-input {
+  width: 100%;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  padding: 16px;
+  text-align: center;
+  outline: none;
+  text-transform: uppercase;
+  transition: border-color .18s;
+  -webkit-appearance: none;
+}
+.scan-input:focus { border-color: var(--green); }
+
+.scan-success {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.scan-success.show { display: flex; }
+.scan-ok-icon { font-size: 56px; }
+.scan-ok-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--green);
+}
+.scan-ok-sub { font-size: 14px; color: var(--muted); }
+.btn-back {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 13px 32px;
+  cursor: pointer;
+  margin-top: 6px;
+}
+
+/* ══════════════════════════════
+   BOTTOM NAV
+══════════════════════════════ */
 .bottom-nav {
-  position:fixed; bottom:0; left:0; right:0;
-  background:rgba(247,245,240,.97);
-  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-  border-top:1px solid var(--border);
-  display:flex;
-  padding:8px 0 calc(8px + var(--safe-bot));
-  z-index:1000;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: rgba(247,245,240,.97);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 200;
 }
-.nav-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; padding:5px 0; }
-.nav-icon { font-size:22px; line-height:1; }
-.nav-label { font-size:10px; color:var(--muted); font-weight:600; }
-.nav-item.active .nav-label { color:var(--green); }
-.nav-item:not(.active) { opacity:.4; }
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 8px;
+  cursor: pointer;
+}
+
+.nav-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: 0.2px;
+}
+.nav-item.active .nav-label { color: var(--green); }
+.nav-item:not(.active) { opacity: 0.35; }
+
+/* Loading */
+.loading { padding: 32px; text-align: center; color: var(--muted); font-size: 14px; }
 </style>
 </head>
 <body>
+<div class="app">
 
-<script>
-// Fix para o iframe do Google Apps Script expandir a largura total
-(function() {
-  try {
-    // Tenta aceder ao iframe pai e expandir
-    if (window.frameElement) {
-      window.frameElement.style.width = '100%';
-      window.frameElement.style.maxWidth = '100%';
-      window.frameElement.style.minWidth = '100%';
-    }
-  } catch(e) {}
-  // Força body a 100%
-  document.documentElement.style.cssText = 'width:100%!important;overflow-x:hidden!important';
-})();
-</script>
-
-<!-- REGISTO -->
+<!-- ═══════ REGISTO ═══════ -->
 <section id="screen-registo" class="screen active">
-  <div class="reg-logo"><img src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã"></div>
-  <div class="reg-headline">Clube de Fidelização</div>
-  <div class="reg-sub">Regista-te e começa a acumular refeições</div>
-  <div class="reg-error" id="reg-error"></div>
-  <div class="form-row">
-    <div class="field"><label>Nome</label><input type="text" placeholder="João" id="f-nome" autocomplete="given-name"></div>
-    <div class="field"><label>Apelido</label><input type="text" placeholder="Silva" id="f-apelido" autocomplete="family-name"></div>
+  <div class="reg-logo">
+    <img src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã">
   </div>
-  <div class="field"><label>Telemóvel</label><input type="tel" placeholder="9XX XXX XXX" id="f-tel" autocomplete="tel"></div>
-  <div class="field"><label>Email</label><input type="email" placeholder="joao@email.com" id="f-email" autocomplete="email"></div>
+  <div class="reg-title">Clube de Fidelização</div>
+  <div class="reg-sub">Regista-te e começa a acumular refeições</div>
+  <div class="msg-error" id="reg-error"></div>
+  <div class="form-row">
+    <div class="field"><label>Nome</label><input type="text" id="f-nome" placeholder="João" autocomplete="given-name"></div>
+    <div class="field"><label>Apelido</label><input type="text" id="f-apelido" placeholder="Silva" autocomplete="family-name"></div>
+  </div>
+  <div class="field"><label>Telemóvel</label><input type="tel" id="f-tel" placeholder="9XX XXX XXX" autocomplete="tel"></div>
+  <div class="field"><label>Email</label><input type="email" id="f-email" placeholder="joao@email.com" autocomplete="email"></div>
   <div class="field"><label>Data de Nascimento</label><input type="date" id="f-nasc" autocomplete="bday"></div>
-  <button class="btn-primary" id="btn-registar" onclick="registar()">Entrar no Clube</button>
+  <button class="btn-main" id="btn-reg" onclick="registar()">Entrar no Clube</button>
   <p class="reg-terms">Os teus dados são usados exclusivamente<br>para o programa de fidelização do Hã.</p>
 </section>
 
-<!-- CARTÃO -->
+<!-- ═══════ CARTÃO ═══════ -->
 <section id="screen-cartao" class="screen">
-  <div class="card-topbar">
+  <div class="topbar">
     <img src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã">
-    <div class="card-topbar-greet" id="greeting">Olá!</div>
+    <div class="topbar-greet" id="greeting">Olá!</div>
   </div>
+
   <div class="loyalty-card">
-    <div class="lc-top">
-      <div class="lc-top-row">
-        <div class="lc-brand"><img src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã"></div>
+    <div class="lc-head">
+      <div class="lc-row1">
+        <img src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã">
         <div class="lc-badge">CLUBE HÃ</div>
       </div>
       <div class="lc-member">MEMBRO</div>
       <div class="lc-name" id="card-name">—</div>
     </div>
-    <div class="stamps-wrap">
+    <div class="stamps-area">
       <div class="stamps-label">REFEIÇÕES ACUMULADAS</div>
       <div class="stamps-grid" id="stamps-grid"></div>
     </div>
-    <div class="lc-footer">
-      <div class="lc-footer-label">Para a tua próxima refeição grátis</div>
-      <div class="lc-footer-count" id="progress-count">0 / 10</div>
+    <div class="lc-foot">
+      <div class="lc-foot-label">Para a tua próxima refeição grátis</div>
+      <div class="lc-foot-count" id="progress">0 / 10</div>
     </div>
   </div>
+
   <div class="free-meal" id="free-meal">
     <div class="free-meal-icon">🎉</div>
     <div class="free-meal-text">
@@ -225,169 +564,199 @@ body {
       <span>Mostra este ecrã ao balcão para resgatar</span>
     </div>
   </div>
-  <div class="scan-trigger" onclick="goTo('scan')">
-    <div class="scan-trigger-icon">📷</div>
-    <div class="scan-trigger-text">
+
+  <div class="scan-btn" onclick="goTo('scan')">
+    <div class="scan-btn-icon">📷</div>
+    <div class="scan-btn-text">
       <strong>Registar refeição</strong>
       <span>Introduz o código que o empregado te mostra</span>
     </div>
-    <div class="scan-trigger-arrow">›</div>
+    <div class="scan-btn-arrow">›</div>
   </div>
 </section>
 
-<!-- NOVIDADES -->
+<!-- ═══════ NOVIDADES ═══════ -->
 <section id="screen-novidades" class="screen">
-  <div class="screen-topbar">
+  <div class="screen-head">
     <img src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã">
-    <div class="screen-topbar-title">Novidades</div>
+    <div class="screen-head-title">Novidades</div>
   </div>
-  <div class="news-list" id="news-list"><div class="loading">A carregar...</div></div>
+  <div class="news-list" id="news-list">
+    <div class="loading">A carregar...</div>
+  </div>
 </section>
 
-<!-- SCAN -->
+<!-- ═══════ SCAN ═══════ -->
 <section id="screen-scan" class="screen">
-  <div id="scan-initial" style="display:flex;flex-direction:column;align-items:center;gap:20px;width:100%">
-    <div class="scan-heading">Registar Refeição</div>
-    <div class="scan-sub">Introduz o código de 8 letras que o empregado te mostra no balcão</div>
-    <div class="qr-input-wrap">
-      <div class="scan-error" id="scan-error"></div>
-      <input class="qr-input" type="text" id="qr-input" maxlength="8" placeholder="XXXXXXXX" autocomplete="off" autocorrect="off" spellcheck="false">
-      <button class="btn-scan" id="btn-scan" onclick="submeterScan()">Confirmar</button>
+  <div id="scan-form-wrap" style="display:flex;flex-direction:column;align-items:center;gap:24px;width:100%">
+    <div class="scan-title">Registar Refeição</div>
+    <div class="scan-sub">Introduz o código de 8 caracteres que o empregado te mostra no balcão</div>
+    <div class="scan-form">
+      <div class="msg-error" id="scan-error"></div>
+      <input class="scan-input" type="text" id="qr-input" maxlength="8" placeholder="XXXXXXXX" autocomplete="off" autocorrect="off" spellcheck="false">
+      <button class="btn-main" id="btn-scan" onclick="submeterScan()">Confirmar</button>
     </div>
   </div>
   <div class="scan-success" id="scan-success">
-    <div class="scan-ok-icon" id="scan-ok-icon">✅</div>
-    <div class="scan-ok-title" id="scan-ok-title">Refeição registada!</div>
-    <div class="scan-ok-sub" id="scan-ok-sub"></div>
+    <div class="scan-ok-icon" id="scan-icon">✅</div>
+    <div class="scan-ok-title" id="scan-title-ok">Refeição registada!</div>
+    <div class="scan-ok-sub" id="scan-sub-ok"></div>
     <button class="btn-back" onclick="voltarCartao()">Ver o meu cartão</button>
   </div>
 </section>
 
-<!-- NAV -->
+<!-- ═══════ NAV ═══════ -->
 <nav class="bottom-nav">
   <div class="nav-item active" onclick="goTo('cartao')"><div class="nav-label">O MEU CARTÃO</div></div>
   <div class="nav-item" onclick="goTo('novidades')"><div class="nav-label">NOVIDADES</div></div>
 </nav>
 
+</div><!-- /app -->
+
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycby-DIRvkbbIJAPGhojyPcLeIqeEDsso2LexcecM04DLJI40_phxsMXLUjC28PF3f767/exec';
-const MURAL_URL = 'https://ha-restaurante.com/wp-content/uploads/2024/05/mural.jpg';
+const API = 'https://script.google.com/macros/s/AKfycby-DIRvkbbIJAPGhojyPcLeIqeEDsso2LexcecM04DLJI40_phxsMXLUjC28PF3f767/exec';
+const MURAL = 'https://ha-restaurante.com/wp-content/uploads/2024/05/mural.jpg';
 const STAMP_POS = ['0% 0%','33.3% 0%','66.6% 0%','100% 0%','0% 100%','33.3% 100%','66.6% 100%','100% 100%'];
-const state = { id:null, nome:'', apelido:'', visitas:0 };
-const NAV_MAP = { cartao:0, novidades:1 };
+const NAV = { cartao: 0, novidades: 1 };
 
-function saveLocal() { try { localStorage.setItem('ha_c', JSON.stringify({id:state.id,nome:state.nome,apelido:state.apelido})); } catch(e){} }
-function loadLocal() { try { return JSON.parse(localStorage.getItem('ha_c')||'null'); } catch(e){ return null; } }
+const S = { id: null, nome: '', apelido: '', visitas: 0 };
 
-async function api(params) {
-  const body = new URLSearchParams(params);
-  const res = await fetch(API_URL, {method:'POST', body});
-  return res.json();
+function save() { try { localStorage.setItem('ha', JSON.stringify({ id: S.id, nome: S.nome, apelido: S.apelido })); } catch(e){} }
+function load() { try { return JSON.parse(localStorage.getItem('ha') || 'null'); } catch(e){ return null; } }
+
+async function post(params) {
+  const r = await fetch(API, { method: 'POST', body: new URLSearchParams(params) });
+  return r.json();
 }
 
 function goTo(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-'+id).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach((el,i) => el.classList.toggle('active', i===(NAV_MAP[id]??-1)));
-  if (id==='cartao') renderCartao();
-  if (id==='novidades') carregarNovidades();
+  document.getElementById('screen-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach((el, i) => el.classList.toggle('active', i === (NAV[id] ?? -1)));
+  if (id === 'cartao') renderCartao();
+  if (id === 'novidades') loadNovidades();
 }
 
 async function registar() {
-  const nome=document.getElementById('f-nome').value.trim();
-  const apelido=document.getElementById('f-apelido').value.trim();
-  const tel=document.getElementById('f-tel').value.trim();
-  const email=document.getElementById('f-email').value.trim();
-  const nasc=document.getElementById('f-nasc').value;
-  const errEl=document.getElementById('reg-error');
-  errEl.classList.remove('visible');
-  if (!nome||!apelido||!tel||!email||!nasc) { errEl.textContent='Preenche todos os campos para continuares.'; errEl.classList.add('visible'); return; }
-  const btn=document.getElementById('btn-registar');
-  btn.disabled=true; btn.textContent='A registar...';
+  const nome = document.getElementById('f-nome').value.trim();
+  const apelido = document.getElementById('f-apelido').value.trim();
+  const tel = document.getElementById('f-tel').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const nasc = document.getElementById('f-nasc').value;
+  const err = document.getElementById('reg-error');
+  err.classList.remove('show');
+
+  if (!nome || !apelido || !tel || !email || !nasc) {
+    err.textContent = 'Preenche todos os campos para continuares.';
+    err.classList.add('show'); return;
+  }
+
+  const btn = document.getElementById('btn-reg');
+  btn.disabled = true; btn.textContent = 'A registar...';
   try {
-    const res=await api({action:'registar',nome,apelido,telefone:tel,email,nascimento:nasc});
+    const res = await post({ action: 'registar', nome, apelido, telefone: tel, email, nascimento: nasc });
     if (res.ok) {
-      state.id=res.id; state.nome=res.nome; state.apelido=res.apelido; state.visitas=res.visitas;
-      saveLocal();
+      S.id = res.id; S.nome = res.nome; S.apelido = res.apelido; S.visitas = res.visitas;
+      save();
       document.getElementById('screen-registo').classList.remove('active');
       goTo('cartao');
-    } else { errEl.textContent=res.erro||'Erro ao registar.'; errEl.classList.add('visible'); }
-  } catch(e) { errEl.textContent='Sem ligação. Verifica a internet.'; errEl.classList.add('visible'); }
-  btn.disabled=false; btn.textContent='Entrar no Clube';
+    } else {
+      err.textContent = res.erro || 'Erro ao registar. Tenta novamente.';
+      err.classList.add('show');
+    }
+  } catch(e) {
+    err.textContent = 'Sem ligação. Verifica a internet e tenta novamente.';
+    err.classList.add('show');
+  }
+  btn.disabled = false; btn.textContent = 'Entrar no Clube';
 }
 
 function renderCartao() {
-  document.getElementById('greeting').textContent='Olá, '+state.nome;
-  document.getElementById('card-name').textContent=state.nome+' '+state.apelido;
-  document.getElementById('progress-count').textContent=state.visitas+' / 10';
-  const grid=document.getElementById('stamps-grid');
-  grid.innerHTML='';
-  for (let i=0;i<10;i++) {
-    const s=document.createElement('div');
-    if (i<state.visitas) {
-      s.className='stamp filled';
-      s.style.backgroundImage="url('"+MURAL_URL+"')";
-      s.style.backgroundSize='400% 200%';
-      s.style.backgroundPosition=STAMP_POS[i%8];
-    } else { s.className='stamp empty'; }
-    grid.appendChild(s);
+  document.getElementById('greeting').textContent = 'Olá, ' + S.nome;
+  document.getElementById('card-name').textContent = S.nome + ' ' + S.apelido;
+  document.getElementById('progress').textContent = S.visitas + ' / 10';
+  const grid = document.getElementById('stamps-grid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 10; i++) {
+    const d = document.createElement('div');
+    if (i < S.visitas) {
+      d.className = 'stamp filled';
+      d.style.backgroundImage = "url('" + MURAL + "')";
+      d.style.backgroundSize = '400% 200%';
+      d.style.backgroundPosition = STAMP_POS[i % 8];
+    } else {
+      d.className = 'stamp empty';
+    }
+    grid.appendChild(d);
   }
-  document.getElementById('free-meal').classList.toggle('visible',state.visitas>=10);
+  document.getElementById('free-meal').classList.toggle('show', S.visitas >= 10);
 }
 
-async function carregarNovidades() {
-  const lista=document.getElementById('news-list');
-  lista.innerHTML='<div class="loading">A carregar...</div>';
+async function loadNovidades() {
+  const lista = document.getElementById('news-list');
+  lista.innerHTML = '<div class="loading">A carregar...</div>';
   try {
-    const res=await api({action:'novidades'});
-    if (res.ok&&res.novidades.length>0) {
-      lista.innerHTML=res.novidades.map(n=>`
+    const res = await post({ action: 'novidades' });
+    if (res.ok && res.novidades.length > 0) {
+      lista.innerHTML = res.novidades.map(n => `
         <div class="news-card">
-          ${n.foto?`<img class="news-card-img" src="${n.foto}" alt="${n.titulo}" loading="lazy">`:''}
+          ${n.foto ? `<img src="${n.foto}" alt="${n.titulo}" loading="lazy">` : ''}
           <div class="news-card-body">
             <span class="news-badge">${n.data}</span>
-            <div class="news-title">${n.titulo}</div>
-            <div class="news-desc">${n.descricao}</div>
+            <div class="news-card-title">${n.titulo}</div>
+            <div class="news-card-desc">${n.descricao}</div>
           </div>
         </div>`).join('');
-    } else { lista.innerHTML='<div class="news-empty">Sem novidades de momento.<br>Volta em breve! 🍔</div>'; }
-  } catch(e) { lista.innerHTML='<div class="news-empty">Sem ligação. Tenta mais tarde.</div>'; }
+    } else {
+      lista.innerHTML = '<div class="news-empty">Sem novidades de momento. Volta em breve! 🍔</div>';
+    }
+  } catch(e) {
+    lista.innerHTML = '<div class="news-empty">Sem ligação. Tenta mais tarde.</div>';
+  }
 }
 
 async function submeterScan() {
-  const qr=document.getElementById('qr-input').value.trim().toUpperCase();
-  const errEl=document.getElementById('scan-error');
-  errEl.classList.remove('visible');
-  if (qr.length<4) { errEl.textContent='Introduz o código completo.'; errEl.classList.add('visible'); return; }
-  const btn=document.getElementById('btn-scan');
-  btn.disabled=true; btn.textContent='A validar...';
+  const qr = document.getElementById('qr-input').value.trim().toUpperCase();
+  const err = document.getElementById('scan-error');
+  err.classList.remove('show');
+  if (qr.length < 4) { err.textContent = 'Introduz o código completo.'; err.classList.add('show'); return; }
+  const btn = document.getElementById('btn-scan');
+  btn.disabled = true; btn.textContent = 'A validar...';
   try {
-    const res=await api({action:'scan',qr,id:state.id});
+    const res = await post({ action: 'scan', qr, id: S.id });
     if (res.ok) {
-      state.visitas=res.visitas; saveLocal();
-      document.getElementById('scan-initial').style.display='none';
-      document.getElementById('scan-ok-icon').textContent=res.refeicaoGratis?'🎉':'✅';
-      document.getElementById('scan-ok-title').textContent=res.refeicaoGratis?'Refeição grátis!':'Refeição registada!';
-      document.getElementById('scan-ok-sub').textContent=res.mensagem;
-      document.getElementById('scan-success').classList.add('visible');
-    } else { errEl.textContent=res.erro||'Código inválido.'; errEl.classList.add('visible'); }
-  } catch(e) { errEl.textContent='Sem ligação. Verifica a internet.'; errEl.classList.add('visible'); }
-  btn.disabled=false; btn.textContent='Confirmar';
+      S.visitas = res.visitas; save();
+      document.getElementById('scan-form-wrap').style.display = 'none';
+      document.getElementById('scan-icon').textContent = res.refeicaoGratis ? '🎉' : '✅';
+      document.getElementById('scan-title-ok').textContent = res.refeicaoGratis ? 'Refeição grátis!' : 'Refeição registada!';
+      document.getElementById('scan-sub-ok').textContent = res.mensagem;
+      document.getElementById('scan-success').classList.add('show');
+    } else {
+      err.textContent = res.erro || 'Código inválido. Pede o código do dia ao empregado.';
+      err.classList.add('show');
+    }
+  } catch(e) {
+    err.textContent = 'Sem ligação. Verifica a internet.';
+    err.classList.add('show');
+  }
+  btn.disabled = false; btn.textContent = 'Confirmar';
 }
 
 function voltarCartao() {
-  document.getElementById('scan-initial').style.display='';
-  document.getElementById('scan-success').classList.remove('visible');
-  document.getElementById('qr-input').value='';
-  document.getElementById('scan-error').classList.remove('visible');
+  document.getElementById('scan-form-wrap').style.display = '';
+  document.getElementById('scan-success').classList.remove('show');
+  document.getElementById('qr-input').value = '';
   goTo('cartao');
 }
 
-(function init() {
-  const saved=loadLocal();
-  if (saved&&saved.id) {
-    state.id=saved.id; state.nome=saved.nome; state.apelido=saved.apelido;
-    api({action:'cliente',id:saved.id}).then(res=>{ if(res.ok){state.visitas=res.visitas;renderCartao();} }).catch(()=>{});
+// INIT
+(function() {
+  const saved = load();
+  if (saved && saved.id) {
+    S.id = saved.id; S.nome = saved.nome; S.apelido = saved.apelido;
+    post({ action: 'cliente', id: saved.id }).then(res => {
+      if (res.ok) { S.visitas = res.visitas; renderCartao(); }
+    }).catch(() => {});
     document.getElementById('screen-registo').classList.remove('active');
     document.getElementById('screen-cartao').classList.add('active');
     renderCartao();
