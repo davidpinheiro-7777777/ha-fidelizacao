@@ -2,160 +2,180 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<base target="_top">
-<meta name="theme-color" content="#F7F5F0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Hã — Clube de Fidelização</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap">
 <style>
-/* Fix para Google Apps Script iframe */
-:root { font-size: 16px; }
-html { 
-  width: 100% !important; 
-  max-width: 100% !important;
+/* ── RESET AGRESSIVO PARA APPS SCRIPT ── */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  min-height: 100vh !important;
   overflow-x: hidden !important;
+  -webkit-text-size-adjust: 100% !important;
 }
-body { 
-  width: 100% !important; 
-  max-width: 480px !important;
-  margin: 0 auto !important;
-  overflow-x: hidden !important;
-  -webkit-text-size-adjust: 100%;
-}
-/* Garante que inputs e botões não transbordam */
-input, button { max-width: 100% !important; }
-.form-row { flex-wrap: wrap; }
-.form-row .field { min-width: 120px; }
 
 :root {
   --bg:#F7F5F0; --surface:#FFF; --surface2:#EFEFEB; --border:#E0DDD6;
   --green:#1A5C4A; --green-mid:#3DA85A; --green-light:#A8D8B0;
   --yellow:#F5C842; --text:#1A1A1A; --muted:#888;
-  --safe-top:env(safe-area-inset-top,0px); --safe-bot:env(safe-area-inset-bottom,0px);
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bot:env(safe-area-inset-bottom,0px);
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{font-size:16px}html,body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100%;overscroll-behavior:none}
-.app-wrap{width:100%;max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);overflow-x:hidden}
-.screen{display:none;flex-direction:column;min-height:100vh;padding-bottom:calc(72px + var(--safe-bot));width:100%}
-.screen.active{display:flex}
 
-/* REGISTO */
-#screen-registo{padding:calc(var(--safe-top) + 36px) 28px 40px;justify-content:flex-start}
-.reg-logo{display:flex;justify-content:center;margin-bottom:10px}
-.reg-logo img{height:80px}
-.reg-headline{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;text-align:center;color:var(--green);margin-bottom:4px}
-.reg-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:32px}
-.form-row{display:flex;gap:12px}
-.form-row .field{flex:1}
-.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-.field label{font-size:11px;color:var(--muted);font-weight:500}
-.field input{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:'Inter',sans-serif;font-size:15px;padding:13px 14px;outline:none;transition:border-color .18s;width:100%;-webkit-appearance:none}
-.field input:focus{border-color:var(--green)}
-.field input::placeholder{color:#C0BDB8}
-.btn-primary{background:var(--green);border:none;border-radius:12px;color:#fff;cursor:pointer;font-family:'Nunito',sans-serif;font-size:17px;font-weight:800;padding:16px;width:100%;margin-top:6px;transition:background .18s}
-.btn-primary:active{background:#134438}
-.btn-primary:disabled{background:#999;cursor:not-allowed}
-.reg-terms{font-size:11px;color:#BBB;text-align:center;margin-top:16px;line-height:1.7}
-.reg-error{background:#FEE;border:1px solid #FCC;border-radius:10px;color:#C00;font-size:13px;padding:12px;margin-bottom:12px;display:none}
-.reg-error.visible{display:block}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-/* CARTÃO */
-#screen-cartao{background:var(--bg);padding:0}
-.card-topbar{display:flex;align-items:center;justify-content:space-between;padding:calc(var(--safe-top) + 16px) 20px 12px}
-.card-topbar img{height:36px}
-.card-topbar-greet{font-size:13px;color:var(--muted);font-weight:500}
-.loyalty-card{margin:0 16px;background:var(--green);border-radius:22px;overflow:hidden}
-.lc-top{padding:22px 22px 0}
-.lc-top-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
-.lc-brand img{height:44px;filter:brightness(0) invert(1)}
-.lc-badge{background:var(--yellow);color:var(--green);font-family:'Nunito',sans-serif;font-size:10px;font-weight:900;padding:5px 10px;border-radius:20px}
-.lc-member{font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;color:var(--green-light);letter-spacing:1px;margin-bottom:4px}
-.lc-name{font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:20px}
-.stamps-wrap{background:rgba(0,0,0,.18);border-radius:16px 16px 0 0;padding:16px 16px 4px}
-.stamps-label{font-size:10px;font-weight:600;color:var(--green-light);letter-spacing:1.5px;margin-bottom:12px}
-.stamps-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
-.stamp{aspect-ratio:1;border-radius:10px;overflow:hidden}
-.stamp.empty{background:rgba(255,255,255,.08);border:1.5px dashed rgba(255,255,255,.25)}
-.stamp.filled{background-size:400% 200%;background-repeat:no-repeat}
-.lc-footer{background:rgba(0,0,0,.18);padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
-.lc-footer-label{font-size:12px;color:rgba(255,255,255,.55)}
-.lc-footer-count{font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;color:var(--yellow)}
-.free-meal{margin:14px 16px 0;background:var(--yellow);border-radius:16px;padding:16px 20px;display:none;align-items:center;gap:14px}
-.free-meal.visible{display:flex}
-.free-meal-icon{font-size:32px;flex-shrink:0}
-.free-meal-text strong{display:block;font-family:'Nunito',sans-serif;font-size:17px;font-weight:900;color:var(--green);margin-bottom:1px}
-.free-meal-text span{font-size:12px;color:#555}
-.scan-trigger{margin:14px 16px 0;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color .15s}
-.scan-trigger:active{border-color:var(--green)}
-.scan-trigger-icon{width:44px;height:44px;background:var(--green);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.scan-trigger-text strong{display:block;font-size:14px;font-weight:600;margin-bottom:2px}
-.scan-trigger-text span{font-size:12px;color:var(--muted)}
-.scan-trigger-arrow{margin-left:auto;color:var(--muted);font-size:20px}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  overscroll-behavior: none;
+}
 
-/* NOVIDADES */
-#screen-novidades{background:var(--bg);padding:calc(var(--safe-top) + 16px) 0 0}
-.screen-topbar{display:flex;align-items:center;gap:10px;padding:0 20px 14px}
-.screen-topbar img{height:28px}
-.screen-topbar-title{font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;color:var(--green)}
-.news-list{display:flex;flex-direction:column;gap:16px;padding:0 16px}
-.news-card{background:var(--surface);border-radius:16px;overflow:hidden;border:1px solid var(--border)}
-.news-card-img{width:100%;height:200px;object-fit:cover;display:block;background:var(--surface2)}
-.news-card-body{padding:16px}
-.news-badge{display:inline-block;background:var(--yellow);color:var(--green);font-family:'Nunito',sans-serif;font-size:10px;font-weight:900;padding:3px 8px;border-radius:4px;margin-bottom:10px}
-.news-title{font-family:'Nunito',sans-serif;font-size:20px;font-weight:900;line-height:1.2;margin-bottom:8px;color:var(--green)}
-.news-desc{font-size:13px;color:var(--muted);line-height:1.6}
-.news-empty{text-align:center;color:var(--muted);padding:40px 20px;font-size:14px}
+.screen {
+  display: none;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  padding-bottom: calc(68px + var(--safe-bot));
+}
+.screen.active { display: flex; }
 
-/* SCAN */
-#screen-scan{background:var(--bg);justify-content:center;align-items:center;padding:calc(var(--safe-top) + 24px) 28px calc(80px + var(--safe-bot));gap:28px;text-align:center}
-.scan-heading{font-family:'Nunito',sans-serif;font-size:26px;font-weight:900;color:var(--green)}
-.scan-sub{font-size:14px;color:var(--muted);line-height:1.6;max-width:280px}
-.qr-input-wrap{display:flex;flex-direction:column;gap:12px;width:100%;max-width:280px}
-.qr-input{background:var(--surface);border:2px solid var(--border);border-radius:14px;color:var(--text);font-family:'Inter',sans-serif;font-size:24px;font-weight:700;letter-spacing:6px;padding:16px;text-align:center;outline:none;width:100%;text-transform:uppercase;transition:border-color .18s}
-.qr-input:focus{border-color:var(--green)}
-.btn-scan{background:var(--green);border:none;border-radius:14px;color:#fff;cursor:pointer;font-family:'Nunito',sans-serif;font-size:17px;font-weight:800;padding:17px 44px;transition:background .18s;width:100%}
-.btn-scan:active{background:#134438}
-.btn-scan:disabled{background:#999;cursor:not-allowed}
-.scan-error{background:#FEE;border:1px solid #FCC;border-radius:10px;color:#C00;font-size:13px;padding:12px;display:none;width:100%;max-width:280px}
-.scan-error.visible{display:block}
-.scan-success{display:none;flex-direction:column;align-items:center;gap:16px}
-.scan-success.visible{display:flex}
-.scan-ok-icon{font-size:60px}
-.scan-ok-title{font-family:'Nunito',sans-serif;font-size:26px;font-weight:900;color:var(--green)}
-.scan-ok-sub{font-size:14px;color:var(--muted)}
-.btn-back{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;color:var(--text);cursor:pointer;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;padding:14px 32px;margin-top:8px}
+/* ── REGISTO ── */
+#screen-registo {
+  padding: calc(var(--safe-top) + 32px) 20px 40px;
+  background: var(--bg);
+}
+.reg-logo { display:flex; justify-content:center; margin-bottom:10px; }
+.reg-logo img { height:72px; }
+.reg-headline { font-family:'Nunito',sans-serif; font-size:20px; font-weight:800; text-align:center; color:var(--green); margin-bottom:4px; }
+.reg-sub { font-size:13px; color:var(--muted); text-align:center; margin-bottom:28px; }
+.form-row { display:flex; gap:10px; width:100%; }
+.form-row .field { flex:1; min-width:0; }
+.field { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; width:100%; }
+.field label { font-size:11px; color:var(--muted); font-weight:500; }
+.field input {
+  background:var(--surface); border:1.5px solid var(--border); border-radius:10px;
+  color:var(--text); font-family:'Inter',sans-serif; font-size:16px;
+  padding:12px 14px; outline:none; transition:border-color .18s;
+  width:100%; -webkit-appearance:none; appearance:none;
+}
+.field input:focus { border-color:var(--green); }
+.field input::placeholder { color:#C0BDB8; }
+.btn-primary {
+  background:var(--green); border:none; border-radius:10px; color:#fff;
+  cursor:pointer; font-family:'Nunito',sans-serif; font-size:17px; font-weight:800;
+  padding:15px; width:100%; margin-top:4px; transition:background .18s;
+  -webkit-appearance:none;
+}
+.btn-primary:active { background:#134438; }
+.btn-primary:disabled { background:#999; cursor:not-allowed; }
+.reg-terms { font-size:11px; color:#BBB; text-align:center; margin-top:14px; line-height:1.7; }
+.reg-error { background:#FEE; border:1px solid #FCC; border-radius:10px; color:#C00; font-size:13px; padding:12px; margin-bottom:12px; display:none; }
+.reg-error.visible { display:block; }
 
-/* NAV */
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(247,245,240,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 0 calc(8px + var(--safe-bot));z-index:100}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 0}
-.nav-icon{font-size:22px;line-height:1}
-.nav-label{font-size:10px;color:var(--muted);font-weight:600}
-.nav-item.active .nav-label{color:var(--green)}
-.nav-item:not(.active){opacity:.4}
-.nav-item.active .nav-icon{transform:scale(1.1)}
+/* ── CARTÃO ── */
+#screen-cartao { background:var(--bg); }
+.card-topbar { display:flex; align-items:center; justify-content:space-between; padding:calc(var(--safe-top) + 14px) 16px 10px; }
+.card-topbar img { height:32px; }
+.card-topbar-greet { font-size:13px; color:var(--muted); font-weight:500; }
+.loyalty-card { margin:0 12px; background:var(--green); border-radius:20px; overflow:hidden; }
+.lc-top { padding:20px 20px 0; }
+.lc-top-row { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:14px; }
+.lc-brand img { height:40px; filter:brightness(0) invert(1); }
+.lc-badge { background:var(--yellow); color:var(--green); font-family:'Nunito',sans-serif; font-size:10px; font-weight:900; padding:4px 10px; border-radius:20px; white-space:nowrap; }
+.lc-member { font-family:'Nunito',sans-serif; font-size:11px; font-weight:700; color:var(--green-light); letter-spacing:1px; margin-bottom:3px; }
+.lc-name { font-family:'Nunito',sans-serif; font-size:20px; font-weight:900; color:#fff; margin-bottom:18px; }
+.stamps-wrap { background:rgba(0,0,0,.18); border-radius:14px 14px 0 0; padding:14px 14px 4px; }
+.stamps-label { font-size:10px; font-weight:600; color:var(--green-light); letter-spacing:1.5px; margin-bottom:10px; }
+.stamps-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:7px; margin-bottom:10px; }
+.stamp { aspect-ratio:1; border-radius:9px; overflow:hidden; }
+.stamp.empty { background:rgba(255,255,255,.08); border:1.5px dashed rgba(255,255,255,.25); }
+.stamp.filled { background-size:400% 200%; background-repeat:no-repeat; }
+.lc-footer { background:rgba(0,0,0,.18); padding:11px 18px; display:flex; align-items:center; justify-content:space-between; }
+.lc-footer-label { font-size:12px; color:rgba(255,255,255,.55); }
+.lc-footer-count { font-family:'Nunito',sans-serif; font-size:22px; font-weight:900; color:var(--yellow); }
+.free-meal { margin:12px 12px 0; background:var(--yellow); border-radius:14px; padding:14px 18px; display:none; align-items:center; gap:12px; }
+.free-meal.visible { display:flex; }
+.free-meal-icon { font-size:30px; flex-shrink:0; }
+.free-meal-text strong { display:block; font-family:'Nunito',sans-serif; font-size:16px; font-weight:900; color:var(--green); margin-bottom:1px; }
+.free-meal-text span { font-size:12px; color:#555; }
+.scan-trigger { margin:12px 12px 0; background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:14px 16px; display:flex; align-items:center; gap:12px; cursor:pointer; }
+.scan-trigger:active { border-color:var(--green); }
+.scan-trigger-icon { width:42px; height:42px; background:var(--green); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.scan-trigger-text strong { display:block; font-size:14px; font-weight:600; margin-bottom:2px; }
+.scan-trigger-text span { font-size:12px; color:var(--muted); }
+.scan-trigger-arrow { margin-left:auto; color:var(--muted); font-size:20px; }
 
-/* Loading */
-.loading{display:flex;align-items:center;justify-content:center;min-height:60px;color:var(--muted);font-size:14px}
+/* ── NOVIDADES ── */
+#screen-novidades { background:var(--bg); padding:calc(var(--safe-top) + 14px) 0 0; }
+.screen-topbar { display:flex; align-items:center; gap:10px; padding:0 16px 12px; }
+.screen-topbar img { height:26px; }
+.screen-topbar-title { font-family:'Nunito',sans-serif; font-size:22px; font-weight:900; color:var(--green); }
+.news-list { display:flex; flex-direction:column; gap:14px; padding:0 12px; }
+.news-card { background:var(--surface); border-radius:14px; overflow:hidden; border:1px solid var(--border); }
+.news-card-img { width:100%; height:190px; object-fit:cover; display:block; background:var(--surface2); }
+.news-card-body { padding:14px; }
+.news-badge { display:inline-block; background:var(--yellow); color:var(--green); font-family:'Nunito',sans-serif; font-size:10px; font-weight:900; padding:3px 8px; border-radius:4px; margin-bottom:8px; }
+.news-title { font-family:'Nunito',sans-serif; font-size:19px; font-weight:900; line-height:1.2; margin-bottom:7px; color:var(--green); }
+.news-desc { font-size:13px; color:var(--muted); line-height:1.6; }
+.news-empty { text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
+.loading { display:flex; align-items:center; justify-content:center; min-height:60px; color:var(--muted); font-size:14px; }
+
+/* ── SCAN ── */
+#screen-scan { background:var(--bg); justify-content:center; align-items:center; padding:calc(var(--safe-top) + 24px) 24px calc(80px + var(--safe-bot)); gap:24px; text-align:center; }
+.scan-heading { font-family:'Nunito',sans-serif; font-size:24px; font-weight:900; color:var(--green); }
+.scan-sub { font-size:14px; color:var(--muted); line-height:1.6; max-width:100%; }
+.qr-input-wrap { display:flex; flex-direction:column; gap:12px; width:100%; }
+.qr-input { background:var(--surface); border:2px solid var(--border); border-radius:12px; color:var(--text); font-family:'Inter',sans-serif; font-size:26px; font-weight:700; letter-spacing:6px; padding:16px; text-align:center; outline:none; width:100%; text-transform:uppercase; -webkit-appearance:none; }
+.qr-input:focus { border-color:var(--green); }
+.btn-scan { background:var(--green); border:none; border-radius:12px; color:#fff; cursor:pointer; font-family:'Nunito',sans-serif; font-size:17px; font-weight:800; padding:16px; width:100%; -webkit-appearance:none; }
+.btn-scan:disabled { background:#999; }
+.scan-error { background:#FEE; border:1px solid #FCC; border-radius:10px; color:#C00; font-size:13px; padding:12px; display:none; width:100%; }
+.scan-error.visible { display:block; }
+.scan-success { display:none; flex-direction:column; align-items:center; gap:16px; }
+.scan-success.visible { display:flex; }
+.scan-ok-icon { font-size:60px; }
+.scan-ok-title { font-family:'Nunito',sans-serif; font-size:24px; font-weight:900; color:var(--green); }
+.scan-ok-sub { font-size:14px; color:var(--muted); text-align:center; }
+.btn-back { background:var(--surface); border:1.5px solid var(--border); border-radius:10px; color:var(--text); cursor:pointer; font-family:'Inter',sans-serif; font-size:14px; font-weight:500; padding:13px 32px; }
+
+/* ── NAV ── */
+.bottom-nav {
+  position:fixed; bottom:0; left:0; right:0;
+  background:rgba(247,245,240,.97);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  display:flex;
+  padding:8px 0 calc(8px + var(--safe-bot));
+  z-index:1000;
+}
+.nav-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; padding:5px 0; }
+.nav-icon { font-size:22px; line-height:1; }
+.nav-label { font-size:10px; color:var(--muted); font-weight:600; }
+.nav-item.active .nav-label { color:var(--green); }
+.nav-item:not(.active) { opacity:.4; }
 </style>
 </head>
 <body>
+
 <script>
-// Fix viewport para Google Apps Script
+// Fix para o iframe do Google Apps Script expandir a largura total
 (function() {
-  var meta = document.querySelector('meta[name="viewport"]');
-  if (meta) {
-    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-  }
-  // Força largura correcta
-  document.documentElement.style.width = '100%';
-  document.body.style.width = '100%';
-  document.body.style.maxWidth = '480px';
-  document.body.style.margin = '0 auto';
+  try {
+    // Tenta aceder ao iframe pai e expandir
+    if (window.frameElement) {
+      window.frameElement.style.width = '100%';
+      window.frameElement.style.maxWidth = '100%';
+      window.frameElement.style.minWidth = '100%';
+    }
+  } catch(e) {}
+  // Força body a 100%
+  document.documentElement.style.cssText = 'width:100%!important;overflow-x:hidden!important';
 })();
 </script>
-<div class="app-wrap">
-
 
 <!-- REGISTO -->
 <section id="screen-registo" class="screen active">
@@ -226,7 +246,7 @@ html{font-size:16px}html,body{background:var(--bg);color:var(--text);font-family
 
 <!-- SCAN -->
 <section id="screen-scan" class="screen">
-  <div id="scan-initial" style="display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;width:100%">
+  <div id="scan-initial" style="display:flex;flex-direction:column;align-items:center;gap:20px;width:100%">
     <div class="scan-heading">Registar Refeição</div>
     <div class="scan-sub">Introduz o código de 8 letras que o empregado te mostra no balcão</div>
     <div class="qr-input-wrap">
@@ -245,199 +265,134 @@ html{font-size:16px}html,body{background:var(--bg);color:var(--text);font-family
 
 <!-- NAV -->
 <nav class="bottom-nav">
-  <div class="nav-item active" onclick="goTo('cartao')"><div class="nav-icon">🎫</div><div class="nav-label">Cartão</div></div>
-  <div class="nav-item" onclick="goTo('novidades')"><div class="nav-icon">✨</div><div class="nav-label">Novidades</div></div>
+  <div class="nav-item active" onclick="goTo('cartao')"><div class="nav-label">O MEU CARTÃO</div></div>
+  <div class="nav-item" onclick="goTo('novidades')"><div class="nav-label">NOVIDADES</div></div>
 </nav>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────
-const API_URL = 'https://script.google.com/macros/s/AKfycby-DIRvkbbIJAPGhojyPcLeIqeEDsso2LexcecM04DLJI40_phxsMXLUjC28PF3f767/exec'; // substituído pelo Apps Script
-
-// ── ESTADO ───────────────────────────────────────────────
-const state = { id: null, nome: '', apelido: '', visitas: 0 };
-const NAV_MAP = { cartao: 0, novidades: 1 };
+const API_URL = 'https://script.google.com/macros/s/AKfycby-DIRvkbbIJAPGhojyPcLeIqeEDsso2LexcecM04DLJI40_phxsMXLUjC28PF3f767/exec';
 const MURAL_URL = 'https://ha-restaurante.com/wp-content/uploads/2024/05/mural.jpg';
+const STAMP_POS = ['0% 0%','33.3% 0%','66.6% 0%','100% 0%','0% 100%','33.3% 100%','66.6% 100%','100% 100%'];
+const state = { id:null, nome:'', apelido:'', visitas:0 };
+const NAV_MAP = { cartao:0, novidades:1 };
 
-// Posições dos 8 quadrados do mural (4 colunas × 2 linhas)
-const STAMP_POS = [
-  '0% 0%','33.3% 0%','66.6% 0%','100% 0%',
-  '0% 100%','33.3% 100%','66.6% 100%','100% 100%'
-];
+function saveLocal() { try { localStorage.setItem('ha_c', JSON.stringify({id:state.id,nome:state.nome,apelido:state.apelido})); } catch(e){} }
+function loadLocal() { try { return JSON.parse(localStorage.getItem('ha_c')||'null'); } catch(e){ return null; } }
 
-// ── STORAGE ──────────────────────────────────────────────
-function saveLocal() {
-  try { localStorage.setItem('ha_cliente', JSON.stringify({ id: state.id, nome: state.nome, apelido: state.apelido })); } catch(e) {}
-}
-function loadLocal() {
-  try { return JSON.parse(localStorage.getItem('ha_cliente') || 'null'); } catch(e) { return null; }
-}
-
-// ── API ──────────────────────────────────────────────────
 async function api(params) {
   const body = new URLSearchParams(params);
-  const res = await fetch(API_URL, { method: 'POST', body });
+  const res = await fetch(API_URL, {method:'POST', body});
   return res.json();
 }
 
-// ── NAVEGAÇÃO ────────────────────────────────────────────
 function goTo(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach((el, i) => el.classList.toggle('active', i === (NAV_MAP[id] ?? -1)));
-  if (id === 'cartao') renderCartao();
-  if (id === 'novidades') carregarNovidades();
+  document.getElementById('screen-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach((el,i) => el.classList.toggle('active', i===(NAV_MAP[id]??-1)));
+  if (id==='cartao') renderCartao();
+  if (id==='novidades') carregarNovidades();
 }
 
-// ── REGISTO ──────────────────────────────────────────────
 async function registar() {
-  const nome = document.getElementById('f-nome').value.trim();
-  const apelido = document.getElementById('f-apelido').value.trim();
-  const tel = document.getElementById('f-tel').value.trim();
-  const email = document.getElementById('f-email').value.trim();
-  const nasc = document.getElementById('f-nasc').value;
-
-  const errEl = document.getElementById('reg-error');
+  const nome=document.getElementById('f-nome').value.trim();
+  const apelido=document.getElementById('f-apelido').value.trim();
+  const tel=document.getElementById('f-tel').value.trim();
+  const email=document.getElementById('f-email').value.trim();
+  const nasc=document.getElementById('f-nasc').value;
+  const errEl=document.getElementById('reg-error');
   errEl.classList.remove('visible');
-
-  if (!nome || !apelido || !tel || !email || !nasc) {
-    errEl.textContent = 'Preenche todos os campos para continuares.';
-    errEl.classList.add('visible');
-    return;
-  }
-
-  const btn = document.getElementById('btn-registar');
-  btn.disabled = true; btn.textContent = 'A registar...';
-
+  if (!nome||!apelido||!tel||!email||!nasc) { errEl.textContent='Preenche todos os campos para continuares.'; errEl.classList.add('visible'); return; }
+  const btn=document.getElementById('btn-registar');
+  btn.disabled=true; btn.textContent='A registar...';
   try {
-    const res = await api({ action: 'registar', nome, apelido, telefone: tel, email, nascimento: nasc });
+    const res=await api({action:'registar',nome,apelido,telefone:tel,email,nascimento:nasc});
     if (res.ok) {
-      state.id = res.id; state.nome = res.nome; state.apelido = res.apelido; state.visitas = res.visitas;
+      state.id=res.id; state.nome=res.nome; state.apelido=res.apelido; state.visitas=res.visitas;
       saveLocal();
       document.getElementById('screen-registo').classList.remove('active');
       goTo('cartao');
-    } else {
-      errEl.textContent = res.erro || 'Erro ao registar. Tenta novamente.';
-      errEl.classList.add('visible');
-    }
-  } catch(e) {
-    errEl.textContent = 'Sem ligação. Verifica a internet e tenta novamente.';
-    errEl.classList.add('visible');
-  }
-  btn.disabled = false; btn.textContent = 'Entrar no Clube';
+    } else { errEl.textContent=res.erro||'Erro ao registar.'; errEl.classList.add('visible'); }
+  } catch(e) { errEl.textContent='Sem ligação. Verifica a internet.'; errEl.classList.add('visible'); }
+  btn.disabled=false; btn.textContent='Entrar no Clube';
 }
 
-// ── CARTÃO ───────────────────────────────────────────────
 function renderCartao() {
-  document.getElementById('greeting').textContent = 'Olá, ' + state.nome;
-  document.getElementById('card-name').textContent = state.nome + ' ' + state.apelido;
-  document.getElementById('progress-count').textContent = state.visitas + ' / 10';
-
-  const grid = document.getElementById('stamps-grid');
-  grid.innerHTML = '';
-  for (let i = 0; i < 10; i++) {
-    const s = document.createElement('div');
-    if (i < state.visitas) {
-      s.className = 'stamp filled';
-      s.style.backgroundImage = "url('" + MURAL_URL + "')";
-      s.style.backgroundSize = '400% 200%';
-      s.style.backgroundPosition = STAMP_POS[i % 8];
-    } else {
-      s.className = 'stamp empty';
-    }
+  document.getElementById('greeting').textContent='Olá, '+state.nome;
+  document.getElementById('card-name').textContent=state.nome+' '+state.apelido;
+  document.getElementById('progress-count').textContent=state.visitas+' / 10';
+  const grid=document.getElementById('stamps-grid');
+  grid.innerHTML='';
+  for (let i=0;i<10;i++) {
+    const s=document.createElement('div');
+    if (i<state.visitas) {
+      s.className='stamp filled';
+      s.style.backgroundImage="url('"+MURAL_URL+"')";
+      s.style.backgroundSize='400% 200%';
+      s.style.backgroundPosition=STAMP_POS[i%8];
+    } else { s.className='stamp empty'; }
     grid.appendChild(s);
   }
-  document.getElementById('free-meal').classList.toggle('visible', state.visitas >= 10);
+  document.getElementById('free-meal').classList.toggle('visible',state.visitas>=10);
 }
 
-// ── NOVIDADES ────────────────────────────────────────────
 async function carregarNovidades() {
-  const lista = document.getElementById('news-list');
-  lista.innerHTML = '<div class="loading">A carregar...</div>';
+  const lista=document.getElementById('news-list');
+  lista.innerHTML='<div class="loading">A carregar...</div>';
   try {
-    const res = await api({ action: 'novidades' });
-    if (res.ok && res.novidades.length > 0) {
-      lista.innerHTML = res.novidades.map(n => `
+    const res=await api({action:'novidades'});
+    if (res.ok&&res.novidades.length>0) {
+      lista.innerHTML=res.novidades.map(n=>`
         <div class="news-card">
-          ${n.foto ? `<img class="news-card-img" src="${n.foto}" alt="${n.titulo}" loading="lazy">` : ''}
+          ${n.foto?`<img class="news-card-img" src="${n.foto}" alt="${n.titulo}" loading="lazy">`:''}
           <div class="news-card-body">
             <span class="news-badge">${n.data}</span>
             <div class="news-title">${n.titulo}</div>
             <div class="news-desc">${n.descricao}</div>
           </div>
         </div>`).join('');
-    } else {
-      lista.innerHTML = '<div class="news-empty">Sem novidades de momento.<br>Volta em breve! 🍔</div>';
-    }
-  } catch(e) {
-    lista.innerHTML = '<div class="news-empty">Sem ligação. Tenta mais tarde.</div>';
-  }
+    } else { lista.innerHTML='<div class="news-empty">Sem novidades de momento.<br>Volta em breve! 🍔</div>'; }
+  } catch(e) { lista.innerHTML='<div class="news-empty">Sem ligação. Tenta mais tarde.</div>'; }
 }
 
-// ── SCAN ─────────────────────────────────────────────────
 async function submeterScan() {
-  const qr = document.getElementById('qr-input').value.trim().toUpperCase();
-  const errEl = document.getElementById('scan-error');
+  const qr=document.getElementById('qr-input').value.trim().toUpperCase();
+  const errEl=document.getElementById('scan-error');
   errEl.classList.remove('visible');
-
-  if (qr.length < 4) {
-    errEl.textContent = 'Introduz o código completo.';
-    errEl.classList.add('visible');
-    return;
-  }
-
-  const btn = document.getElementById('btn-scan');
-  btn.disabled = true; btn.textContent = 'A validar...';
-
+  if (qr.length<4) { errEl.textContent='Introduz o código completo.'; errEl.classList.add('visible'); return; }
+  const btn=document.getElementById('btn-scan');
+  btn.disabled=true; btn.textContent='A validar...';
   try {
-    const res = await api({ action: 'scan', qr, id: state.id });
+    const res=await api({action:'scan',qr,id:state.id});
     if (res.ok) {
-      state.visitas = res.visitas;
-      saveLocal();
-      document.getElementById('scan-initial').style.display = 'none';
-      if (res.refeicaoGratis) {
-        document.getElementById('scan-ok-icon').textContent = '🎉';
-        document.getElementById('scan-ok-title').textContent = 'Refeição grátis!';
-      } else {
-        document.getElementById('scan-ok-icon').textContent = '✅';
-        document.getElementById('scan-ok-title').textContent = 'Refeição registada!';
-      }
-      document.getElementById('scan-ok-sub').textContent = res.mensagem;
+      state.visitas=res.visitas; saveLocal();
+      document.getElementById('scan-initial').style.display='none';
+      document.getElementById('scan-ok-icon').textContent=res.refeicaoGratis?'🎉':'✅';
+      document.getElementById('scan-ok-title').textContent=res.refeicaoGratis?'Refeição grátis!':'Refeição registada!';
+      document.getElementById('scan-ok-sub').textContent=res.mensagem;
       document.getElementById('scan-success').classList.add('visible');
-    } else {
-      errEl.textContent = res.erro || 'Código inválido. Pede ao empregado o código do dia.';
-      errEl.classList.add('visible');
-    }
-  } catch(e) {
-    errEl.textContent = 'Sem ligação. Verifica a internet.';
-    errEl.classList.add('visible');
-  }
-  btn.disabled = false; btn.textContent = 'Confirmar';
+    } else { errEl.textContent=res.erro||'Código inválido.'; errEl.classList.add('visible'); }
+  } catch(e) { errEl.textContent='Sem ligação. Verifica a internet.'; errEl.classList.add('visible'); }
+  btn.disabled=false; btn.textContent='Confirmar';
 }
 
 function voltarCartao() {
-  document.getElementById('scan-initial').style.display = '';
+  document.getElementById('scan-initial').style.display='';
   document.getElementById('scan-success').classList.remove('visible');
-  document.getElementById('qr-input').value = '';
+  document.getElementById('qr-input').value='';
   document.getElementById('scan-error').classList.remove('visible');
   goTo('cartao');
 }
 
-// ── INIT ─────────────────────────────────────────────────
 (function init() {
-  const saved = loadLocal();
-  if (saved && saved.id) {
-    state.id = saved.id; state.nome = saved.nome; state.apelido = saved.apelido;
-    // Vai buscar visitas actualizadas ao servidor
-    api({ action: 'cliente', id: saved.id }).then(res => {
-      if (res.ok) { state.visitas = res.visitas; renderCartao(); }
-    }).catch(() => {});
+  const saved=loadLocal();
+  if (saved&&saved.id) {
+    state.id=saved.id; state.nome=saved.nome; state.apelido=saved.apelido;
+    api({action:'cliente',id:saved.id}).then(res=>{ if(res.ok){state.visitas=res.visitas;renderCartao();} }).catch(()=>{});
     document.getElementById('screen-registo').classList.remove('active');
     document.getElementById('screen-cartao').classList.add('active');
     renderCartao();
   }
 })();
 </script>
-</div>
-</div>
 </body>
 </html>
