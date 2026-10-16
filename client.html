@@ -51,7 +51,8 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 .loyalty-card { margin: 0 16px; background: var(--green); border-radius: 20px; overflow: hidden; width: calc(100% - 32px); }
 .lc-head { padding: 20px 20px 0; }
 .lc-row1 { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
-.lc-row1 img { height: 40px; filter: brightness(0) invert(1); }
+.lc-row1 img { height: 32px; filter: brightness(0) invert(1); }
+.lc-logo-wrap { width: 48px; height: 48px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 .lc-badge { background: var(--yellow); color: var(--green); font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 900; padding: 5px 10px; border-radius: 20px; white-space: nowrap; }
 .lc-member { font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 700; color: var(--green-light); letter-spacing: 1.5px; margin-bottom: 4px; }
 .lc-name { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; color: #fff; margin-bottom: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -166,7 +167,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
   <div class="loyalty-card">
     <div class="lc-head">
       <div class="lc-row1">
-        <img src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã">
+        <div class="lc-logo-wrap"><img src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã"></div>
         <div class="lc-badge">CLUBE HÃ</div>
       </div>
       <div class="lc-member">MEMBRO</div>
