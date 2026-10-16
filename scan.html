@@ -103,9 +103,12 @@ async function post(p) {
 function renderStamps(visitas, novaVisita) {
   let html = '<div class="stamps"><div class="stamps-label">REFEIÇÕES ACUMULADAS</div><div class="stamps-grid">';
   for (let i = 0; i < 10; i++) {
-    if (i < visitas - 1) html += '<div class="stamp filled"></div>';
-    else if (i === visitas - 1 && novaVisita) html += '<div class="stamp new"></div>';
-    else if (i < visitas) html += '<div class="stamp filled"></div>';
+    const logoHtml = '<img src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" style="width:80%;height:80%;object-fit:contain;filter:brightness(0) invert(1)">';
+    const sF = '<div class="stamp filled" style="display:flex;align-items:center;justify-content:center;padding:3px">' + logoHtml + '</div>';
+    const sN = '<div class="stamp new" style="display:flex;align-items:center;justify-content:center;padding:3px">' + logoHtml + '</div>';
+    if (i < visitas - 1) html += sF;
+    else if (i === visitas - 1 && novaVisita) html += sN;
+    else if (i < visitas) html += sF;
     else html += '<div class="stamp empty"></div>';
   }
   html += `</div><div class="progress">Tens <span>${visitas} de 10</span> refeições</div></div>`;
