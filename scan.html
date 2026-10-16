@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Hã — Registar Refeição</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500&display=swap">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; min-height: 100vh;
+  background: #F7F5F0;
+  color: #1A1A1A;
+  font-family: 'Inter', sans-serif;
+  display: flex; align-items: center; justify-content: center;
+  padding: 32px 24px;
+  -webkit-text-size-adjust: 100%;
+}
+.card {
+  width: 100%; max-width: 360px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-align: center;
+  border: 1px solid #E0DDD6;
+}
+.logo { height: 60px; margin-bottom: 20px; }
+.icon { font-size: 64px; margin-bottom: 16px; }
+.title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  color: #1A5C4A;
+  margin-bottom: 8px;
+}
+.sub { font-size: 14px; color: #999; line-height: 1.6; margin-bottom: 24px; }
+.stamps {
+  background: #1A5C4A;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+.stamps-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #A8D8B0;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+.stamps-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+.stamp {
+  aspect-ratio: 1;
+  border-radius: 6px;
+}
+.stamp.empty { background: rgba(255,255,255,.1); border: 1.5px dashed rgba(255,255,255,.2); }
+.stamp.filled { background: #F5C842; }
+.stamp.new { background: #F5C842; box-shadow: 0 0 8px rgba(245,200,66,.6); }
+.progress {
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,.6);
+  margin-top: 10px;
+}
+.progress span { color: #F5C842; }
+.btn {
+  width: 100%;
+  background: #1A5C4A;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 15px;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+}
+.btn:active { background: #134438; }
+.loading { color: #999; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <img class="logo" src="https://ha-restaurante.com/wp-content/uploads/2025/01/ha-logo-big.png" alt="Hã">
+  <div id="content"><div class="loading">A registar...</div></div>
+</div>
+
+<script>
+const API = 'https://ha-proxy.oxy-agency.workers.dev';
+const MURAL = 'https://ha-restaurante.com/wp-content/uploads/2024/05/mural.jpg';
+
+async function post(p) {
+  const r = await fetch(API + '?' + new URLSearchParams(p).toString());
+  return r.json();
+}
+
+function renderStamps(visitas, novaVisita) {
+  let html = '<div class="stamps"><div class="stamps-label">REFEIÇÕES ACUMULADAS</div><div class="stamps-grid">';
+  for (let i = 0; i < 10; i++) {
+    if (i < visitas - 1) html += '<div class="stamp filled"></div>';
+    else if (i === visitas - 1 && novaVisita) html += '<div class="stamp new"></div>';
+    else if (i < visitas) html += '<div class="stamp filled"></div>';
+    else html += '<div class="stamp empty"></div>';
+  }
+  html += `</div><div class="progress">Tens <span>${visitas} de 10</span> refeições</div></div>`;
+  return html;
+}
+
+async function init() {
+  // Lê o código do URL
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+
+  if (!code) {
+    document.getElementById('content').innerHTML = `
+      <div class="icon">❌</div>
+      <div class="title">QR code inválido</div>
+      <div class="sub">Este QR code não é válido. Pede ao empregado que mostre um código actualizado.</div>`;
+    return;
+  }
+
+  // Vai buscar o cliente do localStorage
+  let cliente = null;
+  try { cliente = JSON.parse(localStorage.getItem('ha') || 'null'); } catch(e) {}
+
+  if (!cliente || !cliente.id) {
+    // Não está registado — redireciona para a app para fazer login
+    document.getElementById('content').innerHTML = `
+      <div class="icon">👋</div>
+      <div class="title">Ainda não tens conta</div>
+      <div class="sub">Para registares a refeição precisas de te registar primeiro no Clube Hã.</div>
+      <a href="https://davidpinheiro-7777777.github.io/ha-fidelizacao/client.html" class="btn" style="margin-top:8px">Registar-me no Clube</a>`;
+    return;
+  }
+
+  // Regista a visita
+  try {
+    const res = await post({ action: 'scan', qr: code, id: cliente.id });
+
+    if (res.ok) {
+      // Actualiza o localStorage
+      localStorage.setItem('ha', JSON.stringify({ ...cliente }));
+
+      if (res.refeicaoGratis) {
+        document.getElementById('content').innerHTML = `
+          <div class="icon">🎉</div>
+          <div class="title">Refeição grátis!</div>
+          <div class="sub">Parabéns! Chegaste às 10 refeições. Mostra este ecrã ao balcão.</div>
+          <a href="https://davidpinheiro-7777777.github.io/ha-fidelizacao/client.html" class="btn">Ver o meu cartão</a>`;
+      } else {
+        document.getElementById('content').innerHTML = `
+          <div class="icon">✅</div>
+          <div class="title">Refeição registada!</div>
+          ${renderStamps(res.visitas, true)}
+          <a href="https://davidpinheiro-7777777.github.io/ha-fidelizacao/client.html" class="btn">Ver o meu cartão</a>`;
+      }
+    } else {
+      document.getElementById('content').innerHTML = `
+        <div class="icon">❌</div>
+        <div class="title">Código inválido</div>
+        <div class="sub">${res.erro || 'Este código já expirou ou não é válido. Pede ao empregado o código do dia.'}</div>
+        <a href="https://davidpinheiro-7777777.github.io/ha-fidelizacao/client.html" class="btn" style="margin-top:8px">Voltar à app</a>`;
+    }
+  } catch(e) {
+    document.getElementById('content').innerHTML = `
+      <div class="icon">⚠️</div>
+      <div class="title">Sem ligação</div>
+      <div class="sub">Verifica a internet e tenta novamente.</div>
+      <button onclick="init()" class="btn" style="margin-top:8px">Tentar novamente</button>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>

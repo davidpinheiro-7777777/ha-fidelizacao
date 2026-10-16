@@ -163,8 +163,9 @@ async function carregarQR() {
 
 function gerarQRCode(codigo) {
   document.getElementById('qr-code').innerHTML = '';
+  const url = 'https://davidpinheiro-7777777.github.io/ha-fidelizacao/scan.html?code=' + codigo;
   new QRCode(document.getElementById('qr-code'), {
-    text: codigo,
+    text: url,
     width: 200,
     height: 200,
     colorDark: '#1A5C4A',
