@@ -244,7 +244,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 </div>
 
 <script>
-const API = 'https://script.google.com/macros/s/AKfycbwlRiz6vFIwSoF-u18NokDyt0NMj9PuxAKQqcul-mhpLrrCZOFvkOaNuPbTn9JJreBw/exec';
+const API = 'https://ha-proxy.oxy-agency.workers.dev';
 const MURAL = 'https://ha-restaurante.com/wp-content/uploads/2024/05/mural.jpg';
 const STAMP_POS = ['0% 0%','33.3% 0%','66.6% 0%','100% 0%','0% 100%','33.3% 100%','66.6% 100%','100% 100%'];
 const NAV = { cartao: 0, novidades: 1 };
@@ -256,22 +256,10 @@ let scanProcessing = false;
 
 function save() { try { localStorage.setItem('ha', JSON.stringify({ id: S.id, nome: S.nome, apelido: S.apelido })); } catch(e){} }
 function load() { try { return JSON.parse(localStorage.getItem('ha') || 'null'); } catch(e){ return null; } }
-function post(p) {
-  return new Promise((resolve, reject) => {
-    const cb = 'cb_' + Date.now();
-    const params = new URLSearchParams(p);
-    params.set('callback', cb);
-    const script = document.createElement('script');
-    script.src = API + '?' + params.toString();
-    window[cb] = function(data) {
-      delete window[cb];
-      document.head.removeChild(script);
-      resolve(data);
-    };
-    script.onerror = () => reject(new Error('Erro de rede'));
-    setTimeout(() => { if (window[cb]) { delete window[cb]; reject(new Error('Timeout')); } }, 15000);
-    document.head.appendChild(script);
-  });
+async function post(p) {
+  const params = new URLSearchParams(p);
+  const r = await fetch(API + '?' + params.toString());
+  return r.json();
 }
 
 function goTo(id) {

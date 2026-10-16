@@ -127,7 +127,7 @@ html, body {
 
 <script>
 const PIN = '1234'; // ← muda para o PIN da equipa
-const API = 'https://script.google.com/macros/s/AKfycbwlRiz6vFIwSoF-u18NokDyt0NMj9PuxAKQqcul-mhpLrrCZOFvkOaNuPbTn9JJreBw/exec';
+const API = 'https://ha-proxy.oxy-agency.workers.dev';
 
 document.getElementById('pin-input').addEventListener('keyup', e => {
   if (e.key === 'Enter') verificarPin();
@@ -148,14 +148,8 @@ function verificarPin() {
 
 async function carregarQR() {
   try {
-    const data = await new Promise((resolve, reject) => {
-      const cb = 'staffcb_' + Date.now();
-      const script = document.createElement('script');
-      script.src = API + '?action=qrcode&callback=' + cb;
-      window[cb] = function(d) { delete window[cb]; document.head.removeChild(script); resolve(d); };
-      script.onerror = () => reject(new Error('Erro'));
-      document.head.appendChild(script);
-    });
+    const res = await fetch(API + '?action=qrcode');
+    const data = await res.json();
     if (data.ok && data.qr) {
       gerarQRCode(data.qr);
     } else {
