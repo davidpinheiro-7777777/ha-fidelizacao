@@ -122,6 +122,12 @@ html, body {
 }
 .field input:focus { border-color: var(--green); }
 .field input::placeholder { color: #C8C5C0; }
+input[type="date"] { color: var(--text) !important; min-height: 50px; }
+input[type="date"]::-webkit-datetime-edit { color: var(--text); }
+input[type="date"]::-webkit-datetime-edit-fields-wrapper { color: var(--text); }
+input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height: 24px; }
+.field input[type="date"] { color: var(--text); }
+.field input[type="date"]:not(:valid) { color: #C8C5C0; }
 
 .btn-main {
   width: 100%;
@@ -508,6 +514,38 @@ html, body {
 /* Loading */
 .loading { padding: 32px; text-align: center; color: var(--muted); font-size: 14px; }
 </style>
+
+<style>
+/* FORÇA LARGURA TOTAL NO IFRAME DO APPS SCRIPT */
+html, body, .app {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+}
+</style>
+<script>
+// Força o iframe do Apps Script a expandir para largura total
+try {
+  // Tenta redimensionar o iframe pai
+  if (window.frameElement) {
+    window.frameElement.style.width = '100%';
+    window.frameElement.style.minWidth = '100%';
+    window.frameElement.style.maxWidth = '100%';
+    window.frameElement.style.border = 'none';
+  }
+} catch(e) {}
+
+// Força o body a ocupar toda a largura disponível
+document.addEventListener('DOMContentLoaded', function() {
+  document.documentElement.style.cssText = 'width:100%!important;min-width:100%!important';
+  document.body.style.cssText = 'width:100%!important;min-width:100%!important;margin:0!important;padding:0!important';
+  var app = document.querySelector('.app');
+  if (app) {
+    app.style.cssText = 'width:100%!important;min-width:100%!important;max-width:100%!important';
+  }
+});
+</script>
+
 </head>
 <body>
 <div class="app">
@@ -526,7 +564,7 @@ html, body {
   </div>
   <div class="field"><label>Telemóvel</label><input type="tel" id="f-tel" placeholder="9XX XXX XXX" autocomplete="tel"></div>
   <div class="field"><label>Email</label><input type="email" id="f-email" placeholder="joao@email.com" autocomplete="email"></div>
-  <div class="field"><label>Data de Nascimento</label><input type="date" id="f-nasc" autocomplete="bday"></div>
+  <div class="field"><label>Data de Nascimento</label><input type="date" id="f-nasc" autocomplete="bday" style="color:var(--text);min-height:50px"></div>
   <button class="btn-main" id="btn-reg" onclick="registar()">Entrar no Clube</button>
   <p class="reg-terms">Os teus dados são usados exclusivamente<br>para o programa de fidelização do Hã.</p>
 </section>
