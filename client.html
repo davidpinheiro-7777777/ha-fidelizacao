@@ -258,9 +258,9 @@ async function post(p) {
 }
 
 function goTo(id) {
-  if (id !== 'scan') fecharCamera();
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
+  const screen = document.getElementById('screen-' + id);
+  if (screen) screen.classList.add('active');
   document.querySelectorAll('.nav-item').forEach((el, i) => el.classList.toggle('active', i === (NAV[id] ?? -1)));
   if (id === 'cartao') renderCartao();
   if (id === 'novidades') loadNovidades();
