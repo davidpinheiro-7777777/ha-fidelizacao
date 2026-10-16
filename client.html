@@ -256,10 +256,22 @@ let scanProcessing = false;
 
 function save() { try { localStorage.setItem('ha', JSON.stringify({ id: S.id, nome: S.nome, apelido: S.apelido })); } catch(e){} }
 function load() { try { return JSON.parse(localStorage.getItem('ha') || 'null'); } catch(e){ return null; } }
-async function post(p) {
-  const params = new URLSearchParams(p);
-  const r = await fetch(API + '?' + params.toString());
-  return r.json();
+function post(p) {
+  return new Promise((resolve, reject) => {
+    const cb = 'cb_' + Date.now();
+    const params = new URLSearchParams(p);
+    params.set('callback', cb);
+    const script = document.createElement('script');
+    script.src = API + '?' + params.toString();
+    window[cb] = function(data) {
+      delete window[cb];
+      document.head.removeChild(script);
+      resolve(data);
+    };
+    script.onerror = () => reject(new Error('Erro de rede'));
+    setTimeout(() => { if (window[cb]) { delete window[cb]; reject(new Error('Timeout')); } }, 15000);
+    document.head.appendChild(script);
+  });
 }
 
 function goTo(id) {
