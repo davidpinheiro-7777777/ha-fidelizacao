@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#1A5C4A">
 <title>Hã — Staff</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500&display=swap">
@@ -18,154 +17,81 @@ html, body {
   display: flex; align-items: center; justify-content: center;
   text-align: center;
   padding: 32px 24px;
-  -webkit-text-size-adjust: 100%;
 }
-
-.wrap { width: 100%; max-width: 360px; display: flex; flex-direction: column; align-items: center; gap: 0; }
-
+.wrap { width: 100%; max-width: 360px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.logo { height: 52px; filter: brightness(0) invert(1); }
+.label { font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,.5); }
+.qr-card { background: #fff; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; max-width: 280px; }
+#qr-code canvas, #qr-code img { width: 200px !important; height: 200px !important; }
+.code-text { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: #1A5C4A; letter-spacing: 4px; }
+.validity { font-size: 13px; color: rgba(255,255,255,.55); }
+.countdown { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 800; background: rgba(0,0,0,.2); border-radius: 12px; padding: 10px 24px; }
+.countdown span { color: #F5C842; }
 /* PIN */
 #pin-screen { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
-.logo { height: 56px; filter: brightness(0) invert(1); margin-bottom: 4px; }
+#code-screen { display: none; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
 .pin-title { font-family: 'Nunito', sans-serif; font-size: 24px; font-weight: 900; }
 .pin-sub { font-size: 13px; color: rgba(255,255,255,.6); }
-.pin-input {
-  width: 160px;
-  background: rgba(0,0,0,.25);
-  border: 2px solid rgba(255,255,255,.2);
-  border-radius: 14px;
-  color: #fff;
-  font-family: 'Nunito', sans-serif;
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: 8px;
-  padding: 14px;
-  text-align: center;
-  outline: none;
-  -webkit-text-security: disc;
-  -webkit-appearance: none;
-}
+.pin-input { width: 160px; background: rgba(0,0,0,.25); border: 2px solid rgba(255,255,255,.2); border-radius: 14px; color: #fff; font-family: 'Nunito', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: 8px; padding: 14px; text-align: center; outline: none; -webkit-text-security: disc; -webkit-appearance: none; }
 .pin-input:focus { border-color: #F5C842; }
 .pin-error { color: #FCA; font-size: 13px; display: none; }
 .pin-error.show { display: block; }
-.btn-pin {
-  background: #F5C842;
-  border: none;
-  border-radius: 12px;
-  color: #1A5C4A;
-  font-family: 'Nunito', sans-serif;
-  font-size: 17px;
-  font-weight: 900;
-  padding: 15px 48px;
-  cursor: pointer;
-}
-.btn-pin:active { opacity: .85; }
-
-/* CÓDIGO */
-#code-screen { display: none; flex-direction: column; align-items: center; gap: 0; width: 100%; }
-.code-logo { height: 48px; filter: brightness(0) invert(1); margin-bottom: 6px; }
-.code-label { font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,.5); margin-bottom: 24px; }
-
-.qr-card {
-  background: #fff;
-  border-radius: 20px;
-  padding: 24px;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  max-width: 280px;
-}
-#qr-code canvas, #qr-code img { width: 200px !important; height: 200px !important; }
-.qr-hint { font-size: 12px; color: #888; }
-
-.validity {
-  font-size: 13px;
-  color: rgba(255,255,255,.55);
-  margin-bottom: 8px;
-}
-.validity span { color: #F5C842; }
-
-.countdown {
-  font-family: 'Nunito', sans-serif;
-  font-size: 20px;
-  font-weight: 800;
-  background: rgba(0,0,0,.2);
-  border-radius: 12px;
-  padding: 10px 24px;
-}
-.countdown span { color: #F5C842; }
+.btn-pin { background: #F5C842; border: none; border-radius: 12px; color: #1A5C4A; font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 900; padding: 15px 48px; cursor: pointer; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- PIN -->
   <div id="pin-screen">
     <img class="logo" src="https://davidpinheiro-7777777.github.io/ha-fidelizacao/logo.png" alt="Hã">
     <div class="pin-title">Área de Staff</div>
     <div class="pin-sub">Introduz o PIN para aceder</div>
     <input class="pin-input" type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="····">
     <div class="pin-error" id="pin-error">PIN incorrecto. Tenta novamente.</div>
-    <button class="btn-pin" onclick="verificarPin()">Entrar</button>
+    <button class="btn-pin" id="btn-pin">Entrar</button>
   </div>
 
-  <!-- CÓDIGO QR -->
   <div id="code-screen">
-    <img class="code-logo" src="https://davidpinheiro-7777777.github.io/ha-fidelizacao/logo.png" alt="Hã">
-    <div class="code-label">MOSTRA ESTE QR CODE AO CLIENTE</div>
+    <img class="logo" src="https://davidpinheiro-7777777.github.io/ha-fidelizacao/logo.png" alt="Hã">
+    <div class="label">MOSTRA ESTE QR CODE AO CLIENTE</div>
     <div class="qr-card">
       <div id="qr-code"></div>
-      <div id="code-debug" style="font-family:monospace;font-size:18px;font-weight:700;color:#1A5C4A;letter-spacing:4px;margin-top:8px"></div>
+      <div class="code-text" id="code-text"></div>
     </div>
-    <div class="validity">Válido até à <span>meia-noite</span> de hoje</div>
+    <div class="validity">Válido até à <span style="color:#F5C842">meia-noite</span> de hoje</div>
     <div class="countdown">Expira em <span id="countdown">--:--:--</span></div>
   </div>
 
 </div>
 
 <script>
-const PIN = '1234'; // ← muda para o PIN da equipa
-const API = 'https://ha-proxy.oxy-agency.workers.dev';
+var PIN = '1234';
 
-document.getElementById('pin-input').addEventListener('keyup', e => {
-  if (e.key === 'Enter') verificarPin();
-});
-
-function verificarPin() {
-  const pin = document.getElementById('pin-input').value;
-  if (pin === PIN) {
-    document.getElementById('pin-screen').style.display = 'none';
-    document.getElementById('code-screen').style.display = 'flex';
-    carregarQR();
-    iniciarCountdown();
-  } else {
-    document.getElementById('pin-error').classList.add('show');
-    document.getElementById('pin-input').value = '';
+function gerarCodigo() {
+  var SECRET = 'HA-CARNAXIDE-2024';
+  var now = new Date();
+  var y = now.getFullYear().toString();
+  var m = now.getMonth() + 1;
+  if (m < 10) m = '0' + m; else m = '' + m;
+  var day = now.getDate();
+  if (day < 10) day = '0' + day; else day = '' + day;
+  var str = y + m + day + SECRET;
+  var h = 0;
+  for (var i = 0; i < str.length; i++) {
+    h = h * 31 + str.charCodeAt(i);
+    // Mantém em 32-bit sem Math.imul
+    if (h > 2147483647) h = h % 4294967296;
+    if (h < 0) h += 4294967296;
   }
+  var hex = Math.floor(h % 4294967296).toString(16);
+  while (hex.length < 8) hex = '0' + hex;
+  return hex.toUpperCase();
 }
 
-function carregarQR() {
-  const SECRET = 'HA-CARNAXIDE-2024';
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const str = '' + y + m + day + SECRET;
-  // Hash simples sem Math.imul
-  let h = 0;
-  for (let i = 0; i < str.length; i++) {
-    h = ((h * 31) + str.charCodeAt(i)) % 4294967296;
-  }
-  const codigo = Math.floor(h).toString(16).padStart(8, '0').toUpperCase();
-  document.getElementById('code-debug').textContent = codigo;
-  gerarQRCode(codigo);
-}
-
-function gerarQRCode(codigo) {
+function mostrarQR(codigo) {
+  document.getElementById('code-text').textContent = codigo;
   document.getElementById('qr-code').innerHTML = '';
-  const url = 'https://davidpinheiro-7777777.github.io/ha-fidelizacao/scan.html?code=' + codigo;
+  var url = 'https://davidpinheiro-7777777.github.io/ha-fidelizacao/scan.html?code=' + codigo;
   new QRCode(document.getElementById('qr-code'), {
     text: url,
     width: 200,
@@ -174,25 +100,44 @@ function gerarQRCode(codigo) {
     colorLight: '#ffffff',
     correctLevel: QRCode.CorrectLevel.H
   });
-  document.getElementById('code-text').textContent = codigo;
 }
 
 function iniciarCountdown() {
   function tick() {
-    const agora = new Date();
-    const meianoite = new Date();
-    meianoite.setHours(24,0,0,0);
-    const diff = meianoite - agora;
-    const h = Math.floor(diff / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
-    document.getElementById('countdown').textContent =
-      String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-    if (diff <= 0) carregarQR(); // renova à meia-noite
+    var agora = new Date();
+    var meianoite = new Date();
+    meianoite.setHours(24, 0, 0, 0);
+    var diff = meianoite - agora;
+    if (diff < 0) { mostrarQR(gerarCodigo()); return; }
+    var h = Math.floor(diff / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    var hh = h < 10 ? '0' + h : '' + h;
+    var mm = m < 10 ? '0' + m : '' + m;
+    var ss = s < 10 ? '0' + s : '' + s;
+    document.getElementById('countdown').textContent = hh + ':' + mm + ':' + ss;
   }
   tick();
   setInterval(tick, 1000);
 }
+
+document.getElementById('btn-pin').addEventListener('click', function() {
+  var pin = document.getElementById('pin-input').value;
+  if (pin === PIN) {
+    document.getElementById('pin-screen').style.display = 'none';
+    document.getElementById('code-screen').style.display = 'flex';
+    var codigo = gerarCodigo();
+    mostrarQR(codigo);
+    iniciarCountdown();
+  } else {
+    document.getElementById('pin-error').classList.add('show');
+    document.getElementById('pin-input').value = '';
+  }
+});
+
+document.getElementById('pin-input').addEventListener('keyup', function(e) {
+  if (e.keyCode === 13) document.getElementById('btn-pin').click();
+});
 </script>
 </body>
 </html>
