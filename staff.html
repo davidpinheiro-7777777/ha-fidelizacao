@@ -145,8 +145,8 @@ function verificarPin() {
   }
 }
 
-async function carregarQR() {
-  // Gera o código localmente sem precisar de servidor
+function carregarQR() {
+  // Hash portável — igual ao Code.gs
   const SECRET = 'HA-CARNAXIDE-2024';
   const d = new Date();
   const lisboa = new Date(d.toLocaleString('en-US', { timeZone: 'Europe/Lisbon' }));
@@ -154,18 +154,13 @@ async function carregarQR() {
     + String(lisboa.getMonth() + 1).padStart(2, '0')
     + String(lisboa.getDate()).padStart(2, '0');
   const str = hoje + SECRET;
-  try {
-    const encoder = new TextEncoder();
-    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(str));
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const codigo = hashArray.slice(0, 4).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
-    gerarQRCode(codigo);
-  } catch(e) {
-    // Fallback hash simples
-    let h = 5381;
-    for (let i = 0; i < str.length; i++) h = ((h << 5) + h) ^ str.charCodeAt(i);
-    gerarQRCode((h >>> 0).toString(16).padStart(8, '0').toUpperCase().slice(0, 8));
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = Math.imul(h, 31) + str.charCodeAt(i);
+    h = h >>> 0; // unsigned 32-bit
   }
+  const codigo = h.toString(16).padStart(8, '0').toUpperCase();
+  gerarQRCode(codigo);
 }
 
 function gerarQRCode(codigo) {
