@@ -146,16 +146,25 @@ function verificarPin() {
 }
 
 async function carregarQR() {
+  // Gera o código localmente sem precisar de servidor
+  const SECRET = 'HA-CARNAXIDE-2024';
+  const d = new Date();
+  const lisboa = new Date(d.toLocaleString('en-US', { timeZone: 'Europe/Lisbon' }));
+  const hoje = lisboa.getFullYear().toString()
+    + String(lisboa.getMonth() + 1).padStart(2, '0')
+    + String(lisboa.getDate()).padStart(2, '0');
+  const str = hoje + SECRET;
   try {
-    const res = await fetch(API + '?action=qrcode');
-    const data = await res.json();
-    if (data.ok && data.qr) {
-      gerarQRCode(data.qr);
-    } else {
-      document.getElementById('qr-code').innerHTML = '<p style="color:red;font-size:13px">Erro ao gerar código. Recarrega a página.</p>';
-    }
+    const encoder = new TextEncoder();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(str));
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const codigo = hashArray.slice(0, 4).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    gerarQRCode(codigo);
   } catch(e) {
-    document.getElementById('qr-code').innerHTML = '<p style="color:red;font-size:13px">Sem ligação ao servidor. Verifica a internet e recarrega.</p>';
+    // Fallback hash simples
+    let h = 5381;
+    for (let i = 0; i < str.length; i++) h = ((h << 5) + h) ^ str.charCodeAt(i);
+    gerarQRCode((h >>> 0).toString(16).padStart(8, '0').toUpperCase().slice(0, 8));
   }
 }
 
