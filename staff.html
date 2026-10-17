@@ -117,6 +117,7 @@ html, body {
     <div class="code-label">MOSTRA ESTE QR CODE AO CLIENTE</div>
     <div class="qr-card">
       <div id="qr-code"></div>
+      <div id="code-debug" style="font-family:monospace;font-size:18px;font-weight:700;color:#1A5C4A;letter-spacing:4px;margin-top:8px"></div>
     </div>
     <div class="validity">Válido até à <span>meia-noite</span> de hoje</div>
     <div class="countdown">Expira em <span id="countdown">--:--:--</span></div>
@@ -146,20 +147,19 @@ function verificarPin() {
 }
 
 function carregarQR() {
-  // Hash portável — igual ao Code.gs
   const SECRET = 'HA-CARNAXIDE-2024';
-  const d = new Date();
-  const lisboa = new Date(d.toLocaleString('en-US', { timeZone: 'Europe/Lisbon' }));
-  const hoje = lisboa.getFullYear().toString()
-    + String(lisboa.getMonth() + 1).padStart(2, '0')
-    + String(lisboa.getDate()).padStart(2, '0');
-  const str = hoje + SECRET;
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const str = '' + y + m + day + SECRET;
+  // Hash simples sem Math.imul
   let h = 0;
   for (let i = 0; i < str.length; i++) {
-    h = Math.imul(h, 31) + str.charCodeAt(i);
-    h = h >>> 0; // unsigned 32-bit
+    h = ((h * 31) + str.charCodeAt(i)) % 4294967296;
   }
-  const codigo = h.toString(16).padStart(8, '0').toUpperCase();
+  const codigo = Math.floor(h).toString(16).padStart(8, '0').toUpperCase();
+  document.getElementById('code-debug').textContent = codigo;
   gerarQRCode(codigo);
 }
 
