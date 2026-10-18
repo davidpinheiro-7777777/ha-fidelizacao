@@ -283,6 +283,12 @@ async function post(p) {
 }
 
 function goTo(id) {
+  // Se não está logado e tenta ir ao cartão, vai para login
+  if (id === 'cartao' && !S.id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-login').classList.add('active');
+    return;
+  }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const screen = document.getElementById('screen-' + id);
   if (screen) screen.classList.add('active');
