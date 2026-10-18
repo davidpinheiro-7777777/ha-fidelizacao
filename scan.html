@@ -136,7 +136,7 @@ async function init() {
         <div class="icon">⚠️</div>
         <div class="title">Já registado</div>
         <div class="sub">Esta refeição já foi registada. Não faças refresh para não acumular carimbos indevidamente.</div>
-        <a href="https://davidpinheiro-7777777.github.io/ha-fidelizacao/client.html" class="btn" style="margin-top:8px">Ver o meu cartão</a>`;
+        <a href="https://clube.ha-restaurante.com/client.html" class="btn" style="margin-top:8px">Ver o meu cartão</a>`;
       return;
     }
   } catch(e) {}
@@ -151,7 +151,7 @@ async function init() {
       <div class="icon">👋</div>
       <div class="title">Ainda não tens conta</div>
       <div class="sub">Para registares a refeição precisas de te registar primeiro no Clube Hã.</div>
-      <a href="https://davidpinheiro-7777777.github.io/ha-fidelizacao/client.html" class="btn" style="margin-top:8px">Registar-me no Clube</a>`;
+      <a href="https://clube.ha-restaurante.com/client.html" class="btn" style="margin-top:8px">Registar-me no Clube</a>`;
     return;
   }
 
@@ -170,20 +170,20 @@ async function init() {
           <div class="icon">🎉</div>
           <div class="title">Refeição grátis!</div>
           <div class="sub">Parabéns! Chegaste às 10 refeições. Mostra este ecrã ao balcão.</div>
-          <a href="https://davidpinheiro-7777777.github.io/ha-fidelizacao/client.html" class="btn">Ver o meu cartão</a>`;
+          <a href="https://clube.ha-restaurante.com/client.html" class="btn">Ver o meu cartão</a>`;
       } else {
         document.getElementById('content').innerHTML = `
           <div class="icon">✅</div>
           <div class="title">Refeição registada!</div>
           ${renderStamps(res.visitas, true)}
-          <a href="https://davidpinheiro-7777777.github.io/ha-fidelizacao/client.html" class="btn">Ver o meu cartão</a>`;
+          <a href="https://clube.ha-restaurante.com/client.html" class="btn">Ver o meu cartão</a>`;
       }
     } else {
       document.getElementById('content').innerHTML = `
         <div class="icon">❌</div>
         <div class="title">Código inválido</div>
         <div class="sub">${res.erro || 'Este código já expirou ou não é válido. Pede ao empregado o código do dia.'}</div>
-        <a href="https://davidpinheiro-7777777.github.io/ha-fidelizacao/client.html" class="btn" style="margin-top:8px">Voltar à app</a>`;
+        <a href="https://clube.ha-restaurante.com/client.html" class="btn" style="margin-top:8px">Voltar à app</a>`;
     }
   } catch(e) {
     document.getElementById('content').innerHTML = `
