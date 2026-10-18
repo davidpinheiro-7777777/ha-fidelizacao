@@ -131,7 +131,6 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 .nav-item.active .nav-label { color: var(--green); }
 .nav-item:not(.active) { opacity: .35; }
 .loading { padding: 32px; text-align: center; color: var(--muted); font-size: 14px; }
-@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 </style>
 </head>
 <body>
@@ -370,40 +369,15 @@ async function loadNovidades() {
   try {
     const res = await post({ action: 'novidades' });
     if (res.ok && res.novidades.length > 0) {
-      // Mostra skeleton primeiro
-      lista.innerHTML = res.novidades.map(() => `
+      lista.innerHTML = res.novidades.map(n => `
         <div class="news-card">
-          <div style="width:100%;height:180px;background:linear-gradient(90deg,var(--surface2) 25%,var(--border) 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.2s infinite"></div>
+          ${n.foto ? `<img src="${n.foto}" alt="${n.titulo}" loading="lazy">` : ''}
           <div class="news-card-body">
-            <div style="height:12px;width:60px;background:var(--surface2);border-radius:4px;margin-bottom:10px"></div>
-            <div style="height:18px;width:80%;background:var(--surface2);border-radius:4px;margin-bottom:8px"></div>
-            <div style="height:12px;width:100%;background:var(--surface2);border-radius:4px;margin-bottom:4px"></div>
-            <div style="height:12px;width:70%;background:var(--surface2);border-radius:4px"></div>
+            ${n.preco ? `<span class="news-badge">${formatPreco(String(n.preco))}</span>` : ''}
+            <div class="news-card-title">${n.titulo}</div>
+            <div class="news-card-desc">${n.descricao}</div>
           </div>
         </div>`).join('');
-
-      // Carrega as imagens em paralelo e substitui quando prontas
-      const novidades = res.novidades;
-      const cards = novidades.map(n => {
-        return new Promise(resolve => {
-          if (!n.foto) { resolve(n); return; }
-          const img = new Image();
-          img.onload = img.onerror = () => resolve(n);
-          img.src = n.foto;
-        });
-      });
-
-      Promise.all(cards).then(() => {
-        lista.innerHTML = novidades.map(n => `
-          <div class="news-card">
-            ${n.foto ? `<img src="${n.foto}" alt="${n.titulo}" loading="lazy">` : ''}
-            <div class="news-card-body">
-              ${n.preco ? `<span class="news-badge">${formatPreco(String(n.preco))}</span>` : ''}
-              <div class="news-card-title">${n.titulo}</div>
-              <div class="news-card-desc">${n.descricao}</div>
-            </div>
-          </div>`).join('');
-      });
     } else { lista.innerHTML = '<div class="news-empty">Sem novidades de momento. Volta em breve! 🍔</div>'; }
   } catch(e) { lista.innerHTML = '<div class="news-empty">Sem ligação. Tenta mais tarde.</div>'; }
 }
