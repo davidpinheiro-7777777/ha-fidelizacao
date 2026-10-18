@@ -67,26 +67,7 @@ html, body {
 <script>
 var PIN = '1234';
 
-function gerarCodigo() {
-  var SECRET = 'HA-CARNAXIDE-2024';
-  var now = new Date();
-  var y = now.getFullYear().toString();
-  var m = now.getMonth() + 1;
-  if (m < 10) m = '0' + m; else m = '' + m;
-  var day = now.getDate();
-  if (day < 10) day = '0' + day; else day = '' + day;
-  var str = y + m + day + SECRET;
-  var h = 0;
-  for (var i = 0; i < str.length; i++) {
-    h = h * 31 + str.charCodeAt(i);
-    // Mantém em 32-bit sem Math.imul
-    if (h > 2147483647) h = h % 4294967296;
-    if (h < 0) h += 4294967296;
-  }
-  var hex = Math.floor(h % 4294967296).toString(16);
-  while (hex.length < 8) hex = '0' + hex;
-  return hex.toUpperCase();
-}
+var API = 'https://ha-proxy.oxy-agency.workers.dev';
 
 function mostrarQR(codigo) {
   document.getElementById('code-text').textContent = codigo;
@@ -100,6 +81,20 @@ function mostrarQR(codigo) {
     colorLight: '#ffffff',
     correctLevel: QRCode.CorrectLevel.H
   });
+  // Guarda o código localmente para uso offline
+  try { localStorage.setItem('ha_qr_code', JSON.stringify({code: codigo, date: new Date().toDateString()})); } catch(e) {}
+}
+
+function carregarCodigoOffline() {
+  // Usa o código guardado se for do mesmo dia
+  try {
+    var saved = JSON.parse(localStorage.getItem('ha_qr_code') || 'null');
+    if (saved && saved.date === new Date().toDateString()) {
+      mostrarQR(saved.code);
+      return true;
+    }
+  } catch(e) {}
+  return false;
 }
 
 function iniciarCountdown() {
@@ -126,9 +121,23 @@ document.getElementById('btn-pin').addEventListener('click', function() {
   if (pin === PIN) {
     document.getElementById('pin-screen').style.display = 'none';
     document.getElementById('code-screen').style.display = 'flex';
-    var codigo = gerarCodigo();
-    mostrarQR(codigo);
     iniciarCountdown();
+    // Tenta buscar o código ao servidor
+    fetch(API + '?action=qrcode')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.ok && data.qr) {
+          mostrarQR(data.qr);
+        } else if (!carregarCodigoOffline()) {
+          document.getElementById('code-text').textContent = 'Erro. Recarrega.';
+        }
+      })
+      .catch(function() {
+        // Sem ligação — usa código guardado
+        if (!carregarCodigoOffline()) {
+          document.getElementById('code-text').textContent = 'Sem ligação. Recarrega quando tiveres internet.';
+        }
+      });
   } else {
     document.getElementById('pin-error').classList.add('show');
     document.getElementById('pin-input').value = '';
