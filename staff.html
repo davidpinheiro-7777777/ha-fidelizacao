@@ -57,7 +57,6 @@ html, body {
     <div class="qr-card">
       <div id="qr-code"></div>
     </div>
-    <div class="code-text" id="code-text" style="color:#F5C842;font-size:24px;letter-spacing:6px;font-family:'Nunito',sans-serif;font-weight:900"></div>
     <div class="validity">Válido até à <span style="color:#F5C842">meia-noite</span> de hoje</div>
     <div class="countdown">Expira em <span id="countdown">--:--:--</span></div>
   </div>
@@ -70,7 +69,6 @@ var PIN = '1234';
 var API = 'https://ha-proxy.oxy-agency.workers.dev';
 
 function mostrarQR(codigo) {
-  document.getElementById('code-text').textContent = codigo;
   document.getElementById('qr-code').innerHTML = '';
   var url = 'https://davidpinheiro-7777777.github.io/ha-fidelizacao/scan.html?code=' + codigo;
   new QRCode(document.getElementById('qr-code'), {
