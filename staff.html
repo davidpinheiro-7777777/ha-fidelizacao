@@ -19,7 +19,7 @@ html, body {
   padding: 32px 24px;
 }
 .wrap { width: 100%; max-width: 360px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
-.logo { height: 52px; filter: brightness(0) invert(1); }
+
 .label { font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,.5); }
 .qr-card { background: #fff; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; max-width: 280px; }
 #qr-code canvas, #qr-code img { width: 200px !important; height: 200px !important; }
@@ -43,7 +43,7 @@ html, body {
 <div class="wrap">
 
   <div id="pin-screen">
-    <img class="logo" src="https://davidpinheiro-7777777.github.io/ha-fidelizacao/logo.png" alt="Hã">
+    <div style="width:64px;height:64px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center"><img src="https://davidpinheiro-7777777.github.io/ha-fidelizacao/logo.png" style="width:48px;height:48px;object-fit:contain" alt="Hã"></div>
     <div class="pin-title">Área de Staff</div>
     <div class="pin-sub">Introduz o PIN para aceder</div>
     <input class="pin-input" type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="····">
@@ -52,7 +52,7 @@ html, body {
   </div>
 
   <div id="code-screen">
-    <img class="logo" src="https://davidpinheiro-7777777.github.io/ha-fidelizacao/logo.png" alt="Hã">
+    <div style="width:64px;height:64px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center"><img src="https://davidpinheiro-7777777.github.io/ha-fidelizacao/logo.png" style="width:48px;height:48px;object-fit:contain" alt="Hã"></div>
     <div class="label">MOSTRA ESTE QR CODE AO CLIENTE</div>
     <div class="qr-card">
       <div id="qr-code"></div>
