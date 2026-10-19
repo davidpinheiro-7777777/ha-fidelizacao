@@ -14,51 +14,114 @@ html, body {
   background: #1A5C4A;
   color: #fff;
   font-family: 'Inter', sans-serif;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: flex-start; justify-content: center;
   text-align: center;
   padding: 32px 24px;
 }
-.wrap { width: 100%; max-width: 360px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+body.logado { padding-top: 64px; }
+.wrap { width: 100%; max-width: 360px; margin: auto; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.wrap.larga { max-width: 720px; }
+.hidden { display: none !important; }
 
+.logo-c { width: 64px; height: 64px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.logo-c img { width: 48px; height: 48px; object-fit: contain; }
+.titulo { font-family: 'Nunito', sans-serif; font-size: 24px; font-weight: 900; }
+.sub { font-size: 13px; color: rgba(255,255,255,.6); }
 .label { font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,.5); }
-.qr-card { background: #fff; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; max-width: 280px; }
-#qr-code canvas, #qr-code img { width: 200px !important; height: 200px !important; }
-.code-text { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: #1A5C4A; letter-spacing: 4px; }
-.validity { font-size: 13px; color: rgba(255,255,255,.55); }
-.countdown { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 800; background: rgba(0,0,0,.2); border-radius: 12px; padding: 10px 24px; }
-.countdown span { color: #F5C842; }
+.screen { display: none; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
+
 /* PIN */
-#pin-screen { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
-#code-screen { display: none; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
-.pin-title { font-family: 'Nunito', sans-serif; font-size: 24px; font-weight: 900; }
-.pin-sub { font-size: 13px; color: rgba(255,255,255,.6); }
 .pin-input { width: 160px; background: rgba(0,0,0,.25); border: 2px solid rgba(255,255,255,.2); border-radius: 14px; color: #fff; font-family: 'Nunito', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: 8px; padding: 14px; text-align: center; outline: none; -webkit-text-security: disc; -webkit-appearance: none; }
 .pin-input:focus { border-color: #F5C842; }
 .pin-error { color: #FCA; font-size: 13px; display: none; }
 .pin-error.show { display: block; }
 .btn-pin { background: #F5C842; border: none; border-radius: 12px; color: #1A5C4A; font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 900; padding: 15px 48px; cursor: pointer; }
+.btn-pin:disabled { opacity: .6; }
+
+/* MENU INICIAL */
+.big-btn { position: relative; width: 100%; background: #F5C842; color: #1A5C4A; border: none; border-radius: 18px; padding: 26px 20px; font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; letter-spacing: .5px; cursor: pointer; }
+.big-btn.sec { background: #fff; }
+.badge { display: inline-block; min-width: 26px; padding: 3px 8px; margin-left: 8px; background: #C0392B; color: #fff; border-radius: 13px; font-size: 15px; vertical-align: middle; }
+.voltar { background: rgba(255,255,255,.15); border: none; border-radius: 10px; color: #fff; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; padding: 10px 16px; cursor: pointer; }
+.alerta-novos { width: 100%; background: #C0392B; border: none; border-radius: 12px; color: #fff; font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 900; padding: 14px; cursor: pointer; }
+
+/* BARRA DE SOM (fixa no topo) */
+.som-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 50; border: none; padding: 12px 16px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 900; cursor: pointer; background: #C0392B; color: #fff; }
+.som-bar.ativo { background: rgba(0,0,0,.35); color: #A8D8B0; }
+
+/* QR */
+.qr-card { background: #fff; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; max-width: 280px; }
+#qr-code canvas, #qr-code img { width: 200px !important; height: 200px !important; }
+.validity { font-size: 13px; color: rgba(255,255,255,.55); }
+.countdown { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 800; background: rgba(0,0,0,.2); border-radius: 12px; padding: 10px 24px; }
+.countdown span { color: #F5C842; }
+
+/* PEDIDOS */
+.o-topo { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.o-titulo { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; }
+.o-estado { width: 100%; font-size: 13px; color: rgba(255,255,255,.65); min-height: 18px; }
+.o-estado.erro { color: #FFB4A8; font-weight: 700; }
+.o-lista { width: 100%; display: flex; flex-direction: column; gap: 12px; text-align: left; }
+.o-vazio { text-align: center; color: rgba(255,255,255,.55); padding: 36px 0; font-size: 15px; }
+.o-card { background: #fff; color: #1A1A1A; border-radius: 16px; padding: 16px 18px; border-left: 8px solid #F5C842; }
+.o-card.feito { opacity: .55; border-left-color: #A8D8B0; }
+.o-cab { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+.o-hora { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 20px; color: #1A5C4A; }
+.o-nome { flex: 1; font-weight: 600; font-size: 15px; }
+.o-total { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; }
+.o-novo { background: #C0392B; color: #fff; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 800; letter-spacing: 1px; }
+.o-itens { list-style: none; margin-bottom: 8px; }
+.o-itens li { font-size: 17px; padding: 3px 0; }
+.o-itens b { font-family: 'Nunito', sans-serif; color: #1A5C4A; margin-right: 6px; }
+.o-notas { background: #FFF6D6; border-radius: 10px; padding: 10px 12px; font-size: 15px; margin-bottom: 10px; }
+.o-btn { width: 100%; border: none; border-radius: 12px; padding: 14px; font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 900; cursor: pointer; background: #1A5C4A; color: #fff; }
+.o-card.feito .o-btn { background: #E0DDD6; color: #555; font-size: 14px; }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <div id="pin-screen">
-    <div style="width:64px;height:64px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center"><img src="logo.png" style="width:48px;height:48px;object-fit:contain" alt="Hã"></div>
-    <div class="pin-title">Área de Staff</div>
-    <div class="pin-sub">Introduz o PIN para aceder</div>
+<button class="som-bar hidden" id="som-bar">🔕 Som desligado — toca aqui para ativar</button>
+
+<div class="wrap" id="wrap">
+
+  <!-- PIN -->
+  <div class="screen" id="pin-screen" style="display:flex">
+    <div class="logo-c"><img src="logo.png" alt="Hã"></div>
+    <div class="titulo">Área de Staff</div>
+    <div class="sub">Introduz o PIN para aceder</div>
     <input class="pin-input" type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="····">
     <div class="pin-error" id="pin-error">PIN incorrecto. Tenta novamente.</div>
     <button class="btn-pin" id="btn-pin">Entrar</button>
   </div>
 
-  <div id="code-screen">
-    <div style="width:64px;height:64px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center"><img src="logo.png" style="width:48px;height:48px;object-fit:contain" alt="Hã"></div>
+  <!-- INÍCIO: as duas vertentes -->
+  <div class="screen" id="home-screen">
+    <div class="logo-c"><img src="logo.png" alt="Hã"></div>
+    <div class="titulo">Área de Staff</div>
+    <button class="big-btn" id="btn-ir-qr">QR DO CARTÃO</button>
+    <button class="big-btn sec" id="btn-ir-pedidos">RECEÇÃO DE PEDIDOS<span class="badge hidden" id="badge-novos"></span></button>
+  </div>
+
+  <!-- QR DO CARTÃO -->
+  <div class="screen" id="code-screen">
+    <button class="alerta-novos hidden" id="alerta-novos"></button>
+    <div class="logo-c"><img src="logo.png" alt="Hã"></div>
     <div class="label">MOSTRA ESTE QR CODE AO CLIENTE</div>
-    <div class="qr-card">
-      <div id="qr-code"></div>
-    </div>
+    <div class="qr-card"><div id="qr-code"></div></div>
     <div class="validity">Válido até à <span style="color:#F5C842">meia-noite</span> de hoje</div>
     <div class="countdown">Expira em <span id="countdown">--:--:--</span></div>
+    <button class="voltar" id="btn-voltar-qr">← Voltar</button>
+  </div>
+
+  <!-- RECEÇÃO DE PEDIDOS -->
+  <div class="screen" id="orders-screen">
+    <div class="o-topo">
+      <button class="voltar" id="btn-voltar-pedidos">← Voltar</button>
+      <div class="o-titulo">Pedidos de hoje</div>
+      <span style="width:84px"></span>
+    </div>
+    <div class="o-estado" id="o-estado"></div>
+    <div class="o-lista" id="o-lista"></div>
   </div>
 
 </div>
@@ -66,91 +129,291 @@ html, body {
 <script>
 var API = 'https://ha-proxy.oxy-agency.workers.dev';
 var TOKEN = '58D896A2D40ACBFF13DA8A436E4EFBB0';
-var pinSessao = '';
 
-function pedirCodigo(pin) {
-  return fetch(API + '?action=qrcode&token=' + TOKEN + '&pin=' + encodeURIComponent(pin))
-    .then(function(r) { return r.json(); });
+var sessao = '';            // chave temporaria da equipa (depois do PIN certo)
+var codigoHoje = '';
+var diaDoCodigo = '';
+var contagemIniciada = false, aRenovar = false;
+var ecraAtual = 'pin-screen';
+
+var versao = '', vistos = null, pedidos = [];
+var pollTimer = null, aPedir = false, falhasRede = 0;
+var audioCtx = null, wakeLock = null;
+
+function get(params) {
+  var q = Object.keys(params).map(function(k) { return k + '=' + encodeURIComponent(params[k]); }).join('&');
+  return fetch(API + '?' + q + '&token=' + TOKEN).then(function(r) { return r.json(); });
+}
+function $(id) { return document.getElementById(id); }
+
+function mostrar(id) {
+  ['pin-screen', 'home-screen', 'code-screen', 'orders-screen'].forEach(function(s) { $(s).style.display = (s === id) ? 'flex' : 'none'; });
+  $('wrap').className = 'wrap' + (id === 'orders-screen' ? ' larga' : '');
+  ecraAtual = id;
+  atualizarAvisos();
 }
 
-function mostrarQR(codigo) {
-  document.getElementById('qr-code').innerHTML = '';
-  var url = 'https://clube.ha-restaurante.com/scan.html?code=' + codigo;
-  new QRCode(document.getElementById('qr-code'), {
-    text: url, width: 200, height: 200,
-    colorDark: '#1A5C4A', colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.H
-  });
-  try { localStorage.setItem('ha_qr_code', JSON.stringify({code: codigo, date: new Date().toDateString()})); } catch(e) {}
+/* ---------- PIN e entrada ---------- */
+function erroPin(msg) {
+  var el = $('pin-error');
+  el.textContent = msg; el.classList.add('show');
+  $('pin-input').value = '';
 }
 
 function codigoGuardadoHoje() {
   try {
     var saved = JSON.parse(localStorage.getItem('ha_qr_code') || 'null');
     if (saved && saved.date === new Date().toDateString()) return saved.code;
-  } catch(e) {}
+  } catch (e) {}
   return null;
 }
 
-function erroPin(msg) {
-  var el = document.getElementById('pin-error');
-  el.textContent = msg;
-  el.classList.add('show');
-  document.getElementById('pin-input').value = '';
+function entrarHome() {
+  document.body.classList.add('logado');
+  $('som-bar').classList.remove('hidden');
+  mostrar('home-screen');
+  pedirWakeLock();
+  if (sessao) iniciarPolling();
 }
 
-function iniciarCountdown() {
-  function tick() {
-    var agora = new Date();
-    var meianoite = new Date();
-    meianoite.setHours(24, 0, 0, 0);
-    var diff = meianoite - agora;
-    var h = Math.floor(diff / 3600000);
-    var m = Math.floor((diff % 3600000) / 60000);
-    var s = Math.floor((diff % 60000) / 1000);
-    document.getElementById('countdown').textContent =
-      (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
-    // Passou a meia-noite: pede o codigo novo ao servidor
-    if (diff > 86399000) {
-      pedirCodigo(pinSessao).then(function(d) { if (d.ok) mostrarQR(d.qr); }).catch(function() {});
-    }
-  }
-  tick();
-  setInterval(tick, 1000);
-}
-
-function entrar(codigo) {
-  document.getElementById('pin-screen').style.display = 'none';
-  document.getElementById('code-screen').style.display = 'flex';
-  mostrarQR(codigo);
-  iniciarCountdown();
-}
-
-document.getElementById('btn-pin').addEventListener('click', function() {
-  var pin = document.getElementById('pin-input').value;
+$('btn-pin').addEventListener('click', function() {
+  var pin = $('pin-input').value;
   if (!pin) return;
-  var btn = document.getElementById('btn-pin');
+  var btn = $('btn-pin');
   btn.disabled = true;
-  pedirCodigo(pin)
+  get({ action: 'qrcode', pin: pin })
     .then(function(data) {
       if (data.ok && data.qr) {
-        pinSessao = pin;
-        entrar(data.qr);
+        codigoHoje = data.qr; diaDoCodigo = new Date().toDateString(); sessao = data.sessao || '';
+        entrarHome();
       } else {
         erroPin(data.erro || 'Erro. Tenta novamente.');
       }
     })
     .catch(function() {
-      // Sem ligacao: usa o codigo de hoje guardado neste telemovel, se existir
+      // Sem ligacao: ainda mostra o QR de hoje se este telemovel o tiver guardado
       var guardado = codigoGuardadoHoje();
-      if (guardado) { pinSessao = pin; entrar(guardado); }
+      if (guardado) { codigoHoje = guardado; diaDoCodigo = new Date().toDateString(); sessao = ''; entrarHome(); }
       else erroPin('Sem ligacao. Tenta quando tiveres internet.');
     })
     .then(function() { btn.disabled = false; });
 });
+$('pin-input').addEventListener('keyup', function(e) { if (e.keyCode === 13) $('btn-pin').click(); });
 
-document.getElementById('pin-input').addEventListener('keyup', function(e) {
-  if (e.keyCode === 13) document.getElementById('btn-pin').click();
+/* ---------- QR do cartão ---------- */
+function mostrarQR(codigo) {
+  $('qr-code').innerHTML = '';
+  new QRCode($('qr-code'), {
+    text: 'https://clube.ha-restaurante.com/scan.html?code=' + codigo, width: 200, height: 200,
+    colorDark: '#1A5C4A', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H
+  });
+  try { localStorage.setItem('ha_qr_code', JSON.stringify({ code: codigo, date: new Date().toDateString() })); } catch (e) {}
+}
+
+function renovarCodigoSeMudouODia() {
+  if (aRenovar || !sessao || new Date().toDateString() === diaDoCodigo) return;
+  aRenovar = true;
+  get({ action: 'qrcode', sessao: sessao })
+    .then(function(d) {
+      if (d.ok && d.qr) { codigoHoje = d.qr; diaDoCodigo = new Date().toDateString(); if (ecraAtual === 'code-screen') mostrarQR(codigoHoje); }
+    })
+    .catch(function() {})
+    .then(function() { aRenovar = false; });
+}
+
+function iniciarCountdown() {
+  function tick() {
+    var agora = new Date(), meianoite = new Date();
+    meianoite.setHours(24, 0, 0, 0);
+    var diff = meianoite - agora;
+    var h = Math.floor(diff / 3600000), m = Math.floor((diff % 3600000) / 60000), s = Math.floor((diff % 60000) / 1000);
+    $('countdown').textContent = (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+    renovarCodigoSeMudouODia();
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+$('btn-ir-qr').addEventListener('click', function() {
+  mostrar('code-screen');
+  mostrarQR(codigoHoje);
+  if (!contagemIniciada) { contagemIniciada = true; iniciarCountdown(); }
+});
+$('btn-voltar-qr').addEventListener('click', function() { mostrar('home-screen'); });
+
+/* ---------- Som ---------- */
+function bip(freq, inicio, dur) {
+  var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = 'sine'; o.frequency.value = freq;
+  o.connect(g); g.connect(audioCtx.destination);
+  var t = audioCtx.currentTime + inicio;
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(0.6, t + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.start(t); o.stop(t + dur + 0.05);
+}
+function tocarSom() {
+  if (!audioCtx) return;
+  try {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    bip(880, 0, 0.18); bip(1175, 0.24, 0.18); bip(880, 0.48, 0.18); bip(1175, 0.72, 0.32);
+  } catch (e) {}
+}
+function ativarSom() {
+  var AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) { alert('Este aparelho não consegue tocar o aviso sonoro.'); return; }
+  if (!audioCtx) audioCtx = new AC();
+  try { audioCtx.resume(); } catch (e) {}
+  $('som-bar').classList.add('ativo');
+  $('som-bar').textContent = '🔔 Som ativo — toca aqui para testar';
+  tocarSom();
+}
+$('som-bar').addEventListener('click', ativarSom);
+
+/* ---------- Ecrã sempre ligado ---------- */
+function pedirWakeLock() {
+  try {
+    if (navigator.wakeLock && !wakeLock) {
+      navigator.wakeLock.request('screen').then(function(l) {
+        wakeLock = l;
+        l.addEventListener('release', function() { wakeLock = null; });
+      }).catch(function() {});
+    }
+  } catch (e) {}
+}
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible' && sessao) { pedirWakeLock(); poll(); }
+});
+
+/* ---------- Pedidos ---------- */
+function estadoLigacao(texto, erro) {
+  var el = $('o-estado');
+  el.textContent = texto || '';
+  el.className = 'o-estado' + (erro ? ' erro' : '');
+}
+
+function contarNovos() { return pedidos.filter(function(p) { return p.estado === 'Novo'; }).length; }
+
+function atualizarAvisos() {
+  var n = contarNovos();
+  var b = $('badge-novos');
+  b.textContent = n; b.classList.toggle('hidden', n === 0);
+  var a = $('alerta-novos');
+  a.textContent = '🔔 ' + n + (n === 1 ? ' pedido novo' : ' pedidos novos') + ' — toca para ver';
+  a.classList.toggle('hidden', !(n > 0 && ecraAtual === 'code-screen'));
+  document.title = (n > 0 ? '(' + n + ') ' : '') + 'Hã — Staff';
+}
+
+function el(tag, cls, texto) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (texto !== undefined) e.textContent = texto;
+  return e;
+}
+
+function cartao(p) {
+  var feito = p.estado !== 'Novo';
+  var c = el('div', 'o-card' + (feito ? ' feito' : ''));
+  c.setAttribute('data-id', p.id);
+  var cab = el('div', 'o-cab');
+  cab.appendChild(el('span', 'o-hora', p.hora));
+  cab.appendChild(el('span', 'o-nome', p.nome));
+  if (!feito) cab.appendChild(el('span', 'o-novo', 'NOVO'));
+  cab.appendChild(el('span', 'o-total', p.total + '€'));
+  c.appendChild(cab);
+  var ul = el('ul', 'o-itens');
+  (p.itens || []).forEach(function(i) {
+    var li = el('li');
+    li.appendChild(el('b', '', i.q + '×'));
+    li.appendChild(document.createTextNode(i.n));
+    ul.appendChild(li);
+  });
+  c.appendChild(ul);
+  if (p.notas) c.appendChild(el('div', 'o-notas', '📝 ' + p.notas));
+  var btn = el('button', 'o-btn', feito ? 'Reabrir' : 'FEITO');
+  btn.setAttribute('data-id', p.id);
+  btn.setAttribute('data-estado', feito ? 'Novo' : 'Feito');
+  c.appendChild(btn);
+  return c;
+}
+
+function renderPedidos() {
+  var lista = $('o-lista');
+  lista.innerHTML = '';
+  if (!pedidos.length) { lista.appendChild(el('div', 'o-vazio', 'Ainda não há pedidos hoje.')); }
+  var novos = pedidos.filter(function(p) { return p.estado === 'Novo'; });
+  var feitos = pedidos.filter(function(p) { return p.estado !== 'Novo'; });
+  novos.concat(feitos).forEach(function(p) { lista.appendChild(cartao(p)); });
+  atualizarAvisos();
+}
+
+function aplicarPedidos(lista) {
+  var chegouNovo = false;
+  if (vistos !== null) {
+    lista.forEach(function(p) { if (p.estado === 'Novo' && !vistos[p.id]) chegouNovo = true; });
+  }
+  if (vistos === null) vistos = {};
+  lista.forEach(function(p) { vistos[p.id] = true; });
+  pedidos = lista;
+  renderPedidos();
+  if (chegouNovo) tocarSom();
+}
+
+function sessaoExpirou() {
+  clearInterval(pollTimer); pollTimer = null;
+  estadoLigacao('Sessão expirada. Recarrega a página e entra com o PIN.', true);
+}
+
+function poll() {
+  if (aPedir || !sessao) return;
+  aPedir = true;
+  get({ action: 'pedidos', sessao: sessao, v: versao })
+    .then(function(d) {
+      if (d.expirada) { sessaoExpirou(); return; }
+      falhasRede = 0;
+      if (!d.ok) { estadoLigacao(d.erro || 'Erro ao ler os pedidos.', true); return; }
+      estadoLigacao('Atualiza sozinho a cada 5 segundos', false);
+      if (d.semAlteracoes) return;
+      versao = d.versao;
+      aplicarPedidos(d.pedidos || []);
+    })
+    .catch(function() {
+      falhasRede++;
+      if (falhasRede >= 2) estadoLigacao('Sem ligação — a tentar de novo…', true);
+    })
+    .then(function() { aPedir = false; });
+}
+
+function iniciarPolling() {
+  if (pollTimer || !sessao) return;
+  poll();
+  pollTimer = setInterval(poll, 5000);
+}
+
+$('btn-ir-pedidos').addEventListener('click', function() {
+  mostrar('orders-screen');
+  if (!sessao) { estadoLigacao('Sem ligação quando entraste. Recarrega a página e entra de novo.', true); return; }
+  renderPedidos();
+  poll();
+});
+$('btn-voltar-pedidos').addEventListener('click', function() { mostrar('home-screen'); });
+$('alerta-novos').addEventListener('click', function() { $('btn-ir-pedidos').click(); });
+
+$('o-lista').addEventListener('click', function(e) {
+  var b = e.target.closest ? e.target.closest('.o-btn') : null;
+  if (!b) return;
+  var id = b.getAttribute('data-id'), estado = b.getAttribute('data-estado');
+  var p = pedidos.filter(function(x) { return x.id === id; })[0];
+  if (!p) return;
+  var antes = p.estado;
+  p.estado = estado; renderPedidos();                       // resposta imediata no ecra
+  get({ action: 'pedido_estado', sessao: sessao, pedido: id, estado: estado })
+    .then(function(d) {
+      if (d.expirada) { sessaoExpirou(); return; }
+      if (!d.ok) { p.estado = antes; renderPedidos(); estadoLigacao(d.erro || 'Não foi possível atualizar o pedido.', true); return; }
+      versao = ''; poll();
+    })
+    .catch(function() { p.estado = antes; renderPedidos(); estadoLigacao('Sem ligação — o pedido não foi atualizado.', true); });
 });
 </script>
 </body>

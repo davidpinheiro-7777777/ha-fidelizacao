@@ -126,10 +126,44 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 
 /* ── NAV ── */
 .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: rgba(247,245,240,.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--border); display: flex; z-index: 200; }
-.nav-item { flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px 8px; cursor: pointer; }
-.nav-label { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 900; color: var(--muted); text-align: center; }
+.nav-item { flex: 1; display: flex; align-items: center; justify-content: center; padding: 14px 4px; cursor: pointer; }
+.nav-label { font-family: 'Nunito', sans-serif; font-size: 13px; line-height: 1.2; font-weight: 900; color: var(--muted); text-align: center; }
 .nav-item.active .nav-label { color: var(--green); }
 .nav-item:not(.active) { opacity: .35; }
+
+/* ── PEDIDOS ── */
+#screen-pedido, #screen-resumo { padding: 20px 0 0; }
+.cat-bar { display: flex; gap: 8px; overflow-x: auto; padding: 0 16px 12px; scrollbar-width: none; }
+.cat-bar::-webkit-scrollbar { display: none; }
+.cat-pill { flex: 0 0 auto; background: var(--surface); border: 1.5px solid var(--border); border-radius: 20px; padding: 8px 14px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; color: var(--muted); cursor: pointer; white-space: nowrap; }
+.cat-pill.active { background: var(--green); border-color: var(--green); color: #fff; }
+.ord-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+.ord-item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; display: flex; gap: 12px; align-items: center; }
+.ord-info { flex: 1; min-width: 0; }
+.ord-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+.ord-desc { font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 4px; }
+.ord-price { font-family: 'Nunito', sans-serif; font-weight: 900; color: var(--green); font-size: 14px; }
+.qty { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.qty-btn { width: 34px; height: 34px; border-radius: 50%; border: none; background: var(--green); color: #fff; font-size: 20px; font-weight: 700; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.qty-btn.minus { background: var(--surface2); color: var(--green); }
+.qty-n { min-width: 18px; text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; }
+.cart-bar { position: fixed; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 448px; bottom: 78px; background: var(--green); color: #fff; border: none; border-radius: 14px; padding: 14px 18px; display: none; align-items: center; justify-content: space-between; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 15px; cursor: pointer; z-index: 150; box-shadow: 0 4px 14px rgba(0,0,0,.2); }
+.cart-bar.show { display: flex; }
+.res-card { margin: 0 16px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 4px 14px; }
+.res-line { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--surface2); }
+.res-line:last-child { border-bottom: none; }
+.res-name { flex: 1; font-size: 14px; font-weight: 600; min-width: 0; }
+.res-sub { font-family: 'Nunito', sans-serif; font-weight: 900; color: var(--green); font-size: 14px; min-width: 62px; text-align: right; }
+.res-total { display: flex; justify-content: space-between; margin: 0 20px 12px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 18px; }
+.res-alerta { margin: 0 20px 10px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+.res-notas { display: block; width: calc(100% - 32px); margin: 0 16px 12px; min-height: 90px; border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 16px; resize: vertical; background: var(--surface); color: var(--text); outline: none; }
+.res-notas:focus { border-color: var(--green); }
+.res-btn { width: calc(100% - 32px); margin: 0 16px; }
+.res-voltar { display: block; margin: 12px auto 0; background: none; border: none; color: var(--green); font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; cursor: pointer; }
+.pedido-ok { text-align: center; padding: 48px 28px 0; }
+.pedido-ok .ok-icon { font-size: 56px; }
+.pedido-ok .ok-title { font-family: 'Nunito', sans-serif; font-size: 24px; font-weight: 900; color: var(--green); margin: 12px 0 8px; }
+.pedido-ok .ok-sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
 .loading { padding: 32px; text-align: center; color: var(--muted); font-size: 14px; }
 </style>
 </head>
@@ -228,6 +262,33 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
   <div class="news-list" id="news-list"><div class="loading">A carregar...</div></div>
 </section>
 
+<!-- FAZ O TEU PEDIDO -->
+<section id="screen-pedido" class="screen">
+  <div class="screen-head"><div class="screen-head-title">Faz o teu pedido</div></div>
+  <div class="cat-bar" id="cat-bar"></div>
+  <div class="ord-list" id="ord-list"><div class="loading">A carregar o menu...</div></div>
+</section>
+
+<!-- RESUMO DO PEDIDO -->
+<section id="screen-resumo" class="screen">
+  <div class="screen-head"><div class="screen-head-title">O teu pedido</div></div>
+  <div id="resumo-form">
+    <div class="res-card" id="res-linhas"></div>
+    <div class="res-total"><span>Total</span><span id="res-total">0,00€</span></div>
+    <p class="res-alerta">Se tiveres alguma alergia, informa a nossa equipa.</p>
+    <textarea class="res-notas" id="res-notas" maxlength="300" placeholder="Escolha o ponto da carne ou acrescente/retire ingredientes"></textarea>
+    <div class="msg-error" id="res-erro" style="margin:0 16px 12px"></div>
+    <button class="btn-main res-btn" id="btn-enviar" onclick="enviarPedido()">Enviar pedido</button>
+    <button class="res-voltar" onclick="goTo('pedido')">← Voltar ao menu</button>
+  </div>
+  <div class="pedido-ok" id="resumo-ok" style="display:none">
+    <div class="ok-icon">✅</div>
+    <div class="ok-title">Pedido enviado!</div>
+    <div class="ok-sub">A equipa já recebeu o teu pedido.<br>Total: <strong id="ok-total"></strong><br>O pagamento é feito no fim, como de costume.</div>
+    <button class="btn-main res-btn" onclick="novoPedido()">Fazer outro pedido</button>
+  </div>
+</section>
+
 <!-- SCAN -->
 <section id="screen-scan" class="screen">
   <div style="display:flex;flex-direction:column;align-items:center;gap:24px;width:100%;padding:48px 28px;text-align:center">
@@ -260,9 +321,11 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
   <span style="font-size:13px;color:#fff;font-weight:500">Adiciona o Clube Hã ao teu ecrã</span>
   <button id="btn-install" style="background:#F5C842;border:none;border-radius:8px;color:var(--green);font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;padding:8px 14px;cursor:pointer;white-space:nowrap">Instalar</button>
 </div>
+<button class="cart-bar" id="cart-bar" onclick="goTo('resumo')"><span id="cart-txt"></span><span id="cart-total"></span></button>
 <nav class="bottom-nav">
   <div class="nav-item active" onclick="goTo('cartao')"><div class="nav-label">O MEU CARTÃO</div></div>
   <div class="nav-item" onclick="goTo('novidades')"><div class="nav-label">NOVIDADES</div></div>
+  <div class="nav-item" onclick="goTo('pedido')"><div class="nav-label">FAZ O TEU PEDIDO</div></div>
 </nav>
 
 </div>
@@ -271,7 +334,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 const API = 'https://ha-proxy.oxy-agency.workers.dev';
 const MURAL = 'https://ha-restaurante.com/wp-content/uploads/2024/05/mural.jpg';
 const STAMP_POS = ['0% 0%','33.3% 0%','66.6% 0%','100% 0%','0% 100%','33.3% 100%','66.6% 100%','100% 100%'];
-const NAV = { cartao: 0, novidades: 1 };
+const NAV = { cartao: 0, novidades: 1, pedido: 2, resumo: 2 };
 const S = { id: null, nome: '', apelido: '', visitas: 0 };
 
 function save() { try { localStorage.setItem('ha', JSON.stringify({ id: S.id, nome: S.nome, apelido: S.apelido })); } catch(e){} }
@@ -285,7 +348,7 @@ async function post(p) {
 
 function goTo(id) {
   // Se não está logado e tenta ir ao cartão, vai para login
-  if (id === 'cartao' && !S.id) {
+  if ((id === 'cartao' || id === 'pedido' || id === 'resumo') && !S.id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-login').classList.add('active');
     return;
@@ -296,6 +359,14 @@ function goTo(id) {
   document.querySelectorAll('.nav-item').forEach((el, i) => el.classList.toggle('active', i === (NAV[id] ?? -1)));
   if (id === 'cartao') renderCartao();
   if (id === 'novidades') loadNovidades();
+  if (id === 'pedido') loadMenu();
+  if (id === 'resumo') {
+    document.getElementById('resumo-form').style.display = '';
+    document.getElementById('resumo-ok').style.display = 'none';
+    document.getElementById('res-erro').classList.remove('show');
+    renderResumo();
+  }
+  atualizarBarra(id);
 }
 
 function goToRegisto() { document.getElementById('screen-login').classList.remove('active'); document.getElementById('screen-registo').classList.add('active'); }
@@ -494,6 +565,122 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+// ── PEDIDOS ───────────────────────────────────────────────
+let MENU = null;          // [{id, cat, nome, desc, preco}]
+let catAtiva = null;
+const CART = {};          // id -> quantidade
+
+function esc(t) { return String(t).replace(/[&<>"']/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function eur(centimos) { return (centimos / 100).toFixed(2).replace('.', ',') + '€'; }
+function itemDoMenu(id) { return MENU ? MENU.find(function(x) { return x.id === id; }) : null; }
+function cartCount() { return Object.keys(CART).reduce(function(a, id) { return a + CART[id]; }, 0); }
+function cartCentimos() {
+  return Object.keys(CART).reduce(function(a, id) { const it = itemDoMenu(id); return a + (it ? Math.round(it.preco * 100) * CART[id] : 0); }, 0);
+}
+
+async function loadMenu() {
+  const lista = document.getElementById('ord-list');
+  if (MENU) renderPedido(); else lista.innerHTML = '<div class="loading">A carregar o menu...</div>';
+  try {
+    const res = await post({ action: 'menu' });
+    if (res.ok && res.itens && res.itens.length) {
+      MENU = res.itens;
+      Object.keys(CART).forEach(function(id) { if (!itemDoMenu(id)) delete CART[id]; });   // item entretanto retirado
+      if (!catAtiva) catAtiva = MENU[0].cat;
+      renderPedido();
+    } else if (!MENU) {
+      lista.innerHTML = '<div class="news-empty">O menu não está disponível de momento.</div>';
+    }
+  } catch (e) {
+    if (!MENU) lista.innerHTML = '<div class="news-empty">Sem ligação. Tenta mais tarde.</div>';
+  }
+}
+
+function qtyHtml(id, q) {
+  const mais = '<button class="qty-btn" data-act="mais" data-id="' + esc(id) + '" aria-label="Adicionar">+</button>';
+  if (q <= 0) return '<div class="qty">' + mais + '</div>';
+  return '<div class="qty"><button class="qty-btn minus" data-act="menos" data-id="' + esc(id) + '" aria-label="Retirar">−</button><span class="qty-n">' + q + '</span>' + mais + '</div>';
+}
+
+function renderPedido() {
+  if (!MENU) return;
+  const cats = MENU.map(function(i) { return i.cat; }).filter(function(c, k, a) { return a.indexOf(c) === k; });
+  if (cats.indexOf(catAtiva) < 0) catAtiva = cats[0];
+  document.getElementById('cat-bar').innerHTML = cats.map(function(c) {
+    return '<button class="cat-pill' + (c === catAtiva ? ' active' : '') + '" data-cat="' + esc(c) + '">' + esc(c) + '</button>';
+  }).join('');
+  document.getElementById('ord-list').innerHTML = MENU.filter(function(i) { return i.cat === catAtiva; }).map(function(it) {
+    return '<div class="ord-item" data-id="' + esc(it.id) + '"><div class="ord-info"><div class="ord-name">' + esc(it.nome) + '</div>' +
+      (it.desc ? '<div class="ord-desc">' + esc(it.desc) + '</div>' : '') +
+      '<div class="ord-price">' + eur(Math.round(it.preco * 100)) + '</div></div>' + qtyHtml(it.id, CART[it.id] || 0) + '</div>';
+  }).join('');
+  atualizarBarra('pedido');
+}
+
+function renderResumo() {
+  const ids = Object.keys(CART).filter(function(id) { return CART[id] > 0 && itemDoMenu(id); });
+  if (!ids.length) { goTo('pedido'); return; }
+  document.getElementById('res-linhas').innerHTML = ids.map(function(id) {
+    const it = itemDoMenu(id), q = CART[id];
+    return '<div class="res-line"><div class="res-name">' + esc(it.nome) + '</div>' + qtyHtml(id, q) +
+      '<div class="res-sub">' + eur(Math.round(it.preco * 100) * q) + '</div></div>';
+  }).join('');
+  document.getElementById('res-total').textContent = eur(cartCentimos());
+}
+
+function atualizarBarra(ecra) {
+  const n = cartCount();
+  document.getElementById('cart-txt').textContent = 'Ver pedido · ' + n + (n === 1 ? ' item' : ' itens');
+  document.getElementById('cart-total').textContent = eur(cartCentimos());
+  const visivel = ecra ? ecra === 'pedido' : document.getElementById('screen-pedido').classList.contains('active');
+  document.getElementById('cart-bar').classList.toggle('show', visivel && n > 0);
+}
+
+function mudarQtd(id, delta) {
+  if (!itemDoMenu(id)) return;
+  const n = Math.max(0, Math.min(20, (CART[id] || 0) + delta));
+  if (n === 0) delete CART[id]; else CART[id] = n;
+  if (document.getElementById('screen-resumo').classList.contains('active')) renderResumo();
+  else renderPedido();
+}
+
+document.addEventListener('click', function(e) {
+  const b = e.target.closest ? e.target.closest('.qty-btn') : null;
+  if (b) { mudarQtd(b.getAttribute('data-id'), b.getAttribute('data-act') === 'mais' ? 1 : -1); return; }
+  const p = e.target.closest ? e.target.closest('.cat-pill') : null;
+  if (p) { catAtiva = p.getAttribute('data-cat'); renderPedido(); }
+});
+
+async function enviarPedido() {
+  const err = document.getElementById('res-erro');
+  err.classList.remove('show');
+  const itens = Object.keys(CART).filter(function(id) { return CART[id] > 0; }).map(function(id) { return { i: id, q: CART[id] }; });
+  if (!itens.length) { goTo('pedido'); return; }
+  const notas = document.getElementById('res-notas').value.trim();
+  const btn = document.getElementById('btn-enviar');
+  btn.disabled = true; btn.textContent = 'A enviar...';
+  try {
+    const res = await post({ action: 'pedido', id: S.id, itens: JSON.stringify(itens), notas: notas });
+    if (res.ok) {
+      Object.keys(CART).forEach(function(id) { delete CART[id]; });
+      document.getElementById('res-notas').value = '';
+      document.getElementById('ok-total').textContent = res.total + '€';
+      document.getElementById('resumo-form').style.display = 'none';
+      document.getElementById('resumo-ok').style.display = 'block';
+      atualizarBarra('resumo');
+    } else {
+      err.textContent = res.erro || 'Não foi possível enviar o pedido. Fala com a equipa.';
+      err.classList.add('show');
+    }
+  } catch (e) {
+    err.textContent = 'Sem ligação. Verifica a internet e tenta novamente.';
+    err.classList.add('show');
+  }
+  btn.disabled = false; btn.textContent = 'Enviar pedido';
+}
+
+function novoPedido() { goTo('pedido'); }
 
 // ── INIT ──────────────────────────────────────────────────
 (function() {
