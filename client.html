@@ -126,8 +126,8 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 
 /* ── NAV ── */
 .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: rgba(247,245,240,.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--border); display: flex; z-index: 200; }
-.nav-item { flex: 1; display: flex; align-items: center; justify-content: center; padding: 14px 4px; cursor: pointer; }
-.nav-label { font-family: 'Nunito', sans-serif; font-size: 13px; line-height: 1.2; font-weight: 900; color: var(--muted); text-align: center; }
+.nav-item { flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px 8px; cursor: pointer; }
+.nav-label { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 900; color: var(--muted); text-align: center; }
 .nav-item.active .nav-label { color: var(--green); }
 .nav-item:not(.active) { opacity: .35; }
 
@@ -325,7 +325,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 <nav class="bottom-nav">
   <div class="nav-item active" onclick="goTo('cartao')"><div class="nav-label">O MEU CARTÃO</div></div>
   <div class="nav-item" onclick="goTo('novidades')"><div class="nav-label">NOVIDADES</div></div>
-  <div class="nav-item" onclick="goTo('pedido')"><div class="nav-label">FAZ O TEU PEDIDO</div></div>
+  <div class="nav-item" onclick="goTo('pedido')"><div class="nav-label">PEDIDO</div></div>
 </nav>
 
 </div>
