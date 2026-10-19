@@ -278,6 +278,7 @@ function save() { try { localStorage.setItem('ha', JSON.stringify({ id: S.id, no
 function load() { try { return JSON.parse(localStorage.getItem('ha') || 'null'); } catch(e){ return null; } }
 async function post(p) {
   const params = new URLSearchParams(p);
+  params.set('token', '58D896A2D40ACBFF13DA8A436E4EFBB0');
   const r = await fetch(API + '?' + params.toString());
   return r.json();
 }

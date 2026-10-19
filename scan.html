@@ -96,7 +96,9 @@ const API = 'https://ha-proxy.oxy-agency.workers.dev';
 const MURAL = 'https://ha-restaurante.com/wp-content/uploads/2024/05/mural.jpg';
 
 async function post(p) {
-  const r = await fetch(API + '?' + new URLSearchParams(p).toString());
+  const params = new URLSearchParams(p);
+  params.set('token', '58D896A2D40ACBFF13DA8A436E4EFBB0');
+  const r = await fetch(API + '?' + params.toString());
   return r.json();
 }
 
