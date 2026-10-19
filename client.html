@@ -256,7 +256,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 </section>
 
 <!-- NAV -->
-<div id="install-banner" style="display:none;position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--green);padding:12px 16px;align-items:center;justify-content:space-between;gap:12px;z-index:300">
+<div id="install-banner" style="display:none;position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--green);padding:12px 16px;align-items:center;justify-content:space-between;gap:12px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.15)">
   <span style="font-size:13px;color:#fff;font-weight:500">Adiciona o Clube Hã ao teu ecrã</span>
   <button id="btn-install" style="background:#F5C842;border:none;border-radius:8px;color:var(--green);font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;padding:8px 14px;cursor:pointer;white-space:nowrap">Instalar</button>
 </div>
@@ -475,7 +475,10 @@ let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  document.getElementById('install-banner').style.display = 'flex';
+  const banner = document.getElementById('install-banner');
+  banner.style.display = 'flex';
+  // Adiciona espaço no topo para o conteúdo não ficar tapado
+  document.querySelector('.app').style.paddingTop = '56px';
 });
 
 document.addEventListener('DOMContentLoaded', function() {
