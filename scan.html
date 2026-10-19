@@ -185,10 +185,11 @@ async function init() {
           <a href="https://clube.ha-restaurante.com/client.html" class="btn">Ver o meu cartão</a>`;
       }
     } else {
+      var jaHoje = (res.codigo === 'JA_REGISTADO');
       document.getElementById('content').innerHTML = `
-        <div class="icon">❌</div>
-        <div class="title">Código inválido</div>
-        <div class="sub">${res.erro || 'Este código já expirou ou não é válido. Pede ao empregado o código do dia.'}</div>
+        <div class="icon">${jaHoje ? '⚠️' : '❌'}</div>
+        <div class="title">${jaHoje ? 'Já registaste hoje' : 'Código inválido'}</div>
+        <div class="sub">${jaHoje ? 'Só é possível acumular uma refeição por dia. Até à tua próxima visita!' : (res.erro || 'Este código já expirou ou não é válido. Pede ao empregado o código do dia.')}</div>
         <a href="https://clube.ha-restaurante.com/client.html" class="btn" style="margin-top:8px">Voltar à app</a>`;
     }
   } catch(e) {
