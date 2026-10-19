@@ -85,7 +85,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 .scan-btn-arrow { margin-left: auto; color: var(--muted); font-size: 22px; }
 
 /* ── NOVIDADES ── */
-#screen-novidades { padding: 20px 0 0; }
+#screen-novidades { padding: 20px 0 170px; }
 .screen-head { display: flex; align-items: center; gap: 10px; padding: 0 20px 14px; }
 .screen-head img { height: 26px; }
 .screen-head-title { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: var(--green); }
@@ -132,12 +132,16 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 .nav-item:not(.active) { opacity: .35; }
 
 /* ── PEDIDOS ── */
-#screen-pedido, #screen-resumo { padding: 20px 0 0; }
+#screen-resumo { padding: 20px 0 170px; }
+#screen-pedido { padding: 20px 0 0; }
+/* (a) categorias sempre visíveis: só a lista de pratos faz scroll */
+#screen-pedido.active { height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; }
+#screen-pedido .screen-head, #screen-pedido .cat-bar { flex: 0 0 auto; }
 .cat-bar { display: flex; gap: 8px; overflow-x: auto; padding: 0 16px 12px; scrollbar-width: none; }
 .cat-bar::-webkit-scrollbar { display: none; }
 .cat-pill { flex: 0 0 auto; background: var(--surface); border: 1.5px solid var(--border); border-radius: 20px; padding: 8px 14px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; color: var(--muted); cursor: pointer; white-space: nowrap; }
 .cat-pill.active { background: var(--green); border-color: var(--green); color: #fff; }
-.ord-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+.ord-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 4px 16px 170px; display: flex; flex-direction: column; gap: 10px; }
 .ord-item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; display: flex; gap: 12px; align-items: center; }
 .ord-info { flex: 1; min-width: 0; }
 .ord-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
@@ -152,7 +156,9 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 .res-card { margin: 0 16px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 4px 14px; }
 .res-line { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--surface2); }
 .res-line:last-child { border-bottom: none; }
-.res-name { flex: 1; font-size: 14px; font-weight: 600; min-width: 0; }
+.res-info { flex: 1; min-width: 0; }
+.res-name { font-size: 14px; font-weight: 600; }
+.res-opc { font-size: 12px; color: var(--muted); line-height: 1.4; margin-top: 2px; }
 .res-sub { font-family: 'Nunito', sans-serif; font-weight: 900; color: var(--green); font-size: 14px; min-width: 62px; text-align: right; }
 .res-total { display: flex; justify-content: space-between; margin: 0 20px 12px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 18px; }
 .res-alerta { margin: 0 20px 10px; font-size: 12px; color: var(--muted); line-height: 1.5; }
@@ -164,6 +170,26 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 .pedido-ok .ok-icon { font-size: 56px; }
 .pedido-ok .ok-title { font-family: 'Nunito', sans-serif; font-size: 24px; font-weight: 900; color: var(--green); margin: 12px 0 8px; }
 .pedido-ok .ok-sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+
+/* ── PAINEL DE ESCOLHAS ── */
+.opc-fundo { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 400; display: none; align-items: flex-end; justify-content: center; }
+.opc-fundo.show { display: flex; }
+.opc-folha { background: var(--bg); width: 100%; max-width: 480px; max-height: 88vh; max-height: 88dvh; border-radius: 22px 22px 0 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -8px 30px rgba(0,0,0,.25); }
+.opc-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 18px 20px 10px; }
+.opc-nome { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 20px; color: var(--green); }
+.opc-desc { font-size: 12px; color: var(--muted); line-height: 1.5; margin-top: 4px; }
+.opc-fechar { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; border: none; background: var(--surface2); color: var(--text); font-size: 20px; line-height: 1; cursor: pointer; }
+.opc-corpo { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 4px 20px 12px; }
+.opc-grupo { margin-bottom: 16px; }
+.opc-perg { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 15px; margin-bottom: 8px; }
+.opc-tag { font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 10px; margin-left: 6px; background: var(--surface2); color: var(--muted); letter-spacing: .3px; vertical-align: middle; }
+.opc-tag.obrig { background: var(--yellow); color: var(--green); }
+.opc-lista { display: flex; flex-direction: column; gap: 8px; }
+.opc-op { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; text-align: left; background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 13px 14px; font-family: 'Inter', sans-serif; font-size: 15px; color: var(--text); cursor: pointer; }
+.opc-op.sel { border-color: var(--green); background: #EAF3EF; font-weight: 600; }
+.opc-extra { font-family: 'Nunito', sans-serif; font-weight: 900; color: var(--green); font-size: 14px; white-space: nowrap; }
+.opc-rodape { padding: 10px 20px calc(18px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--border); background: var(--bg); }
+.opc-erro { font-size: 12px; color: #B3261E; min-height: 16px; margin-bottom: 8px; }
 .loading { padding: 32px; text-align: center; color: var(--muted); font-size: 14px; }
 </style>
 </head>
@@ -276,7 +302,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
     <div class="res-card" id="res-linhas"></div>
     <div class="res-total"><span>Total</span><span id="res-total">0,00€</span></div>
     <p class="res-alerta">Se tiveres alguma alergia, informa a nossa equipa.</p>
-    <textarea class="res-notas" id="res-notas" maxlength="300" placeholder="Escolha o ponto da carne, altere o acompanhamento ou acrescente/retire ingredientes"></textarea>
+    <textarea class="res-notas" id="res-notas" maxlength="300" placeholder="Aproveite este campo caso tenha alguma observação como, por exemplo, acrescentar ou retirar ingredientes."></textarea>
     <div class="msg-error" id="res-erro" style="margin:0 16px 12px"></div>
     <button class="btn-main res-btn" id="btn-enviar" onclick="enviarPedido()">Enviar pedido</button>
     <button class="res-voltar" onclick="goTo('pedido')">← Voltar ao menu</button>
@@ -320,6 +346,20 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 <div id="install-banner" style="display:none;position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--green);padding:12px 16px;align-items:center;justify-content:space-between;gap:12px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.15)">
   <span style="font-size:13px;color:#fff;font-weight:500">Adiciona o Clube Hã ao teu ecrã</span>
   <button id="btn-install" style="background:#F5C842;border:none;border-radius:8px;color:var(--green);font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;padding:8px 14px;cursor:pointer;white-space:nowrap">Instalar</button>
+</div>
+<!-- PAINEL DE ESCOLHAS DO PRATO -->
+<div class="opc-fundo" id="opc-fundo">
+  <div class="opc-folha" role="dialog" aria-modal="true" aria-labelledby="opc-nome">
+    <div class="opc-topo">
+      <div><div class="opc-nome" id="opc-nome"></div><div class="opc-desc" id="opc-desc"></div></div>
+      <button class="opc-fechar" id="opc-fechar" aria-label="Fechar">×</button>
+    </div>
+    <div class="opc-corpo" id="opc-corpo"></div>
+    <div class="opc-rodape">
+      <div class="opc-erro" id="opc-erro"></div>
+      <button class="btn-main" id="opc-add">Adicionar ao pedido</button>
+    </div>
+  </div>
 </div>
 <button class="cart-bar" id="cart-bar" onclick="goTo('resumo')"><span id="cart-txt"></span><span id="cart-total"></span></button>
 <nav class="bottom-nav">
@@ -567,16 +607,53 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── PEDIDOS ───────────────────────────────────────────────
-let MENU = null;          // [{id, cat, nome, desc, preco}]
+let MENU = null;          // [{id, cat, nome, desc, preco, grupos:[nomes]}]
+let GRUPOS = {};          // nome -> {pergunta, obrigatorio, max, opcoes:[{n, extra}]}
 let catAtiva = null;
-const CART = {};          // id -> quantidade
+const CART = {};          // chave da linha -> quantidade (sem escolhas, a chave é o id do prato)
+const LINES = {};         // chave da linha -> {i: id do prato, o: {grupo: [opções]}}
+let PAINEL = null;        // prato aberto no painel de escolhas: {id, sel: {grupo: [opções]}}
 
 function esc(t) { return String(t).replace(/[&<>"']/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 function eur(centimos) { return (centimos / 100).toFixed(2).replace('.', ',') + '€'; }
 function itemDoMenu(id) { return MENU ? MENU.find(function(x) { return x.id === id; }) : null; }
-function cartCount() { return Object.keys(CART).reduce(function(a, id) { return a + CART[id]; }, 0); }
+function gruposDo(it) { return ((it && it.grupos) || []).filter(function(g) { return GRUPOS[g]; }); }
+function chaveLinha(id, o) {
+  const partes = Object.keys(o || {}).sort().filter(function(g) { return o[g] && o[g].length; }).map(function(g) { return g + '=' + o[g].join(','); });
+  return partes.length ? id + '|' + partes.join(';') : id;
+}
+function extraCents(o) {
+  let c = 0;
+  Object.keys(o || {}).forEach(function(g) {
+    (o[g] || []).forEach(function(n) {
+      const op = GRUPOS[g] && GRUPOS[g].opcoes.find(function(x) { return x.n === n; });
+      if (op) c += Math.round(op.extra * 100);
+    });
+  });
+  return c;
+}
+function unitCents(it, o) { return Math.round(it.preco * 100) + extraCents(o); }
+function cartCount() { return Object.keys(CART).reduce(function(a, k) { return a + CART[k]; }, 0); }
 function cartCentimos() {
-  return Object.keys(CART).reduce(function(a, id) { const it = itemDoMenu(id); return a + (it ? Math.round(it.preco * 100) * CART[id] : 0); }, 0);
+  return Object.keys(CART).reduce(function(a, k) {
+    const ln = LINES[k], it = ln && itemDoMenu(ln.i);
+    return a + (it ? unitCents(it, ln.o) * CART[k] : 0);
+  }, 0);
+}
+function qtdDoPrato(id) { return Object.keys(CART).reduce(function(a, k) { return a + (LINES[k] && LINES[k].i === id ? CART[k] : 0); }, 0); }
+
+// uma linha do carrinho continua válida se o prato, os grupos e as opções ainda existem e as obrigatórias estão preenchidas
+function linhaValida(ln) {
+  const it = itemDoMenu(ln.i);
+  if (!it) return false;
+  const gs = gruposDo(it);
+  const o = ln.o || {};
+  for (const g of Object.keys(o)) {
+    if (gs.indexOf(g) < 0) return false;
+    for (const n of o[g]) if (!GRUPOS[g].opcoes.some(function(x) { return x.n === n; })) return false;
+  }
+  for (const g of gs) if (GRUPOS[g].obrigatorio && !(o[g] && o[g].length)) return false;
+  return true;
 }
 
 async function loadMenu() {
@@ -585,8 +662,9 @@ async function loadMenu() {
   try {
     const res = await post({ action: 'menu' });
     if (res.ok && res.itens && res.itens.length) {
-      MENU = res.itens;
-      Object.keys(CART).forEach(function(id) { if (!itemDoMenu(id)) delete CART[id]; });   // item entretanto retirado
+      MENU = res.itens; GRUPOS = res.grupos || {};
+      Object.keys(CART).forEach(function(k) { if (!LINES[k] || !linhaValida(LINES[k])) { delete CART[k]; delete LINES[k]; } });   // prato ou opção entretanto retirados
+      if (PAINEL && !itemDoMenu(PAINEL.id)) fecharPainel();
       if (!catAtiva) catAtiva = MENU[0].cat;
       renderPedido();
     } else if (!MENU) {
@@ -597,10 +675,10 @@ async function loadMenu() {
   }
 }
 
-function qtyHtml(id, q) {
-  const mais = '<button class="qty-btn" data-act="mais" data-id="' + esc(id) + '" aria-label="Adicionar">+</button>';
+function qtyHtml(key, q) {
+  const mais = '<button class="qty-btn" data-act="mais" data-key="' + esc(key) + '" aria-label="Adicionar">+</button>';
   if (q <= 0) return '<div class="qty">' + mais + '</div>';
-  return '<div class="qty"><button class="qty-btn minus" data-act="menos" data-id="' + esc(id) + '" aria-label="Retirar">−</button><span class="qty-n">' + q + '</span>' + mais + '</div>';
+  return '<div class="qty"><button class="qty-btn minus" data-act="menos" data-key="' + esc(key) + '" aria-label="Retirar">−</button><span class="qty-n">' + q + '</span>' + mais + '</div>';
 }
 
 function renderPedido() {
@@ -611,20 +689,39 @@ function renderPedido() {
     return '<button class="cat-pill' + (c === catAtiva ? ' active' : '') + '" data-cat="' + esc(c) + '">' + esc(c) + '</button>';
   }).join('');
   document.getElementById('ord-list').innerHTML = MENU.filter(function(i) { return i.cat === catAtiva; }).map(function(it) {
+    let ctrl;
+    if (gruposDo(it).length) {          // prato com escolhas: o + abre o painel
+      const n = qtdDoPrato(it.id);
+      ctrl = '<div class="qty">' + (n ? '<span class="qty-n">' + n + '</span>' : '') +
+        '<button class="qty-btn" data-abrir="' + esc(it.id) + '" aria-label="Escolher e adicionar">+</button></div>';
+    } else {
+      ctrl = qtyHtml(it.id, CART[it.id] || 0);
+    }
     return '<div class="ord-item" data-id="' + esc(it.id) + '"><div class="ord-info"><div class="ord-name">' + esc(it.nome) + '</div>' +
       (it.desc ? '<div class="ord-desc">' + esc(it.desc) + '</div>' : '') +
-      '<div class="ord-price">' + eur(Math.round(it.preco * 100)) + '</div></div>' + qtyHtml(it.id, CART[it.id] || 0) + '</div>';
+      '<div class="ord-price">' + eur(Math.round(it.preco * 100)) + '</div></div>' + ctrl + '</div>';
   }).join('');
   atualizarBarra('pedido');
 }
 
+function opcoesTexto(it, o) {
+  return gruposDo(it).filter(function(g) { return o && o[g] && o[g].length; }).map(function(g) {
+    return o[g].map(function(n) {
+      const op = GRUPOS[g].opcoes.find(function(x) { return x.n === n; });
+      return esc(n) + (op && op.extra > 0 ? ' (+' + eur(Math.round(op.extra * 100)) + ')' : '');
+    }).join(', ');
+  }).join(' · ');
+}
+
 function renderResumo() {
-  const ids = Object.keys(CART).filter(function(id) { return CART[id] > 0 && itemDoMenu(id); });
-  if (!ids.length) { goTo('pedido'); return; }
-  document.getElementById('res-linhas').innerHTML = ids.map(function(id) {
-    const it = itemDoMenu(id), q = CART[id];
-    return '<div class="res-line"><div class="res-name">' + esc(it.nome) + '</div>' + qtyHtml(id, q) +
-      '<div class="res-sub">' + eur(Math.round(it.preco * 100) * q) + '</div></div>';
+  const keys = Object.keys(CART).filter(function(k) { return CART[k] > 0 && LINES[k] && itemDoMenu(LINES[k].i); });
+  if (!keys.length) { goTo('pedido'); return; }
+  document.getElementById('res-linhas').innerHTML = keys.map(function(k) {
+    const ln = LINES[k], it = itemDoMenu(ln.i), q = CART[k];
+    const op = opcoesTexto(it, ln.o);
+    return '<div class="res-line"><div class="res-info"><div class="res-name">' + esc(it.nome) + '</div>' +
+      (op ? '<div class="res-opc">' + op + '</div>' : '') + '</div>' + qtyHtml(k, q) +
+      '<div class="res-sub">' + eur(unitCents(it, ln.o) * q) + '</div></div>';
   }).join('');
   document.getElementById('res-total').textContent = eur(cartCentimos());
 }
@@ -637,25 +734,108 @@ function atualizarBarra(ecra) {
   document.getElementById('cart-bar').classList.toggle('show', visivel && n > 0);
 }
 
-function mudarQtd(id, delta) {
-  if (!itemDoMenu(id)) return;
-  const n = Math.max(0, Math.min(20, (CART[id] || 0) + delta));
-  if (n === 0) delete CART[id]; else CART[id] = n;
+function mudarLinha(key, delta) {
+  if (!LINES[key]) {                    // 1.ª vez de um prato sem escolhas
+    const it = itemDoMenu(key);
+    if (delta > 0 && it && !gruposDo(it).length) LINES[key] = { i: key, o: {} }; else return;
+  }
+  const n = Math.max(0, Math.min(20, (CART[key] || 0) + delta));
+  if (n === 0) { delete CART[key]; delete LINES[key]; } else CART[key] = n;
   if (document.getElementById('screen-resumo').classList.contains('active')) renderResumo();
   else renderPedido();
 }
 
+/* ---------- painel de escolhas ---------- */
+function abrirPainel(id) {
+  const it = itemDoMenu(id);
+  if (!it || !gruposDo(it).length) return;
+  PAINEL = { id: id, sel: {} };
+  document.getElementById('opc-nome').textContent = it.nome;
+  document.getElementById('opc-desc').textContent = it.desc || '';
+  document.getElementById('opc-fundo').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  renderPainel();
+  document.getElementById('opc-corpo').scrollTop = 0;
+}
+function fecharPainel() {
+  PAINEL = null;
+  document.getElementById('opc-fundo').classList.remove('show');
+  document.body.style.overflow = '';
+}
+function faltaEscolher() {
+  const it = itemDoMenu(PAINEL.id);
+  return gruposDo(it).filter(function(g) { return GRUPOS[g].obrigatorio && !(PAINEL.sel[g] && PAINEL.sel[g].length); });
+}
+function renderPainel() {
+  if (!PAINEL) return;
+  const it = itemDoMenu(PAINEL.id);
+  document.getElementById('opc-corpo').innerHTML = gruposDo(it).map(function(g) {
+    const def = GRUPOS[g], sel = PAINEL.sel[g] || [];
+    let h = '<div class="opc-grupo"><div class="opc-perg">' + esc(def.pergunta) +
+      '<span class="opc-tag' + (def.obrigatorio ? ' obrig' : '') + '">' + (def.obrigatorio ? 'obrigatório' : 'opcional') + (def.max > 1 ? ' · até ' + def.max : '') + '</span></div><div class="opc-lista">';
+    if (!def.obrigatorio && def.max === 1) {
+      h += '<button class="opc-op' + (sel.length ? '' : ' sel') + '" data-g="' + esc(g) + '" data-n=""><span>Manter como está</span></button>';
+    }
+    h += def.opcoes.map(function(o) {
+      return '<button class="opc-op' + (sel.indexOf(o.n) >= 0 ? ' sel' : '') + '" data-g="' + esc(g) + '" data-n="' + esc(o.n) + '"><span>' + esc(o.n) + '</span>' +
+        (o.extra > 0 ? '<span class="opc-extra">+' + eur(Math.round(o.extra * 100)) + '</span>' : '') + '</button>';
+    }).join('');
+    return h + '</div></div>';
+  }).join('');
+  const falta = faltaEscolher();
+  document.getElementById('opc-erro').textContent = falta.length ? 'Falta escolher: ' + falta.map(function(g) { return GRUPOS[g].pergunta.replace(/^Escolha /, '').replace(/\?$/, ''); }).join(' · ') : '';
+  const btn = document.getElementById('opc-add');
+  btn.disabled = falta.length > 0;
+  btn.textContent = 'Adicionar ao pedido · ' + eur(unitCents(it, PAINEL.sel));
+}
+function escolher(g, n) {
+  const def = GRUPOS[g];
+  if (!PAINEL || !def) return;
+  let sel = (PAINEL.sel[g] || []).slice();
+  if (n === '') sel = [];
+  else if (def.max === 1) sel = (sel[0] === n && !def.obrigatorio) ? [] : [n];
+  else { const i = sel.indexOf(n); if (i >= 0) sel.splice(i, 1); else if (sel.length < def.max) sel.push(n); }
+  if (sel.length) PAINEL.sel[g] = sel; else delete PAINEL.sel[g];
+  renderPainel();
+}
+function adicionarDoPainel() {
+  if (!PAINEL || faltaEscolher().length) return;
+  const it = itemDoMenu(PAINEL.id);
+  const o = {};
+  gruposDo(it).forEach(function(g) { if (PAINEL.sel[g] && PAINEL.sel[g].length) o[g] = PAINEL.sel[g].slice(); });
+  const key = chaveLinha(it.id, o);
+  LINES[key] = { i: it.id, o: o };
+  CART[key] = Math.min(20, (CART[key] || 0) + 1);
+  fecharPainel();
+  renderPedido();
+}
+
 document.addEventListener('click', function(e) {
-  const b = e.target.closest ? e.target.closest('.qty-btn') : null;
-  if (b) { mudarQtd(b.getAttribute('data-id'), b.getAttribute('data-act') === 'mais' ? 1 : -1); return; }
-  const p = e.target.closest ? e.target.closest('.cat-pill') : null;
-  if (p) { catAtiva = p.getAttribute('data-cat'); renderPedido(); }
+  const t = e.target;
+  if (!t.closest) return;
+  const op = t.closest('.opc-op');
+  if (op) { escolher(op.getAttribute('data-g'), op.getAttribute('data-n')); return; }
+  if (t.closest('#opc-add')) { adicionarDoPainel(); return; }
+  if (t.closest('#opc-fechar') || t === document.getElementById('opc-fundo')) { fecharPainel(); return; }
+  const b = t.closest('.qty-btn');
+  if (b) {
+    const abrir = b.getAttribute('data-abrir');
+    if (abrir) abrirPainel(abrir);
+    else mudarLinha(b.getAttribute('data-key'), b.getAttribute('data-act') === 'mais' ? 1 : -1);
+    return;
+  }
+  const p = t.closest('.cat-pill');
+  if (p) { catAtiva = p.getAttribute('data-cat'); renderPedido(); document.getElementById('ord-list').scrollTop = 0; }
 });
 
 async function enviarPedido() {
   const err = document.getElementById('res-erro');
   err.classList.remove('show');
-  const itens = Object.keys(CART).filter(function(id) { return CART[id] > 0; }).map(function(id) { return { i: id, q: CART[id] }; });
+  const itens = Object.keys(CART).filter(function(k) { return CART[k] > 0 && LINES[k]; }).map(function(k) {
+    const ln = LINES[k], r = { i: ln.i, q: CART[k] };
+    if (ln.o && Object.keys(ln.o).length) r.o = ln.o;
+    return r;
+  });
   if (!itens.length) { goTo('pedido'); return; }
   const notas = document.getElementById('res-notas').value.trim();
   const btn = document.getElementById('btn-enviar');
@@ -663,7 +843,8 @@ async function enviarPedido() {
   try {
     const res = await post({ action: 'pedido', id: S.id, itens: JSON.stringify(itens), notas: notas });
     if (res.ok) {
-      Object.keys(CART).forEach(function(id) { delete CART[id]; });
+      Object.keys(CART).forEach(function(k) { delete CART[k]; });
+      Object.keys(LINES).forEach(function(k) { delete LINES[k]; });
       document.getElementById('res-notas').value = '';
       document.getElementById('ok-total').textContent = res.total + '€';
       document.getElementById('resumo-form').style.display = 'none';

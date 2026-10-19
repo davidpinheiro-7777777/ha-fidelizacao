@@ -73,6 +73,7 @@ body.logado { padding-top: 64px; }
 .o-itens { list-style: none; margin-bottom: 8px; }
 .o-itens li { font-size: 17px; padding: 3px 0; }
 .o-itens b { font-family: 'Nunito', sans-serif; color: #1A5C4A; margin-right: 6px; }
+.o-opc { font-size: 15px; font-weight: 700; color: #B03A2E; margin: 1px 0 6px 30px; line-height: 1.35; }
 .o-notas { background: #FFF6D6; border-radius: 10px; padding: 10px 12px; font-size: 15px; margin-bottom: 10px; }
 .o-btn { width: 100%; border: none; border-radius: 12px; padding: 14px; font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 900; cursor: pointer; background: #1A5C4A; color: #fff; }
 .o-card.feito .o-btn { background: #E0DDD6; color: #555; font-size: 14px; }
@@ -326,6 +327,7 @@ function cartao(p) {
     var li = el('li');
     li.appendChild(el('b', '', i.q + '×'));
     li.appendChild(document.createTextNode(i.n));
+    if (i.o && i.o.length) li.appendChild(el('div', 'o-opc', i.o.join(' · ')));
     ul.appendChild(li);
   });
   c.appendChild(ul);
