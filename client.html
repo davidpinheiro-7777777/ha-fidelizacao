@@ -187,6 +187,9 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 .opc-lista { display: flex; flex-direction: column; gap: 8px; }
 .opc-op { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; text-align: left; background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 13px 14px; font-family: 'Inter', sans-serif; font-size: 15px; color: var(--text); cursor: pointer; }
 .opc-op.sel { border-color: var(--green); background: #EAF3EF; font-weight: 600; }
+/* ingredientes a retirar: ao escolher, ficam riscados */
+.opc-grupo.rem .opc-op.sel { border-color: #B3261E; background: #FDECEA; }
+.opc-grupo.rem .opc-op.sel span:first-child { text-decoration: line-through; color: #B3261E; }
 .opc-extra { font-family: 'Nunito', sans-serif; font-weight: 900; color: var(--green); font-size: 14px; white-space: nowrap; }
 .opc-rodape { padding: 10px 20px calc(18px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--border); background: var(--bg); }
 .opc-erro { font-size: 12px; color: #B3261E; min-height: 16px; margin-bottom: 8px; }
@@ -704,11 +707,14 @@ function renderPedido() {
   atualizarBarra('pedido');
 }
 
+// com prefixo (ex.: "Sem") a escolha lê-se "Sem alface"; sem prefixo fica o próprio nome
+function rotulo(def, n) { return def.prefixo ? def.prefixo + ' ' + n.charAt(0).toLowerCase() + n.slice(1) : n; }
+
 function opcoesTexto(it, o) {
   return gruposDo(it).filter(function(g) { return o && o[g] && o[g].length; }).map(function(g) {
     return o[g].map(function(n) {
       const op = GRUPOS[g].opcoes.find(function(x) { return x.n === n; });
-      return esc(n) + (op && op.extra > 0 ? ' (+' + eur(Math.round(op.extra * 100)) + ')' : '');
+      return esc(rotulo(GRUPOS[g], n)) + (op && op.extra > 0 ? ' (+' + eur(Math.round(op.extra * 100)) + ')' : '');
     }).join(', ');
   }).join(' · ');
 }
@@ -771,8 +777,8 @@ function renderPainel() {
   const it = itemDoMenu(PAINEL.id);
   document.getElementById('opc-corpo').innerHTML = gruposDo(it).map(function(g) {
     const def = GRUPOS[g], sel = PAINEL.sel[g] || [];
-    let h = '<div class="opc-grupo"><div class="opc-perg">' + esc(def.pergunta) +
-      '<span class="opc-tag' + (def.obrigatorio ? ' obrig' : '') + '">' + (def.obrigatorio ? 'obrigatório' : 'opcional') + (def.max > 1 ? ' · até ' + def.max : '') + '</span></div><div class="opc-lista">';
+    let h = '<div class="opc-grupo' + (def.prefixo ? ' rem' : '') + '"><div class="opc-perg">' + esc(def.pergunta) +
+      '<span class="opc-tag' + (def.obrigatorio ? ' obrig' : '') + '">' + (def.obrigatorio ? 'obrigatório' : 'opcional') + (def.max > 1 && def.max < def.opcoes.length ? ' · até ' + def.max : '') + '</span></div><div class="opc-lista">';
     if (!def.obrigatorio && def.max === 1) {
       h += '<button class="opc-op' + (sel.length ? '' : ' sel') + '" data-g="' + esc(g) + '" data-n=""><span>Manter como está</span></button>';
     }
@@ -783,7 +789,7 @@ function renderPainel() {
     return h + '</div></div>';
   }).join('');
   const falta = faltaEscolher();
-  document.getElementById('opc-erro').textContent = falta.length ? 'Falta escolher: ' + falta.map(function(g) { return GRUPOS[g].pergunta.replace(/^Escolha /, '').replace(/\?$/, ''); }).join(' · ') : '';
+  document.getElementById('opc-erro').textContent = falta.length ? 'Falta escolher: ' + falta.map(function(g) { return GRUPOS[g].pergunta.replace(/^Escolh[ae] /, '').replace(/\?$/, ''); }).join(' · ') : '';
   const btn = document.getElementById('opc-add');
   btn.disabled = falta.length > 0;
   btn.textContent = 'Adicionar ao pedido · ' + eur(unitCents(it, PAINEL.sel));
@@ -802,7 +808,9 @@ function adicionarDoPainel() {
   if (!PAINEL || faltaEscolher().length) return;
   const it = itemDoMenu(PAINEL.id);
   const o = {};
-  gruposDo(it).forEach(function(g) { if (PAINEL.sel[g] && PAINEL.sel[g].length) o[g] = PAINEL.sel[g].slice(); });
+  gruposDo(it).forEach(function(g) {
+    if (PAINEL.sel[g] && PAINEL.sel[g].length) o[g] = GRUPOS[g].opcoes.map(function(x) { return x.n; }).filter(function(n) { return PAINEL.sel[g].indexOf(n) >= 0; });   // pela ordem da Sheet
+  });
   const key = chaveLinha(it.id, o);
   LINES[key] = { i: it.id, o: o };
   CART[key] = Math.min(20, (CART[key] || 0) + 1);
