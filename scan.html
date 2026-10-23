@@ -163,7 +163,7 @@ async function init() {
 
   // Regista a visita
   try {
-    const res = await post({ action: 'scan', qr: code, id: cliente.id });
+    const res = await post({ action: 'scan', qr: code, id: cliente.id, chave: cliente.chave || '' });
 
     if (res.ok) {
       // Actualiza o localStorage
@@ -184,6 +184,13 @@ async function init() {
           ${renderStamps(res.visitas, true)}
           <a href="https://clube.ha-restaurante.com/client.html" class="btn">Ver o meu cartão</a>`;
       }
+    } else if (res.expirada) {
+      try { localStorage.removeItem('ha'); } catch(e) {}
+      document.getElementById('content').innerHTML = `
+        <div class="icon">🔑</div>
+        <div class="title">Entra outra vez</div>
+        <div class="sub">Por segurança, entra no Clube Hã com o teu email e telemóvel e volta a ler o código.</div>
+        <a href="https://clube.ha-restaurante.com/client.html" class="btn" style="margin-top:8px">Entrar no Clube</a>`;
     } else {
       var jaHoje = (res.codigo === 'JA_REGISTADO');
       document.getElementById('content').innerHTML = `

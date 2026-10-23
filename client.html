@@ -204,9 +204,10 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 <section id="screen-login" class="screen active">
   <div class="reg-logo"><img src="logo-transparente.png" alt="Hã"></div>
   <div class="reg-title">Bem-vindo de volta!</div>
-  <div class="reg-sub">Introduz o teu email para entrar</div>
+  <div class="reg-sub">Introduz o email e o telemóvel com que te registaste</div>
   <div class="msg-error" id="login-error"></div>
   <div class="field"><label>Email</label><input type="email" id="l-email" placeholder="joao@email.com" autocomplete="email"></div>
+  <div class="field"><label>Telemóvel</label><input type="tel" id="l-tel" placeholder="9XX XXX XXX" autocomplete="tel"></div>
   <button class="btn-main" id="btn-login" onclick="login()">Entrar</button>
   <p class="link-action">Ainda não tens conta? <span onclick="goToRegisto()">Regista-te aqui</span></p>
 </section>
@@ -379,9 +380,22 @@ const API = 'https://ha-proxy.oxy-agency.workers.dev';
 const MURAL = 'https://ha-restaurante.com/wp-content/uploads/2024/05/mural.jpg';
 const STAMP_POS = ['0% 0%','33.3% 0%','66.6% 0%','100% 0%','0% 100%','33.3% 100%','66.6% 100%','100% 100%'];
 const NAV = { cartao: 0, novidades: 1, pedido: 2, resumo: 2 };
-const S = { id: null, nome: '', apelido: '', visitas: 0 };
+const S = { id: null, chave: '', nome: '', apelido: '', visitas: 0 };
 
-function save() { try { localStorage.setItem('ha', JSON.stringify({ id: S.id, nome: S.nome, apelido: S.apelido })); } catch(e){} }
+function save() { try { localStorage.setItem('ha', JSON.stringify({ id: S.id, chave: S.chave, nome: S.nome, apelido: S.apelido })); } catch(e){} }
+function entrou(res) {
+  S.id = res.id; S.chave = res.chave || ''; S.nome = res.nome; S.apelido = res.apelido; S.visitas = res.visitas;
+  save();
+}
+// O servidor já não reconhece a chave deste telemóvel: volta ao login
+function sair(msg) {
+  try { localStorage.removeItem('ha'); } catch(e){}
+  S.id = null; S.chave = ''; S.nome = ''; S.apelido = ''; S.visitas = 0;
+  goTo('cartao');
+  const err = document.getElementById('login-error');
+  err.textContent = msg || 'Sessão expirada. Entra outra vez com o teu email e telemóvel.';
+  err.classList.add('show');
+}
 function load() { try { return JSON.parse(localStorage.getItem('ha') || 'null'); } catch(e){ return null; } }
 async function post(p) {
   const params = new URLSearchParams(p);
@@ -418,20 +432,20 @@ function goToLogin() { document.getElementById('screen-registo').classList.remov
 
 async function login() {
   const email = document.getElementById('l-email').value.trim();
+  const tel = document.getElementById('l-tel').value.trim();
   const err = document.getElementById('login-error');
   err.classList.remove('show');
-  if (!email) { err.textContent = 'Introduz o teu email.'; err.classList.add('show'); return; }
+  if (!email || !tel) { err.textContent = 'Introduz o teu email e telemóvel.'; err.classList.add('show'); return; }
   const btn = document.getElementById('btn-login');
   btn.disabled = true; btn.textContent = 'A verificar...';
   try {
-    const res = await post({ action: 'cliente', email });
+    const res = await post({ action: 'cliente', email, telefone: tel });
     if (res.ok) {
-      S.id = res.id; S.nome = res.nome; S.apelido = res.apelido; S.visitas = res.visitas;
-      save();
+      entrou(res);
       document.getElementById('screen-login').classList.remove('active');
       goTo('cartao');
     } else {
-      err.textContent = 'Email não encontrado. Ainda não tens conta?';
+      err.textContent = res.erro || 'O email e o telemóvel não correspondem a nenhuma conta.';
       err.classList.add('show');
     }
   } catch(e) { err.textContent = 'Sem ligação. Verifica a internet.'; err.classList.add('show'); }
@@ -439,6 +453,7 @@ async function login() {
 }
 
 document.getElementById('l-email').addEventListener('keyup', e => { if (e.key === 'Enter') login(); });
+document.getElementById('l-tel').addEventListener('keyup', e => { if (e.key === 'Enter') login(); });
 
 async function registar() {
   const nome = document.getElementById('f-nome').value.trim();
@@ -454,8 +469,7 @@ async function registar() {
   try {
     const res = await post({ action: 'registar', nome, apelido, telefone: tel, email, nascimento: nasc });
     if (res.ok) {
-      S.id = res.id; S.nome = res.nome; S.apelido = res.apelido; S.visitas = res.visitas;
-      save();
+      entrou(res);
       document.getElementById('screen-registo').classList.remove('active');
       goTo('cartao');
     } else { err.textContent = res.erro || 'Erro ao registar.'; err.classList.add('show'); }
@@ -850,7 +864,8 @@ async function enviarPedido() {
   const btn = document.getElementById('btn-enviar');
   btn.disabled = true; btn.textContent = 'A enviar...';
   try {
-    const res = await post({ action: 'pedido', id: S.id, itens: JSON.stringify(itens), notas: notas });
+    const res = await post({ action: 'pedido', id: S.id, chave: S.chave, itens: JSON.stringify(itens), notas: notas });
+    if (res.expirada) { btn.disabled = false; btn.textContent = 'Enviar pedido'; sair(); return; }
     if (res.ok) {
       Object.keys(CART).forEach(function(k) { delete CART[k]; });
       Object.keys(LINES).forEach(function(k) { delete LINES[k]; });
@@ -876,9 +891,13 @@ function novoPedido() { goTo('pedido'); }
 (function() {
   const saved = load();
   if (saved && saved.id) {
-    S.id = saved.id; S.nome = saved.nome; S.apelido = saved.apelido;
-    post({ action: 'cliente', id: saved.id }).then(res => {
-      if (res.ok) { S.visitas = res.visitas; renderCartao(); }
+    S.id = saved.id; S.chave = saved.chave || ''; S.nome = saved.nome; S.apelido = saved.apelido;
+    post({ action: 'cliente', id: saved.id, chave: S.chave }).then(res => {
+      if (res.ok) {
+        S.visitas = res.visitas;
+        if (res.chave && res.chave !== S.chave) { S.chave = res.chave; save(); }   // cliente antigo: recebe a chave agora
+        renderCartao();
+      } else if (res.expirada) sair();
     }).catch(() => {});
     document.getElementById('screen-login').classList.remove('active');
     document.getElementById('screen-cartao').classList.add('active');
