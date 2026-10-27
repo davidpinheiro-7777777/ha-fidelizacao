@@ -85,7 +85,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 .scan-btn-arrow { margin-left: auto; color: var(--muted); font-size: 22px; }
 
 /* ── NOVIDADES ── */
-#screen-novidades { padding: 20px 0 170px; }
+#screen-novidades, #screen-feed, #screen-perfil { padding: 20px 0 170px; }
 .screen-head { display: flex; align-items: center; gap: 10px; padding: 0 20px 14px; }
 .screen-head img { height: 26px; }
 .screen-head-title { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: var(--green); }
@@ -129,10 +129,25 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 
 /* ── NAV ── */
 .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: rgba(247,245,240,.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--border); display: flex; z-index: 200; }
-.nav-item { flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px 8px; cursor: pointer; }
-.nav-label { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 900; color: var(--muted); text-align: center; }
-.nav-item.active .nav-label { color: var(--green); }
+.nav-item { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 9px 2px 10px; cursor: pointer; color: var(--muted); }
+.nav-item svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.nav-label { font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 900; text-align: center; white-space: nowrap; }
+.nav-item.active { color: var(--green); }
 .nav-item:not(.active) { opacity: .35; }
+
+/* ── FEED ── */
+.feed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 0 0 40px; width: 100%; }
+.feed-item { position: relative; aspect-ratio: 9 / 16; background: var(--surface2); border: none; padding: 0; overflow: hidden; cursor: pointer; }
+.feed-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.feed-item svg { position: absolute; top: 8px; right: 8px; width: 18px; height: 18px; fill: #fff; filter: drop-shadow(0 1px 2px rgba(0,0,0,.6)); }
+.reel-fundo { position: fixed; inset: 0; z-index: 400; background: #000; display: none; flex-direction: column; }
+.reel-fundo.show { display: flex; }
+.reel-fundo video { flex: 1; min-height: 0; width: 100%; object-fit: contain; background: #000; }
+.reel-fechar { position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); right: 14px; z-index: 2; width: 38px; height: 38px; border-radius: 50%; border: none; background: rgba(255,255,255,.2); color: #fff; font-size: 22px; line-height: 1; cursor: pointer; }
+.reel-rodape { padding: 12px 16px calc(16px + env(safe-area-inset-bottom, 0px)); }
+.reel-texto { color: rgba(255,255,255,.85); font-size: 13px; line-height: 1.5; margin-bottom: 10px; max-height: 60px; overflow: hidden; }
+.reel-link { display: block; text-align: center; background: #fff; color: var(--green); border-radius: 12px; padding: 13px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 15px; text-decoration: none; }
+.perfil-breve { margin: 20px 16px 0; padding: 28px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; text-align: center; color: var(--muted); font-size: 14px; line-height: 1.6; }
 
 /* ── PEDIDOS ── */
 #screen-resumo { padding: 20px 0 170px; }
@@ -297,6 +312,24 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
   <div class="news-list" id="news-list"><div class="loading">A carregar...</div></div>
 </section>
 
+<!-- FEED -->
+<section id="screen-feed" class="screen">
+  <div class="screen-head">
+    <img src="logo-transparente.png" alt="Hã">
+    <div class="screen-head-title">Feed</div>
+  </div>
+  <div class="feed-grid" id="feed-grid"><div class="loading" style="grid-column:1/-1">A carregar...</div></div>
+</section>
+
+<!-- PERFIL -->
+<section id="screen-perfil" class="screen">
+  <div class="screen-head">
+    <img src="logo-transparente.png" alt="Hã">
+    <div class="screen-head-title">Perfil</div>
+  </div>
+  <div class="perfil-breve">Em breve vais encontrar aqui o teu perfil.</div>
+</section>
+
 <!-- FAZ O TEU PEDIDO -->
 <section id="screen-pedido" class="screen">
   <div class="screen-head"><div class="screen-head-title">Faz o teu pedido</div></div>
@@ -377,10 +410,21 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 </div>
 <button class="cart-bar" id="cart-bar" onclick="goTo('resumo')"><span id="cart-txt"></span><span id="cart-total"></span></button>
 <nav class="bottom-nav">
-  <div class="nav-item active" onclick="goTo('cartao')"><div class="nav-label">CLUBE</div></div>
-  <div class="nav-item" onclick="goTo('novidades')"><div class="nav-label">NOVIDADES</div></div>
-  <div class="nav-item" onclick="goTo('pedido')"><div class="nav-label">PEDIDO</div></div>
+  <div class="nav-item active" onclick="goTo('cartao')"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M2.5 10h19M6.5 15h4"/></svg><div class="nav-label">Clube</div></div>
+  <div class="nav-item" onclick="goTo('novidades')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.7 1.8 1.8.7-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z"/></svg><div class="nav-label">New</div></div>
+  <div class="nav-item" onclick="goTo('feed')"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M10 8.5v7l5.5-3.5z"/></svg><div class="nav-label">Feed</div></div>
+  <div class="nav-item" onclick="goTo('pedido')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg><div class="nav-label">Pedido</div></div>
+  <div class="nav-item" onclick="goTo('perfil')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><div class="nav-label">Perfil</div></div>
 </nav>
+<!-- REEL ABERTO -->
+<div class="reel-fundo" id="reel-fundo" role="dialog" aria-modal="true" aria-label="Reel">
+  <button class="reel-fechar" id="reel-fechar" aria-label="Fechar">×</button>
+  <video id="reel-video" controls playsinline preload="none"></video>
+  <div class="reel-rodape">
+    <div class="reel-texto" id="reel-texto"></div>
+    <a class="reel-link" id="reel-link" target="_blank" rel="noopener">Ver no Instagram</a>
+  </div>
+</div>
 
 </div>
 
@@ -388,7 +432,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 const API = 'https://ha-proxy.oxy-agency.workers.dev';
 const MURAL = 'https://ha-restaurante.com/wp-content/uploads/2024/05/mural.jpg';
 const STAMP_POS = ['0% 0%','33.3% 0%','66.6% 0%','100% 0%','0% 100%','33.3% 100%','66.6% 100%','100% 100%'];
-const NAV = { cartao: 0, novidades: 1, pedido: 2, resumo: 2 };
+const NAV = { cartao: 0, novidades: 1, feed: 2, pedido: 3, resumo: 3, perfil: 4 };
 const S = { id: null, chave: '', nome: '', apelido: '', visitas: 0 };
 
 function save() { try { localStorage.setItem('ha', JSON.stringify({ id: S.id, chave: S.chave, nome: S.nome, apelido: S.apelido })); } catch(e){} }
@@ -415,8 +459,9 @@ async function post(p) {
 
 function goTo(id) {
   pararCamera();
+  fecharReel();
   // Se não está logado e tenta ir ao cartão, vai para login
-  if ((id === 'cartao' || id === 'pedido' || id === 'resumo') && !S.id) {
+  if ((id === 'cartao' || id === 'pedido' || id === 'resumo' || id === 'perfil') && !S.id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-login').classList.add('active');
     return;
@@ -427,6 +472,7 @@ function goTo(id) {
   document.querySelectorAll('.nav-item').forEach((el, i) => el.classList.toggle('active', i === (NAV[id] ?? -1)));
   if (id === 'cartao') renderCartao();
   if (id === 'novidades') loadNovidades();
+  if (id === 'feed') loadFeed();
   if (id === 'pedido') loadMenu();
   if (id === 'resumo') {
     document.getElementById('resumo-form').style.display = '';
@@ -585,6 +631,78 @@ function prepararNovidades() {
     lista.slice(0, 3).forEach(n => { const src = n.fotoLeve || n.foto; if (src) { const im = new Image(); im.src = src; } });
   }).catch(() => {});
 }
+
+// ── FEED (reels do Instagram) ────────────────────────────
+// O servidor guarda a lista 1 hora; o telemóvel guarda a última para o Feed abrir logo.
+let FEED_PEDIDO = null;
+function buscarFeed() {
+  if (!FEED_PEDIDO) {
+    FEED_PEDIDO = post({ action: 'feed' }).then(res => {
+      if (!res.ok) throw new Error(res.erro || 'feed');
+      const lista = Array.isArray(res.reels) ? res.reels : [];
+      try { localStorage.setItem('ha_feed', JSON.stringify(lista)); } catch (e) {}
+      return lista;
+    }).finally(() => { FEED_PEDIDO = null; });
+  }
+  return FEED_PEDIDO;
+}
+function feedGuardado() {
+  try { const l = JSON.parse(localStorage.getItem('ha_feed') || 'null'); return Array.isArray(l) ? l : null; } catch (e) { return null; }
+}
+function renderFeed(lista) {
+  const el = document.getElementById('feed-grid');
+  el.innerHTML = '';
+  if (!lista.length) { el.innerHTML = '<div class="news-empty" style="grid-column:1/-1">Em breve vais ver aqui os nossos reels. 🎬</div>'; return; }
+  lista.forEach((r, i) => {
+    const b = document.createElement('button');
+    b.className = 'feed-item';
+    b.setAttribute('aria-label', 'Ver reel');
+    if (r.capa) {
+      const img = document.createElement('img');
+      img.alt = '';
+      img.setAttribute('decoding', 'async');
+      if (i >= 9) img.setAttribute('loading', 'lazy');
+      img.src = String(r.capa);
+      b.appendChild(img);
+    }
+    b.insertAdjacentHTML('beforeend', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>');
+    b.onclick = () => abrirReel(r);
+    el.appendChild(b);
+  });
+}
+async function loadFeed() {
+  const el = document.getElementById('feed-grid');
+  const guardado = feedGuardado();
+  if (guardado) renderFeed(guardado);
+  else el.innerHTML = '<div class="loading" style="grid-column:1/-1">A carregar...</div>';
+  try {
+    const novo = await buscarFeed();
+    if (!guardado || JSON.stringify(novo) !== JSON.stringify(guardado)) renderFeed(novo);
+  } catch (e) {
+    if (!guardado) el.innerHTML = '<div class="news-empty" style="grid-column:1/-1">Sem ligação. Tenta mais tarde.</div>';
+  }
+}
+function linkInstagram(u) { return /^https:\/\/(www\.)?instagram\.com\//.test(String(u || '')) ? String(u) : 'https://www.instagram.com/'; }
+function abrirReel(r) {
+  // sem vídeo (ex.: música com direitos) só dá para ver no Instagram
+  if (!r.video) { window.open(linkInstagram(r.link), '_blank', 'noopener'); return; }
+  const v = document.getElementById('reel-video');
+  v.poster = String(r.capa || '');
+  v.src = String(r.video);
+  document.getElementById('reel-texto').textContent = String(r.texto || '');
+  document.getElementById('reel-link').href = linkInstagram(r.link);
+  document.getElementById('reel-fundo').classList.add('show');
+  try { const p = v.play(); if (p && p.catch) p.catch(() => {}); } catch (e) {}
+}
+function fecharReel() {
+  const f = document.getElementById('reel-fundo');
+  if (!f || !f.classList.contains('show')) return;
+  const v = document.getElementById('reel-video');
+  try { v.pause(); } catch (e) {}
+  v.removeAttribute('src'); try { v.load(); } catch (e) {}
+  f.classList.remove('show');
+}
+document.getElementById('reel-fechar').onclick = fecharReel;
 
 // ── LER O QR DENTRO DA APP ───────────────────────────────
 // A Câmara do iPhone abre os QR no Safari, que guarda uma sessão separada da app do ecrã
@@ -1057,6 +1175,7 @@ function novoPedido() { goTo('pedido'); }
     document.getElementById('screen-cartao').classList.add('active');
     renderCartao();
     setTimeout(prepararNovidades, 300);   // depois do pedido do cartão, que é o mais importante
+    setTimeout(() => buscarFeed().catch(() => {}), 1500);
   }
   // Se não está logado, fica no ecrã de login (já é o active por defeito)
 })();
