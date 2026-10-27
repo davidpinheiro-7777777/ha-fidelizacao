@@ -171,16 +171,17 @@ async function init() {
       // Marca este código como usado hoje neste dispositivo
       try { localStorage.setItem('ha_scan_usado', JSON.stringify({code: code, date: new Date().toDateString()})); } catch(e) {}
 
-      if (res.refeicaoGratis) {
+      if (res.visitas === 5 || res.visitas === 10) {
         document.getElementById('content').innerHTML = `
-          <div class="icon">🎉</div>
-          <div class="title">Refeição grátis!</div>
-          <div class="sub">Parabéns! Chegaste às 10 refeições. Mostra este ecrã ao balcão.</div>
+          <div class="icon">🎁</div>
+          <div class="title">${res.visitas === 10 ? 'Sobremesa grátis!' : 'Ganhaste uma oferta!'}</div>
+          <div class="sub">${res.visitas === 5 ? 'Uma Entrada à tua escolha (Bruschettas excluídas).' : 'A sobremesa fica por nossa conta.'} Mostra esta oferta ao empregado. Também a encontras no teu Perfil.</div>
+          ${renderStamps(res.visitas, true)}
           <a href="https://clube.ha-restaurante.com/client.html" class="btn">Ver o meu cartão</a>`;
       } else {
         document.getElementById('content').innerHTML = `
           <div class="icon">✅</div>
-          <div class="title">Refeição registada!</div>
+          <div class="title">Selo registado!</div>
           ${renderStamps(res.visitas, true)}
           <a href="https://clube.ha-restaurante.com/client.html" class="btn">Ver o meu cartão</a>`;
       }

@@ -69,10 +69,31 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 .stamp { aspect-ratio: 1; border-radius: 8px; overflow: hidden; }
 .stamp.empty { background: rgba(255,255,255,.08); border: 1.5px dashed rgba(255,255,255,.2); }
 .stamp.filled { }
+.stamp { position: relative; }
+.stamp.premio.empty { border-color: var(--yellow); background: rgba(245,200,66,.12); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.stamp-laco { position: absolute; top: -2px; right: -2px; font-size: 15px; line-height: 1; filter: drop-shadow(0 1px 1px rgba(0,0,0,.3)); }
+.oferta-fundo { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; padding: 24px; }
+.oferta-fundo.show { display: flex; }
+.oferta-caixa { width: 100%; max-width: 360px; background: var(--surface); border-radius: 20px; padding: 26px 22px 20px; text-align: center; }
+.oferta-icone { font-size: 56px; line-height: 1; margin-bottom: 10px; }
+.oferta-tit { font-family: 'Nunito', sans-serif; font-size: 24px; font-weight: 900; color: var(--green); margin-bottom: 6px; }
+.oferta-nome { font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.oferta-nota { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+.oferta-txt { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 18px; }
+.oferta-sec { display: block; width: 100%; margin-top: 8px; background: none; border: none; color: var(--muted); font-size: 14px; padding: 10px; cursor: pointer; }
+.perfil-apagar { display: block; margin: 22px auto 0; background: none; border: none; color: #C00; font-size: 13px; text-decoration: underline; cursor: pointer; padding: 8px; }
+.btn-perigo { display: block; width: 100%; background: #C62828; color: #fff; border: none; border-radius: 12px; padding: 15px; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900; cursor: pointer; }
+.btn-perigo:disabled { opacity: .6; }
+.perfil-oferta { margin: 12px 16px 0; background: var(--yellow); border-radius: 14px; padding: 16px 18px; display: none; align-items: center; gap: 14px; }
+.perfil-oferta.show { display: flex; }
+.perfil-oferta-icone { font-size: 36px; flex-shrink: 0; }
+.perfil-oferta-rot { font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 900; color: var(--green); letter-spacing: .5px; }
+.perfil-oferta-nome { font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 900; color: var(--green); margin: 2px 0; }
+.perfil-oferta-txt { font-size: 12px; color: #555; line-height: 1.5; }
 .lc-foot { background: rgba(0,0,0,.18); padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; }
 .lc-foot-label { font-size: 11px; color: rgba(255,255,255,.5); }
-.lc-foot-count { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; color: var(--yellow); }
-.free-meal { margin: 12px 16px 0; width: calc(100% - 32px); background: var(--yellow); border-radius: 14px; padding: 14px 18px; display: none; align-items: center; gap: 12px; }
+.lc-foot-count { margin-left: auto; font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; color: var(--yellow); }
+.free-meal { cursor: pointer; margin: 12px 16px 0; width: calc(100% - 32px); background: var(--yellow); border-radius: 14px; padding: 14px 18px; display: none; align-items: center; gap: 12px; }
 .free-meal.show { display: flex; }
 .free-meal-icon { font-size: 30px; flex-shrink: 0; }
 .free-meal-text strong { display: block; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900; color: var(--green); margin-bottom: 1px; }
@@ -282,19 +303,18 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
       </div>
     </div>
     <div class="stamps-area">
-      <div class="stamps-label">REFEIÇÕES ACUMULADAS</div>
+      <div class="stamps-label">SELOS ACUMULADOS</div>
       <div class="stamps-grid" id="stamps-grid"></div>
     </div>
     <div class="lc-foot">
-      <div class="lc-foot-label">Para a tua próxima refeição grátis</div>
       <div class="lc-foot-count" id="progress">0 / 10</div>
     </div>
   </div>
-  <div class="free-meal" id="free-meal">
-    <div class="free-meal-icon">🎉</div>
+  <div class="free-meal" id="free-meal" role="button" onclick="goTo('perfil')">
+    <div class="free-meal-icon">🎁</div>
     <div class="free-meal-text">
-      <strong>Refeição grátis!</strong>
-      <span>Mostra este ecrã ao balcão para resgatar</span>
+      <strong id="free-meal-tit">Tens uma oferta!</strong>
+      <span>Toca aqui para a veres no teu Perfil e mostra-a ao empregado</span>
     </div>
   </div>
   <div class="scan-btn" id="btn-ler-qr" role="button" onclick="abrirCamera()">
@@ -307,7 +327,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
   </div>
   <div style="margin:14px 16px 0;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px">
     <div style="font-family:'Nunito',sans-serif;font-size:12px;font-weight:900;color:var(--green);letter-spacing:0.5px;margin-bottom:6px">CONDIÇÕES DO CLUBE</div>
-    <p style="font-size:12px;color:var(--muted);line-height:1.7">Para acumular uma refeição terás de gastar pelo menos <strong style="color:var(--text)">10€</strong>. Quando obtiveres os 10 selos ganharás um prato à tua escolha. Bebidas, entradas, sobremesas e café não incluídos.</p>
+    <p style="font-size:12px;color:var(--muted);line-height:1.7">Para acumular um selo terás de gastar pelo menos <strong style="color:var(--text)">10€</strong>. Quando obtiveres 5 selos ganhas uma <strong style="color:var(--text)">Entrada</strong> (Bruschettas excluídas) e quando chegares aos 10 selos a <strong style="color:var(--text)">sobremesa</strong> fica por nossa conta. Estas ofertas aparecerão no teu Perfil.</p>
   </div>
 
   <p id="install-hint" style="font-size:13px;color:var(--muted);text-align:center;margin:10px 16px 0;line-height:1.6">
@@ -351,6 +371,14 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
       <div class="perfil-dado"><div class="perfil-num" id="perfil-visitas">0</div><div class="perfil-rot">Visitas ao Hã</div></div>
     </div>
   </div>
+  <div class="perfil-oferta" id="perfil-oferta">
+    <div class="perfil-oferta-icone" id="perfil-oferta-icone">🎁</div>
+    <div>
+      <div class="perfil-oferta-rot">A TUA OFERTA</div>
+      <div class="perfil-oferta-nome" id="perfil-oferta-nome"></div>
+      <div class="perfil-oferta-txt" id="perfil-oferta-txt"></div>
+    </div>
+  </div>
   <a class="perfil-review" id="perfil-review" target="_blank" rel="noopener" style="display:none">
     <div style="font-size:24px">⭐</div>
     <div><strong>Avalia-nos no Google</strong><span>Gostaste? A tua opinião ajuda-nos muito</span></div>
@@ -364,6 +392,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
     <textarea id="perfil-msg" maxlength="1000" aria-label="A tua mensagem"></textarea>
     <button class="btn-main" id="perfil-enviar" onclick="enviarMensagem()">Enviar</button>
   </div>
+  <button class="perfil-apagar" id="perfil-apagar" onclick="pedirApagarConta()">Apagar a minha conta</button>
 </section>
 
 <!-- FAZ O TEU PEDIDO -->
@@ -429,6 +458,29 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 <div id="install-banner" style="display:none;position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--green);padding:12px 16px;align-items:center;justify-content:space-between;gap:12px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.15)">
   <span style="font-size:13px;color:#fff;font-weight:500">Adiciona o Clube Hã ao teu ecrã</span>
   <button id="btn-install" style="background:#F5C842;border:none;border-radius:8px;color:var(--green);font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;padding:8px 14px;cursor:pointer;white-space:nowrap">Instalar</button>
+</div>
+<!-- OFERTA GANHA -->
+<div class="oferta-fundo" id="oferta-fundo" role="dialog" aria-modal="true" aria-labelledby="oferta-tit">
+  <div class="oferta-caixa">
+    <div class="oferta-icone" id="oferta-icone">🎁</div>
+    <div class="oferta-tit" id="oferta-tit">Ganhaste uma oferta!</div>
+    <div class="oferta-nome" id="oferta-nome"></div>
+    <div class="oferta-nota" id="oferta-nota"></div>
+    <div class="oferta-txt">Mostra esta oferta ao empregado. Também a encontras no teu Perfil.</div>
+    <button class="btn-main" id="oferta-perfil" onclick="fecharOferta(); goTo('perfil')">Ver no Perfil</button>
+    <button class="oferta-sec" onclick="fecharOferta()">Fechar</button>
+  </div>
+</div>
+<!-- APAGAR CONTA -->
+<div class="oferta-fundo" id="apagar-fundo" role="dialog" aria-modal="true" aria-labelledby="apagar-tit">
+  <div class="oferta-caixa">
+    <div class="oferta-icone">⚠️</div>
+    <div class="oferta-tit" id="apagar-tit" style="color:#C62828">Apagar a tua conta?</div>
+    <div class="oferta-txt" id="apagar-txt"></div>
+    <div class="msg-error" id="apagar-erro"></div>
+    <button class="btn-perigo" id="apagar-sim" onclick="apagarConta()">Apagar a conta</button>
+    <button class="oferta-sec" id="apagar-nao" onclick="fecharApagar()">Cancelar</button>
+  </div>
 </div>
 <!-- PAINEL DE ESCOLHAS DO PRATO -->
 <div class="opc-fundo" id="opc-fundo">
@@ -564,6 +616,22 @@ async function registar() {
   btn.disabled = false; btn.textContent = 'Entrar no Clube';
 }
 
+// Ofertas do Clube: aparecem enquanto o cartão está nesse selo (desaparecem no selo seguinte)
+const OFERTAS = {
+  5:  { titulo: 'Ganhaste uma oferta!', icone: '🥗', nome: 'Uma Entrada à tua escolha', nota: 'Bruschettas excluídas' },
+  10: { titulo: 'Sobremesa grátis!', icone: '🍰', nome: 'A sobremesa fica por nossa conta', nota: '' }
+};
+function ofertaAtual() { return OFERTAS[S.visitas] || null; }
+function mostrarOferta(o) {
+  document.getElementById('oferta-tit').textContent = o.titulo;
+  document.getElementById('oferta-icone').textContent = o.icone;
+  document.getElementById('oferta-nome').textContent = o.nome;
+  document.getElementById('oferta-nota').textContent = o.nota;
+  document.getElementById('oferta-nota').style.display = o.nota ? '' : 'none';
+  document.getElementById('oferta-fundo').classList.add('show');
+}
+function fecharOferta() { document.getElementById('oferta-fundo').classList.remove('show'); }
+
 function renderCartao() {
   document.getElementById('greeting').textContent = 'Olá, ' + S.nome;
   document.getElementById('card-name').textContent = S.nome + ' ' + S.apelido;
@@ -573,17 +641,20 @@ function renderCartao() {
   const LOGO_SRC = 'logo-transparente.png';
   for (let i = 0; i < 10; i++) {
     const d = document.createElement('div');
-    d.className = i < S.visitas ? 'stamp filled' : 'stamp empty';
+    d.className = (i < S.visitas ? 'stamp filled' : 'stamp empty') + (OFERTAS[i + 1] ? ' premio' : '');
+    if (OFERTAS[i + 1] && i >= S.visitas) d.textContent = '🎁';   // selo com prémio ainda por chegar
     if (i < S.visitas) {
       d.style.cssText = 'display:flex;align-items:center;justify-content:center;padding:5px;background:#FFFFFF;border-radius:8px';
       const img = document.createElement('img');
       img.src = LOGO_SRC;
       img.style.cssText = 'width:100%;height:100%;object-fit:contain';
       d.appendChild(img);
+      if (OFERTAS[i + 1]) { const l = document.createElement('span'); l.className = 'stamp-laco'; l.textContent = '🎀'; d.appendChild(l); }
     }
     grid.appendChild(d);
   }
-    document.getElementById('free-meal').classList.toggle('show', S.visitas >= 10);
+  document.getElementById('free-meal').classList.toggle('show', !!ofertaAtual());
+  document.getElementById('free-meal-tit').textContent = S.visitas === 10 ? 'Sobremesa grátis!' : 'Tens uma oferta!';
 }
 
 // ── NOVIDADES ────────────────────────────────────────────
@@ -674,6 +745,13 @@ function renderPerfil() {
   document.getElementById('perfil-desde').textContent = dataCurta(S.registo);
   // visitas = selos de sempre (não volta a zero quando o cartão recomeça)
   document.getElementById('perfil-visitas').textContent = String(Math.max(S.totalSelos || 0, S.visitas || 0));
+  const oferta = ofertaAtual(), caixaOferta = document.getElementById('perfil-oferta');
+  caixaOferta.classList.toggle('show', !!oferta);
+  if (oferta) {
+    document.getElementById('perfil-oferta-icone').textContent = oferta.icone;
+    document.getElementById('perfil-oferta-nome').textContent = oferta.nome;
+    document.getElementById('perfil-oferta-txt').textContent = (oferta.nota ? oferta.nota + '. ' : '') + 'Mostra este ecrã ao empregado.';
+  }
   const review = document.getElementById('perfil-review');
   if (/^https:\/\//.test(GOOGLE_REVIEW)) { review.href = GOOGLE_REVIEW; review.style.display = ''; } else review.style.display = 'none';
 }
@@ -693,6 +771,30 @@ async function enviarMensagem() {
     erro.textContent = 'Sem ligação. Tenta outra vez.'; erro.classList.add('show');
   } finally {
     botao.disabled = false; botao.textContent = 'Enviar';
+  }
+}
+
+function pedirApagarConta() {
+  const n = S.visitas || 0;
+  document.getElementById('apagar-txt').textContent = 'Vais perder ' + (n === 1 ? 'o teu selo' : 'os teus ' + n + ' selos') +
+    ' e as ofertas que tenhas por usar. Os teus dados pessoais são apagados e isto não pode ser desfeito.';
+  document.getElementById('apagar-erro').classList.remove('show');
+  document.getElementById('apagar-fundo').classList.add('show');
+}
+function fecharApagar() { document.getElementById('apagar-fundo').classList.remove('show'); }
+async function apagarConta() {
+  const botao = document.getElementById('apagar-sim'), erro = document.getElementById('apagar-erro');
+  botao.disabled = true; botao.textContent = 'A apagar...'; erro.classList.remove('show');
+  try {
+    const res = await post({ action: 'apagar_conta', id: S.id, chave: S.chave });
+    if (res.ok || res.expirada) {
+      fecharApagar();
+      sair(res.ok ? 'A tua conta foi apagada. Obrigado por teres feito parte do Clube Hã.' : undefined);
+    } else { erro.textContent = res.erro || 'Não foi possível apagar. Tenta outra vez.'; erro.classList.add('show'); }
+  } catch (e) {
+    erro.textContent = 'Sem ligação. Tenta outra vez.'; erro.classList.add('show');
+  } finally {
+    botao.disabled = false; botao.textContent = 'Apagar a conta';
   }
 }
 
@@ -939,7 +1041,9 @@ async function submeterQR(qr) {
     if (res.expirada) { sair(); return; }
     if (res.ok) {
       S.visitas = res.visitas; if (res.totalSelos) S.totalSelos = res.totalSelos; save();
-      resultadoScan(res.refeicaoGratis ? '🎉' : '✅', res.refeicaoGratis ? 'Refeição grátis!' : 'Refeição registada!', res.mensagem);
+      const oferta = OFERTAS[res.visitas];
+      resultadoScan(oferta ? '🎁' : '✅', oferta ? oferta.titulo : 'Selo registado!', res.mensagem);
+      if (oferta) mostrarOferta(oferta);
     } else if (res.codigo === 'JA_REGISTADO') {
       resultadoScan('⚠️', 'Já registaste hoje', 'Só é possível acumular uma refeição por dia. Até à tua próxima visita!');
     } else {
@@ -1048,16 +1152,40 @@ function linhaValida(ln) {
   return true;
 }
 
+// O servidor demora vários segundos a responder: o último menu fica guardado no telemóvel e
+// aparece logo; o menu novo chega por trás (e é pedido logo ao abrir a app).
+let MENU_PEDIDO = null;
+function buscarMenu() {
+  if (!MENU_PEDIDO) {
+    MENU_PEDIDO = post({ action: 'menu' }).then(res => {
+      if (res.ok && res.itens && res.itens.length) {
+        try { localStorage.setItem('ha_menu', JSON.stringify({ itens: res.itens, grupos: res.grupos || {} })); } catch (e) {}
+      }
+      return res;
+    }).finally(() => { MENU_PEDIDO = null; });
+  }
+  return MENU_PEDIDO;
+}
+function menuGuardado() {
+  try { const m = JSON.parse(localStorage.getItem('ha_menu') || 'null'); return m && Array.isArray(m.itens) && m.itens.length ? m : null; } catch (e) { return null; }
+}
+function usarMenu(itens, grupos) {
+  MENU = itens; GRUPOS = grupos || {};
+  Object.keys(CART).forEach(function(k) { if (!LINES[k] || !linhaValida(LINES[k])) { delete CART[k]; delete LINES[k]; } });   // prato ou opção entretanto retirados
+  if (PAINEL && !itemDoMenu(PAINEL.id)) fecharPainel();
+  if (!catAtiva || !MENU.some(x => x.cat === catAtiva)) catAtiva = MENU[0].cat;
+}
+
 async function loadMenu() {
   const lista = document.getElementById('ord-list');
+  if (!MENU) { const g = menuGuardado(); if (g) usarMenu(g.itens, g.grupos); }
   if (MENU) renderPedido(); else lista.innerHTML = '<div class="loading">A carregar o menu...</div>';
   try {
-    const res = await post({ action: 'menu' });
+    const antes = JSON.stringify([MENU, GRUPOS]);
+    const res = await buscarMenu();
     if (res.ok && res.itens && res.itens.length) {
-      MENU = res.itens; GRUPOS = res.grupos || {};
-      Object.keys(CART).forEach(function(k) { if (!LINES[k] || !linhaValida(LINES[k])) { delete CART[k]; delete LINES[k]; } });   // prato ou opção entretanto retirados
-      if (PAINEL && !itemDoMenu(PAINEL.id)) fecharPainel();
-      if (!catAtiva) catAtiva = MENU[0].cat;
+      if (JSON.stringify([res.itens, res.grupos || {}]) === antes) return;   // igual ao que já está no ecrã
+      usarMenu(res.itens, res.grupos);
       renderPedido();
     } else if (!MENU) {
       lista.innerHTML = '<div class="news-empty">O menu não está disponível de momento.</div>';
@@ -1282,6 +1410,7 @@ function novoPedido() { goTo('pedido'); }
     renderCartao();
     setTimeout(prepararNovidades, 300);   // depois do pedido do cartão, que é o mais importante
     setTimeout(() => buscarFeed().catch(() => {}), 1500);
+    setTimeout(() => buscarMenu().catch(() => {}), 800);
   }
   // Se não está logado, fica no ecrã de login (já é o active por defeito)
 })();
