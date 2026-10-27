@@ -192,7 +192,12 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 #screen-pedido { padding: 20px 0 0; }
 /* (a) categorias sempre visíveis: só a lista de pratos faz scroll */
 #screen-pedido.active { height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; }
-#screen-pedido .screen-head, #screen-pedido .cat-bar { flex: 0 0 auto; }
+#screen-pedido .screen-head, #screen-pedido .cat-bar, #screen-pedido .ped-levantar { flex: 0 0 auto; }
+.ped-levantar { margin: -6px 20px 12px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+.res-hora-rot { display: block; font-weight: 600; color: var(--text); }
+.res-hora { display: block; width: calc(100% - 32px); margin: 0 16px 12px; border: 1.5px solid var(--border); border-radius: 12px; padding: 13px 14px; font-family: 'Inter', sans-serif; font-size: 16px; background: var(--surface); color: var(--text); outline: none; -webkit-appearance: none; appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 20px) 50%, calc(100% - 15px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
+.res-hora:focus { border-color: var(--green); }
+.res-hora.falta { border-color: #C00; }
 .cat-bar { display: flex; gap: 8px; overflow-x: auto; padding: 0 16px 12px; scrollbar-width: none; }
 .cat-bar::-webkit-scrollbar { display: none; }
 .cat-pill { flex: 0 0 auto; background: var(--surface); border: 1.5px solid var(--border); border-radius: 20px; padding: 8px 14px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; color: var(--muted); cursor: pointer; white-space: nowrap; }
@@ -398,6 +403,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 <!-- FAZ O TEU PEDIDO -->
 <section id="screen-pedido" class="screen">
   <div class="screen-head"><div class="screen-head-title">Faz o teu pedido</div></div>
+  <p class="ped-levantar">Vem levantá-lo à loja no horário que te for mais conveniente (entre as 12h00 e as 15h30 e entre as 19h00 e as 22h00)</p>
   <div class="cat-bar" id="cat-bar"></div>
   <div class="ord-list" id="ord-list"><div class="loading">A carregar o menu...</div></div>
 </section>
@@ -410,6 +416,8 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
     <div class="res-total"><span>Total</span><span id="res-total">0,00€</span></div>
     <p class="res-alerta">Se tiveres alguma alergia ou quiseres colocar alguma nota sobre o teu pedido, informa a nossa equipa através do campo em baixo.</p>
     <textarea class="res-notas" id="res-notas" maxlength="300"></textarea>
+    <label class="res-alerta res-hora-rot" for="res-hora">A que horas vens levantar o teu pedido? <span style="color:#C00">*</span></label>
+    <select class="res-hora" id="res-hora" required></select>
     <div class="msg-error" id="res-erro" style="margin:0 16px 12px"></div>
     <button class="btn-main res-btn" id="btn-enviar" onclick="enviarPedido()">Enviar pedido</button>
     <button class="res-voltar" onclick="goTo('pedido')">← Voltar ao menu</button>
@@ -417,7 +425,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
   <div class="pedido-ok" id="resumo-ok" style="display:none">
     <div class="ok-icon">✅</div>
     <div class="ok-title">Pedido enviado!</div>
-    <div class="ok-sub">A equipa já recebeu o teu pedido.<br>Total: <strong id="ok-total"></strong><br>O pagamento é feito no fim, como de costume.</div>
+    <div class="ok-sub">A equipa já recebeu o teu pedido.<br>Vem levantá-lo à loja às <strong id="ok-hora"></strong>.<br>Total: <strong id="ok-total"></strong><br>O pagamento é feito na loja.</div>
     <button class="btn-main res-btn" onclick="novoPedido()">Fazer outro pedido</button>
   </div>
 </section>
@@ -561,6 +569,7 @@ function goTo(id) {
     document.getElementById('resumo-form').style.display = '';
     document.getElementById('resumo-ok').style.display = 'none';
     document.getElementById('res-erro').classList.remove('show');
+    prepararHoras();
     renderResumo();
   }
   atualizarBarra(id);
@@ -1353,6 +1362,36 @@ document.addEventListener('click', function(e) {
   if (p) { catAtiva = p.getAttribute('data-cat'); renderPedido(); document.getElementById('ord-list').scrollTop = 0; }
 });
 
+// Hora de levantamento: de 30 em 30 min nos dois turnos, só as que ainda faltam hoje (pelo menos 15 min à frente)
+const TURNOS_LEVANTAMENTO = [['12:00', '15:30'], ['19:00', '22:00']];
+function minutosHora(h) { const x = h.split(':'); return +x[0] * 60 + +x[1]; }
+function agoraLisboa() {
+  const p = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Lisbon', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(new Date());
+  const v = t => +(p.find(x => x.type === t) || { value: 0 }).value;
+  return (v('hour') % 24) * 60 + v('minute');
+}
+function horasDisponiveis() {
+  const limite = agoraLisboa() + 15, horas = [];
+  TURNOS_LEVANTAMENTO.forEach(t => {
+    for (let m = minutosHora(t[0]); m <= minutosHora(t[1]); m += 30) {
+      if (m >= limite) horas.push(String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'));
+    }
+  });
+  return horas;
+}
+function prepararHoras() {
+  const sel = document.getElementById('res-hora'), antes = sel.value, horas = horasDisponiveis();
+  sel.innerHTML = '';
+  const vazio = document.createElement('option');
+  vazio.value = ''; vazio.textContent = horas.length ? 'Escolhe a hora' : 'Hoje já não há horários disponíveis';
+  sel.appendChild(vazio);
+  horas.forEach(h => { const o = document.createElement('option'); o.value = h; o.textContent = h.replace(':', 'h'); sel.appendChild(o); });
+  sel.value = horas.indexOf(antes) >= 0 ? antes : '';
+  sel.classList.remove('falta');
+}
+
+document.getElementById('res-hora').addEventListener('change', e => e.target.classList.remove('falta'));
+
 async function enviarPedido() {
   const err = document.getElementById('res-erro');
   err.classList.remove('show');
@@ -1363,16 +1402,26 @@ async function enviarPedido() {
   });
   if (!itens.length) { goTo('pedido'); return; }
   const notas = document.getElementById('res-notas').value.trim();
+  const selHora = document.getElementById('res-hora');
+  if (!selHora.value) {
+    prepararHoras();
+    selHora.classList.add('falta');
+    err.textContent = horasDisponiveis().length ? 'Escolhe a que horas vens levantar o teu pedido.' : 'Hoje já não é possível fazer pedidos para levantar. Volta amanhã!';
+    err.classList.add('show');
+    return;
+  }
   const btn = document.getElementById('btn-enviar');
   btn.disabled = true; btn.textContent = 'A enviar...';
   try {
-    const res = await post({ action: 'pedido', id: S.id, chave: S.chave, itens: JSON.stringify(itens), notas: notas });
+    const res = await post({ action: 'pedido', id: S.id, chave: S.chave, itens: JSON.stringify(itens), notas: notas, levantamento: selHora.value });
     if (res.expirada) { btn.disabled = false; btn.textContent = 'Enviar pedido'; sair(); return; }
     if (res.ok) {
       Object.keys(CART).forEach(function(k) { delete CART[k]; });
       Object.keys(LINES).forEach(function(k) { delete LINES[k]; });
       document.getElementById('res-notas').value = '';
       document.getElementById('ok-total').textContent = res.total + '€';
+      document.getElementById('ok-hora').textContent = String(res.levantamento || selHora.value).replace(':', 'h');
+      selHora.value = '';
       document.getElementById('resumo-form').style.display = 'none';
       document.getElementById('resumo-ok').style.display = 'block';
       atualizarBarra('resumo');

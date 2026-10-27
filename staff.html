@@ -74,6 +74,7 @@ body.logado { padding-top: 64px; }
 .o-itens li { font-size: 17px; padding: 3px 0; }
 .o-itens b { font-family: 'Nunito', sans-serif; color: #1A5C4A; margin-right: 6px; }
 .o-opc { font-size: 15px; font-weight: 700; color: #B03A2E; margin: 1px 0 6px 30px; line-height: 1.35; }
+.o-levantar { background: #1A5C4A; color: #fff; border-radius: 10px; padding: 8px 12px; font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 900; margin-bottom: 10px; }
 .o-notas { background: #FFF6D6; border-radius: 10px; padding: 10px 12px; font-size: 15px; margin-bottom: 10px; }
 .o-btn { width: 100%; border: none; border-radius: 12px; padding: 14px; font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 900; cursor: pointer; background: #1A5C4A; color: #fff; }
 .o-card.feito .o-btn { background: #E0DDD6; color: #555; font-size: 14px; }
@@ -322,6 +323,7 @@ function cartao(p) {
   if (!feito) cab.appendChild(el('span', 'o-novo', 'NOVO'));
   cab.appendChild(el('span', 'o-total', p.total + '€'));
   c.appendChild(cab);
+  if (p.levantamento) c.appendChild(el('div', 'o-levantar', '🛍️ Levanta às ' + p.levantamento));
   var ul = el('ul', 'o-itens');
   (p.itens || []).forEach(function(i) {
     var li = el('li');
