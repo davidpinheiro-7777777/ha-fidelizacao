@@ -135,7 +135,22 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 .nav-item.active { color: var(--green); }
 .nav-item:not(.active) { opacity: .35; }
 
-.perfil-breve { margin: 20px 16px 0; padding: 28px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; text-align: center; color: var(--muted); font-size: 14px; line-height: 1.6; }
+.perfil-card { margin: 0 16px; background: var(--green); border-radius: 20px; padding: 20px; color: #fff; }
+.perfil-nome { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; margin-bottom: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.perfil-dados { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.perfil-dado { background: rgba(0,0,0,.18); border-radius: 14px; padding: 12px 14px; }
+.perfil-num { font-family: 'Nunito', sans-serif; font-size: 19px; font-weight: 900; white-space: nowrap; }
+.perfil-rot { font-size: 11px; font-weight: 600; color: var(--green-light); margin-top: 2px; }
+.perfil-review { margin: 12px 16px 0; display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 15px 16px; text-decoration: none; color: var(--text); }
+.perfil-review strong { display: block; font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 900; color: var(--green); }
+.perfil-review span { font-size: 12px; color: var(--muted); }
+.perfil-caixa { margin: 12px 16px 0; padding: 14px 16px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; }
+.perfil-caixa-tit { font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 900; color: var(--green); letter-spacing: .5px; margin-bottom: 4px; }
+.perfil-caixa p { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
+.perfil-caixa textarea { display: block; width: 100%; min-height: 110px; border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 16px; resize: vertical; background: var(--bg); color: var(--text); outline: none; margin-bottom: 10px; }
+.perfil-caixa textarea:focus { border-color: var(--green); }
+.perfil-ok { display: none; background: #EAF5EC; border: 1px solid var(--green-light); border-radius: 10px; color: var(--green); font-size: 13px; padding: 12px 14px; margin-bottom: 10px; }
+.perfil-ok.show { display: block; }
 
 /* ── FEED: um reel de cada vez, em ecrã inteiro ── */
 #screen-feed.active { height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; padding: 0 0 60px; background: #000; }
@@ -329,7 +344,26 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
     <img src="logo-transparente.png" alt="Hã">
     <div class="screen-head-title">Perfil</div>
   </div>
-  <div class="perfil-breve">Em breve vais encontrar aqui o teu perfil.</div>
+  <div class="perfil-card">
+    <div class="perfil-nome" id="perfil-nome">—</div>
+    <div class="perfil-dados">
+      <div class="perfil-dado"><div class="perfil-num" id="perfil-desde">—</div><div class="perfil-rot">Registado desde</div></div>
+      <div class="perfil-dado"><div class="perfil-num" id="perfil-visitas">0</div><div class="perfil-rot">Visitas ao Hã</div></div>
+    </div>
+  </div>
+  <a class="perfil-review" id="perfil-review" target="_blank" rel="noopener" style="display:none">
+    <div style="font-size:24px">⭐</div>
+    <div><strong>Avalia-nos no Google</strong><span>Gostaste? A tua opinião ajuda-nos muito</span></div>
+    <div class="scan-btn-arrow">›</div>
+  </a>
+  <div class="perfil-caixa">
+    <div class="perfil-caixa-tit">ENVIA-NOS UMA MENSAGEM</div>
+    <p>Sugestões, elogios ou reclamações: escreve aqui e respondemos para o teu email.</p>
+    <div class="perfil-ok" id="perfil-ok">Mensagem enviada. Obrigado! Respondemos para o teu email.</div>
+    <div class="msg-error" id="perfil-erro"></div>
+    <textarea id="perfil-msg" maxlength="1000" aria-label="A tua mensagem"></textarea>
+    <button class="btn-main" id="perfil-enviar" onclick="enviarMensagem()">Enviar</button>
+  </div>
 </section>
 
 <!-- FAZ O TEU PEDIDO -->
@@ -427,17 +461,19 @@ const API = 'https://ha-proxy.oxy-agency.workers.dev';
 const MURAL = 'https://ha-restaurante.com/wp-content/uploads/2024/05/mural.jpg';
 const STAMP_POS = ['0% 0%','33.3% 0%','66.6% 0%','100% 0%','0% 100%','33.3% 100%','66.6% 100%','100% 100%'];
 const NAV = { cartao: 0, novidades: 1, feed: 2, pedido: 3, resumo: 3, perfil: 4 };
-const S = { id: null, chave: '', nome: '', apelido: '', visitas: 0 };
+const S = { id: null, chave: '', nome: '', apelido: '', visitas: 0, registo: '', totalSelos: 0 };
+const GOOGLE_REVIEW = 'https://g.page/r/Cbhfxbf09WsLEAE/review';   // link «Pedir avaliações» do Perfil da Empresa no Google (g.page/r/…/review)
 
-function save() { try { localStorage.setItem('ha', JSON.stringify({ id: S.id, chave: S.chave, nome: S.nome, apelido: S.apelido })); } catch(e){} }
+function save() { try { localStorage.setItem('ha', JSON.stringify({ id: S.id, chave: S.chave, nome: S.nome, apelido: S.apelido, registo: S.registo, totalSelos: S.totalSelos })); } catch(e){} }
 function entrou(res) {
   S.id = res.id; S.chave = res.chave || ''; S.nome = res.nome; S.apelido = res.apelido; S.visitas = res.visitas;
+  S.registo = res.registo || ''; S.totalSelos = res.totalSelos || 0;
   save();
 }
 // O servidor já não reconhece a chave deste telemóvel: volta ao login
 function sair(msg) {
   try { localStorage.removeItem('ha'); } catch(e){}
-  S.id = null; S.chave = ''; S.nome = ''; S.apelido = ''; S.visitas = 0;
+  S.id = null; S.chave = ''; S.nome = ''; S.apelido = ''; S.visitas = 0; S.registo = ''; S.totalSelos = 0;
   goTo('cartao');
   const err = document.getElementById('login-error');
   err.textContent = msg || 'Sessão expirada. Entra outra vez com o teu email e telemóvel.';
@@ -467,6 +503,7 @@ function goTo(id) {
   if (id === 'cartao') renderCartao();
   if (id === 'novidades') loadNovidades();
   if (id === 'feed') loadFeed();
+  if (id === 'perfil') renderPerfil();
   if (id === 'pedido') loadMenu();
   if (id === 'resumo') {
     document.getElementById('resumo-form').style.display = '';
@@ -624,6 +661,39 @@ function prepararNovidades() {
   buscarNovidades().then(lista => {
     lista.slice(0, 3).forEach(n => { const src = n.fotoLeve || n.foto; if (src) { const im = new Image(); im.src = src; } });
   }).catch(() => {});
+}
+
+// ── PERFIL ───────────────────────────────────────────────
+const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+function dataCurta(iso) {
+  const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m ? parseInt(m[3], 10) + ' ' + MESES[parseInt(m[2], 10) - 1] + ' ' + m[1] : '—';
+}
+function renderPerfil() {
+  document.getElementById('perfil-nome').textContent = (S.nome + ' ' + S.apelido).trim() || '—';
+  document.getElementById('perfil-desde').textContent = dataCurta(S.registo);
+  // visitas = selos de sempre (não volta a zero quando o cartão recomeça)
+  document.getElementById('perfil-visitas').textContent = String(Math.max(S.totalSelos || 0, S.visitas || 0));
+  const review = document.getElementById('perfil-review');
+  if (/^https:\/\//.test(GOOGLE_REVIEW)) { review.href = GOOGLE_REVIEW; review.style.display = ''; } else review.style.display = 'none';
+}
+async function enviarMensagem() {
+  const caixa = document.getElementById('perfil-msg'), botao = document.getElementById('perfil-enviar');
+  const erro = document.getElementById('perfil-erro'), ok = document.getElementById('perfil-ok');
+  const texto = caixa.value.trim();
+  erro.classList.remove('show'); ok.classList.remove('show');
+  if (texto.length < 5) { erro.textContent = 'Escreve a tua mensagem.'; erro.classList.add('show'); return; }
+  botao.disabled = true; botao.textContent = 'A enviar...';
+  try {
+    const res = await post({ action: 'mensagem', id: S.id, chave: S.chave, texto });
+    if (res.expirada) { sair(); return; }
+    if (res.ok) { caixa.value = ''; ok.classList.add('show'); }
+    else { erro.textContent = res.erro || 'Não foi possível enviar. Tenta outra vez.'; erro.classList.add('show'); }
+  } catch (e) {
+    erro.textContent = 'Sem ligação. Tenta outra vez.'; erro.classList.add('show');
+  } finally {
+    botao.disabled = false; botao.textContent = 'Enviar';
+  }
 }
 
 // ── FEED (reels do Instagram) ────────────────────────────
@@ -858,7 +928,7 @@ async function submeterQR(qr) {
     const res = await post({ action: 'scan', qr, id: S.id, chave: S.chave });
     if (res.expirada) { sair(); return; }
     if (res.ok) {
-      S.visitas = res.visitas; save();
+      S.visitas = res.visitas; if (res.totalSelos) S.totalSelos = res.totalSelos; save();
       resultadoScan(res.refeicaoGratis ? '🎉' : '✅', res.refeicaoGratis ? 'Refeição grátis!' : 'Refeição registada!', res.mensagem);
     } else if (res.codigo === 'JA_REGISTADO') {
       resultadoScan('⚠️', 'Já registaste hoje', 'Só é possível acumular uma refeição por dia. Até à tua próxima visita!');
@@ -1186,10 +1256,14 @@ function novoPedido() { goTo('pedido'); }
   const saved = load();
   if (saved && saved.id) {
     S.id = saved.id; S.chave = saved.chave || ''; S.nome = saved.nome; S.apelido = saved.apelido;
+    S.registo = saved.registo || ''; S.totalSelos = saved.totalSelos || 0;
     post({ action: 'cliente', id: saved.id, chave: S.chave }).then(res => {
       if (res.ok) {
         S.visitas = res.visitas;
-        if (res.chave && res.chave !== S.chave) { S.chave = res.chave; save(); }   // cliente antigo: recebe a chave agora
+        S.registo = res.registo || ''; S.totalSelos = res.totalSelos || 0;
+        if (res.chave && res.chave !== S.chave) S.chave = res.chave;   // cliente antigo: recebe a chave agora
+        save();
+        if (document.getElementById('screen-perfil').classList.contains('active')) renderPerfil();
         renderCartao();
       } else if (res.expirada) sair();
     }).catch(() => {});
