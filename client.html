@@ -760,10 +760,16 @@ async function loadFeed() {
 function linkInstagram(u) { return /^https:\/\/(www\.)?instagram\.com\//.test(String(u || '')) ? String(u) : 'https://www.instagram.com/'; }
 function tocarVideo() {
   FEED_V.muted = !FEED_SOM;
+  const reel = FEED_ATUAL;
   try {
     const p = FEED_V.play();
-    // o iPhone não deixou tocar com som (ainda ninguém tocou no ecrã): toca sem som e o botão mostra 🔇
-    if (p && p.catch) p.catch(() => { if (!FEED_V.muted) { FEED_SOM = false; FEED_V.muted = true; atualizarSom(); try { const q = FEED_V.play(); if (q && q.catch) q.catch(() => {}); } catch (e) {} } });
+    if (p && p.catch) p.catch(err => {
+      // Só desliga o som quando o telemóvel o recusa (ainda ninguém tocou no ecrã).
+      // Ao deslizar, o vídeo anterior é interrompido (AbortError): isso não é razão para tirar o som.
+      if (!err || err.name !== 'NotAllowedError' || reel !== FEED_ATUAL || FEED_V.muted) return;
+      FEED_SOM = false; FEED_V.muted = true; atualizarSom();
+      try { const q = FEED_V.play(); if (q && q.catch) q.catch(() => {}); } catch (e) {}
+    });
   } catch (e) {}
 }
 // Põe o leitor no reel i e toca-o
