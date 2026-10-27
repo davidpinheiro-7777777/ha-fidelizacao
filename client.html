@@ -91,7 +91,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 .screen-head-title { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: var(--green); }
 .news-list { display: flex; flex-direction: column; gap: 14px; padding: 0 16px 40px; width: 100%; }
 .news-card { background: var(--surface); border-radius: 14px; overflow: hidden; border: 1px solid var(--border); }
-.news-card img { width: 100%; height: 180px; object-fit: cover; display: block; }
+.news-card img { width: 100%; height: 180px; object-fit: cover; display: block; background: var(--surface2); }
 .news-card-body { padding: 14px; }
 .news-badge { display: inline-block; background: var(--yellow); color: var(--green); font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; }
 .news-card-title { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 900; color: var(--green); line-height: 1.2; margin-bottom: 6px; }
@@ -509,23 +509,81 @@ function renderCartao() {
     document.getElementById('free-meal').classList.toggle('show', S.visitas >= 10);
 }
 
+// ── NOVIDADES ────────────────────────────────────────────
+// A última lista fica guardada no telemóvel e aparece logo; a lista nova chega por trás.
+// As fotos usam a versão leve do site (novidades/fotos.json, feita pelo otimizar-fotos.py) quando existe.
+let NOV_PEDIDO = null, NOV_FOTOS = null;
+
+function fotosLeves() {
+  if (!NOV_FOTOS) NOV_FOTOS = fetch('novidades/fotos.json').then(r => r.ok ? r.json() : {}).catch(() => ({}));
+  return NOV_FOTOS;
+}
+
+function buscarNovidades() {
+  if (!NOV_PEDIDO) {
+    NOV_PEDIDO = Promise.all([post({ action: 'novidades' }), fotosLeves()]).then(([res, fotos]) => {
+      if (!res.ok) throw new Error('novidades');
+      const lista = (res.novidades || []).map(n => Object.assign({}, n, { fotoLeve: fotos[String(n.foto || '').trim()] || '' }));
+      try { localStorage.setItem('ha_novidades', JSON.stringify(lista)); } catch (e) {}
+      return lista;
+    }).finally(() => { NOV_PEDIDO = null; });
+  }
+  return NOV_PEDIDO;
+}
+
+function novidadesGuardadas() {
+  try { const l = JSON.parse(localStorage.getItem('ha_novidades') || 'null'); return Array.isArray(l) ? l : null; } catch (e) { return null; }
+}
+
+function renderNovidades(lista) {
+  const el = document.getElementById('news-list');
+  el.innerHTML = '';
+  if (!lista.length) { el.innerHTML = '<div class="news-empty">Sem novidades de momento. Volta em breve! 🍔</div>'; return; }
+  lista.forEach((n, i) => {
+    const card = document.createElement('div');
+    card.className = 'news-card';
+    const original = String(n.foto || '').trim();
+    if (original) {
+      const img = document.createElement('img');
+      img.alt = String(n.titulo || '');
+      img.width = 1200; img.height = 480;
+      img.setAttribute('decoding', 'async');
+      img.setAttribute(i === 0 ? 'fetchpriority' : 'loading', i === 0 ? 'high' : 'lazy');
+      // se a versão leve falhar, mostra a original
+      if (n.fotoLeve) img.onerror = function () { img.onerror = null; img.src = original; };
+      img.src = n.fotoLeve || original;
+      card.appendChild(img);
+    }
+    const corpo = document.createElement('div');
+    corpo.className = 'news-card-body';
+    if (n.preco) {
+      const b = document.createElement('span'); b.className = 'news-badge'; b.textContent = formatPreco(String(n.preco)); corpo.appendChild(b);
+    }
+    const t = document.createElement('div'); t.className = 'news-card-title'; t.textContent = String(n.titulo || ''); corpo.appendChild(t);
+    const d = document.createElement('div'); d.className = 'news-card-desc'; d.textContent = String(n.descricao || ''); corpo.appendChild(d);
+    card.appendChild(corpo);
+    el.appendChild(card);
+  });
+}
+
 async function loadNovidades() {
   const lista = document.getElementById('news-list');
-  lista.innerHTML = '<div class="loading">A carregar...</div>';
+  const guardadas = novidadesGuardadas();
+  if (guardadas) renderNovidades(guardadas);
+  else lista.innerHTML = '<div class="loading">A carregar...</div>';
   try {
-    const res = await post({ action: 'novidades' });
-    if (res.ok && res.novidades.length > 0) {
-      lista.innerHTML = res.novidades.map(n => `
-        <div class="news-card">
-          ${n.foto ? `<img src="${n.foto}" alt="${n.titulo}" loading="lazy">` : ''}
-          <div class="news-card-body">
-            ${n.preco ? `<span class="news-badge">${formatPreco(String(n.preco))}</span>` : ''}
-            <div class="news-card-title">${n.titulo}</div>
-            <div class="news-card-desc">${n.descricao}</div>
-          </div>
-        </div>`).join('');
-    } else { lista.innerHTML = '<div class="news-empty">Sem novidades de momento. Volta em breve! 🍔</div>'; }
-  } catch(e) { lista.innerHTML = '<div class="news-empty">Sem ligação. Tenta mais tarde.</div>'; }
+    const novas = await buscarNovidades();
+    if (!guardadas || JSON.stringify(novas) !== JSON.stringify(guardadas)) renderNovidades(novas);
+  } catch (e) {
+    if (!guardadas) lista.innerHTML = '<div class="news-empty">Sem ligação. Tenta mais tarde.</div>';
+  }
+}
+
+// Logo ao abrir a app: vai buscando a lista e as primeiras fotos, para as Novidades abrirem já prontas
+function prepararNovidades() {
+  buscarNovidades().then(lista => {
+    lista.slice(0, 3).forEach(n => { const src = n.fotoLeve || n.foto; if (src) { const im = new Image(); im.src = src; } });
+  }).catch(() => {});
 }
 
 // ── LER O QR DENTRO DA APP ───────────────────────────────
@@ -998,6 +1056,7 @@ function novoPedido() { goTo('pedido'); }
     document.getElementById('screen-login').classList.remove('active');
     document.getElementById('screen-cartao').classList.add('active');
     renderCartao();
+    setTimeout(prepararNovidades, 300);   // depois do pedido do cartão, que é o mais importante
   }
   // Se não está logado, fica no ecrã de login (já é o active por defeito)
 })();
