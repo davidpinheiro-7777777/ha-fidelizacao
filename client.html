@@ -157,7 +157,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 .feed-scroll { flex: 1; min-height: 0; overflow-y: auto; scroll-snap-type: y mandatory; overscroll-behavior: contain; scrollbar-width: none; }
 .feed-scroll::-webkit-scrollbar { display: none; }
 .feed-slide { position: relative; height: 100%; scroll-snap-align: start; scroll-snap-stop: always; background: #000; overflow: hidden; }
-.feed-slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.feed-slide img, .feed-slide video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .feed-info { position: absolute; left: 0; right: 0; bottom: 0; padding: 60px 16px 16px; background: linear-gradient(to top, rgba(0,0,0,.75), transparent); pointer-events: none; }
 .feed-texto { color: #fff; font-size: 13px; line-height: 1.5; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
 .feed-link { pointer-events: auto; display: inline-block; background: rgba(255,255,255,.92); color: var(--green); border-radius: 20px; padding: 8px 14px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 13px; text-decoration: none; }
@@ -333,7 +333,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 <section id="screen-feed" class="screen" style="position:relative">
   <div class="feed-topo">
     <div class="feed-titulo">Feed</div>
-    <button class="feed-som" id="feed-som" aria-label="Ligar o som">🔇</button>
+    <button class="feed-som" id="feed-som" aria-label="Desligar o som">🔊</button>
   </div>
   <div class="feed-scroll" id="feed-scroll"><div class="feed-vazio">A carregar...</div></div>
 </section>
@@ -713,7 +713,12 @@ function buscarFeed() {
 function feedGuardado() {
   try { const l = JSON.parse(localStorage.getItem('ha_feed') || 'null'); return Array.isArray(l) ? l : null; } catch (e) { return null; }
 }
-let FEED_LISTA = [], FEED_JSON = '', FEED_ATUAL = -1, FEED_SOM = false;
+let FEED_LISTA = [], FEED_JSON = '', FEED_ATUAL = -1, FEED_SOM = true;
+// Um só leitor para todos os reels: o iPhone só deixa tocar com som depois de um toque,
+// e essa autorização fica no leitor. Ao deslizar, o leitor muda de reel e o som continua.
+const FEED_V = document.createElement('video');
+FEED_V.setAttribute('playsinline', ''); FEED_V.setAttribute('loop', ''); FEED_V.setAttribute('preload', 'auto');
+FEED_V.onclick = () => { if (FEED_V.paused) tocarVideo(); else FEED_V.pause(); };   // tocar no vídeo pausa / continua
 function renderFeed(lista) {
   pararFeed();
   FEED_LISTA = lista.filter(r => r && r.video);
@@ -721,15 +726,16 @@ function renderFeed(lista) {
   const el = document.getElementById('feed-scroll');
   el.innerHTML = ''; el.scrollTop = 0;
   if (!FEED_LISTA.length) { el.innerHTML = '<div class="feed-vazio">Em breve vais ver aqui os nossos reels. 🎬</div>'; return; }
-  FEED_LISTA.forEach(r => {
+  FEED_LISTA.forEach((r, i) => {
     const slide = document.createElement('div');
     slide.className = 'feed-slide';
-    const v = document.createElement('video');
-    v.setAttribute('playsinline', ''); v.setAttribute('loop', ''); v.setAttribute('preload', 'none');
-    v.muted = true;
-    if (r.capa) v.poster = String(r.capa);
-    v.onclick = () => { if (v.paused) tocarVideo(v); else v.pause(); };   // tocar no vídeo pausa / continua
-    slide.appendChild(v);
+    if (r.capa) {
+      const img = document.createElement('img');
+      img.alt = ''; img.setAttribute('decoding', 'async');
+      if (i > 1) img.setAttribute('loading', 'lazy');
+      img.src = String(r.capa);
+      slide.appendChild(img);
+    }
     const info = document.createElement('div'); info.className = 'feed-info';
     const t = document.createElement('div'); t.className = 'feed-texto'; t.textContent = String(r.texto || ''); info.appendChild(t);
     const a = document.createElement('a'); a.className = 'feed-link'; a.target = '_blank'; a.rel = 'noopener';
@@ -752,30 +758,28 @@ async function loadFeed() {
   }
 }
 function linkInstagram(u) { return /^https:\/\/(www\.)?instagram\.com\//.test(String(u || '')) ? String(u) : 'https://www.instagram.com/'; }
-function videoDoReel(i) { const s = document.querySelectorAll('#feed-scroll .feed-slide')[i]; return s ? s.querySelector('video') : null; }
-function tocarVideo(v) {
-  if (!v) return;
-  v.muted = !FEED_SOM;
+function tocarVideo() {
+  FEED_V.muted = !FEED_SOM;
   try {
-    const p = v.play();
-    // o browser não deixou tocar com som sem um toque: toca sem som
-    if (p && p.catch) p.catch(() => { if (!v.muted) { FEED_SOM = false; v.muted = true; atualizarSom(); try { const q = v.play(); if (q && q.catch) q.catch(() => {}); } catch (e) {} } });
+    const p = FEED_V.play();
+    // o iPhone não deixou tocar com som (ainda ninguém tocou no ecrã): toca sem som e o botão mostra 🔇
+    if (p && p.catch) p.catch(() => { if (!FEED_V.muted) { FEED_SOM = false; FEED_V.muted = true; atualizarSom(); try { const q = FEED_V.play(); if (q && q.catch) q.catch(() => {}); } catch (e) {} } });
   } catch (e) {}
 }
-// Toca o reel i; só ele e os vizinhos ficam carregados, para poupar dados e memória
+// Põe o leitor no reel i e toca-o
 function mostrarReel(i) {
   if (i < 0 || i >= FEED_LISTA.length || i === FEED_ATUAL) return;
-  const antigo = videoDoReel(FEED_ATUAL);
-  if (antigo) antigo.pause();
+  const slide = document.querySelectorAll('#feed-scroll .feed-slide')[i];
+  if (!slide) return;
+  pararFeed();
   FEED_ATUAL = i;
-  document.querySelectorAll('#feed-scroll video').forEach((v, j) => {
-    if (Math.abs(j - i) <= 1) { if (!v.getAttribute('src')) { v.setAttribute('preload', 'auto'); v.src = String(FEED_LISTA[j].video); } }
-    else if (v.getAttribute('src')) { v.pause(); v.removeAttribute('src'); try { v.load(); } catch (e) {} }
-  });
-  tocarVideo(videoDoReel(i));
+  FEED_V.poster = String(FEED_LISTA[i].capa || '');
+  FEED_V.src = String(FEED_LISTA[i].video);
+  slide.insertBefore(FEED_V, slide.querySelector('.feed-info'));
+  tocarVideo();
 }
-function retomarFeed() { const v = videoDoReel(FEED_ATUAL); if (v) tocarVideo(v); else mostrarReel(0); }
-function pararFeed() { document.querySelectorAll('#feed-scroll video').forEach(v => { try { v.pause(); } catch (e) {} }); }
+function retomarFeed() { if (FEED_ATUAL >= 0 && FEED_V.parentNode) tocarVideo(); else { FEED_ATUAL = -1; mostrarReel(0); } }
+function pararFeed() { if (!FEED_V.paused) try { FEED_V.pause(); } catch (e) {} }
 function atualizarSom() {
   const b = document.getElementById('feed-som');
   b.textContent = FEED_SOM ? '🔊' : '🔇';
@@ -783,8 +787,8 @@ function atualizarSom() {
 }
 document.getElementById('feed-som').onclick = () => {
   FEED_SOM = !FEED_SOM; atualizarSom();
-  const v = videoDoReel(FEED_ATUAL);
-  if (v) { v.muted = !FEED_SOM; if (v.paused) tocarVideo(v); }
+  FEED_V.muted = !FEED_SOM;
+  if (FEED_ATUAL >= 0 && FEED_V.paused) tocarVideo();
 };
 (function () {
   const el = document.getElementById('feed-scroll');
