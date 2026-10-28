@@ -403,7 +403,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 <!-- FAZ O TEU PEDIDO -->
 <section id="screen-pedido" class="screen">
   <div class="screen-head"><div class="screen-head-title">Faz o teu pedido</div></div>
-  <p class="ped-levantar">Vem levantá-lo à loja no horário que te for mais conveniente (entre as 12h00 e as 15h30 e entre as 19h00 e as 22h00)</p>
+  <p class="ped-levantar">Vem levantá-lo à loja no horário que te for mais conveniente (entre as 12h30 e as 15h30 e entre as 19h30 e as 22h00)</p>
   <div class="cat-bar" id="cat-bar"></div>
   <div class="ord-list" id="ord-list"><div class="loading">A carregar o menu...</div></div>
 </section>
@@ -1363,7 +1363,7 @@ document.addEventListener('click', function(e) {
 });
 
 // Hora de levantamento: de 30 em 30 min nos dois turnos, só as que ainda faltam hoje (pelo menos 15 min à frente)
-const TURNOS_LEVANTAMENTO = [['12:00', '15:30'], ['19:00', '22:00']];
+const TURNOS_LEVANTAMENTO = [['12:30', '15:30'], ['19:30', '22:00']];
 function minutosHora(h) { const x = h.split(':'); return +x[0] * 60 + +x[1]; }
 function agoraLisboa() {
   const p = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Lisbon', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(new Date());
