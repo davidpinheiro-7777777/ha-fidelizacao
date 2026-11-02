@@ -175,7 +175,7 @@ async function init() {
         document.getElementById('content').innerHTML = `
           <div class="icon">🎁</div>
           <div class="title">${res.visitas === 10 ? 'Sobremesa grátis!' : 'Ganhaste uma oferta!'}</div>
-          <div class="sub">${res.visitas === 5 ? 'Uma Entrada à tua escolha (Bruschettas excluídas).' : 'A sobremesa fica por nossa conta.'} Mostra esta oferta ao empregado. Também a encontras no teu Perfil.</div>
+          <div class="sub">${res.visitas === 5 ? 'Uma entrada à tua escolha.' : 'A sobremesa fica por nossa conta.'} Mostra esta oferta ao empregado. Também a encontras no teu Perfil.</div>
           ${renderStamps(res.visitas, true)}
           <a href="https://clube.ha-restaurante.com/client.html" class="btn">Ver o meu cartão</a>`;
       } else {

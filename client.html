@@ -376,7 +376,7 @@ body.a-instalar .bottom-nav, body.a-instalar #install-banner, body.a-instalar .c
   </div>
   <div style="margin:14px 16px 0;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px">
     <div style="font-family:'Nunito',sans-serif;font-size:12px;font-weight:900;color:var(--green);letter-spacing:0.5px;margin-bottom:6px">CONDIÇÕES DO CLUBE</div>
-    <p style="font-size:12px;color:var(--muted);line-height:1.7">Para acumular um selo terás de gastar pelo menos <strong style="color:var(--text)">10€</strong>. Quando obtiveres 5 selos ganhas uma <strong style="color:var(--text)">Entrada</strong> (Bruschettas excluídas) e quando chegares aos 10 selos a <strong style="color:var(--text)">sobremesa</strong> fica por nossa conta. Estas ofertas aparecerão no teu Perfil.</p>
+    <p style="font-size:12px;color:var(--muted);line-height:1.7">Para acumular um selo terás de gastar pelo menos <strong style="color:var(--text)">10€</strong>. Quando obtiveres 5 selos ganhas uma <strong style="color:var(--text)">entrada</strong> e quando chegares aos 10 selos a <strong style="color:var(--text)">sobremesa</strong> fica por nossa conta. Estas ofertas aparecerão no teu Perfil.</p>
   </div>
 
   <p id="install-hint" style="font-size:13px;color:var(--muted);text-align:center;margin:10px 16px 0;line-height:1.6">
@@ -672,7 +672,7 @@ async function registar() {
 
 // Ofertas do Clube: aparecem enquanto o cartão está nesse selo (desaparecem no selo seguinte)
 const OFERTAS = {
-  5:  { titulo: 'Ganhaste uma oferta!', icone: '🥗', nome: 'Uma Entrada à tua escolha', nota: 'Bruschettas excluídas' },
+  5:  { titulo: 'Ganhaste uma oferta!', icone: '🥗', nome: 'Uma entrada à tua escolha', nota: '' },
   10: { titulo: 'Sobremesa grátis!', icone: '🍰', nome: 'A sobremesa fica por nossa conta', nota: '' }
 };
 function ofertaAtual() { return OFERTAS[S.visitas] || null; }
