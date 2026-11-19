@@ -149,11 +149,12 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 .btn-scan-back { background: #fff; border: none; border-radius: 12px; color: var(--green); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; padding: 14px 36px; cursor: pointer; margin-top: 8px; }
 
 /* ── NAV ── */
-.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: rgba(255,255,255,.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--border); display: flex; gap: 2px; padding: 6px 6px; z-index: 200; }
+.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: rgba(255,255,255,.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--border); display: flex; gap: 4px; padding: 6px 6px; z-index: 200; }
 /* separador activo: fundo verde-claro arredondado, ícone e nome a verde; os outros a cinzento escuro */
-.nav-item { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 7px 2px 8px; border-radius: 14px; cursor: pointer; color: #5E5E5E; }
-.nav-item svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.nav-label { font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 800; text-align: center; white-space: nowrap; }
+.nav-item { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 6px 2px 6px; border-radius: 16px; cursor: pointer; color: #5E5E5E; }
+.nav-item svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.nav-label { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; text-align: center; white-space: nowrap; }
+.nav-item.active .nav-label { font-weight: 700; }
 .nav-item.active { color: var(--green); background: #E3EFE9; }
 
 .perfil-card { margin: 0 16px; background: var(--green); border-radius: 20px; padding: 20px; color: #fff; }
@@ -174,7 +175,7 @@ input[type="date"]::-webkit-date-and-time-value { color: var(--text); min-height
 .perfil-ok.show { display: block; }
 
 /* ── FEED: um reel de cada vez, em ecrã inteiro ── */
-#screen-feed.active { height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; padding: 0 0 71px; background: #000; }
+#screen-feed.active { height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; padding: 0 0 64px; background: #000; }
 .feed-scroll { flex: 1; min-height: 0; overflow-y: auto; scroll-snap-type: y mandatory; overscroll-behavior: contain; scrollbar-width: none; }
 .feed-scroll::-webkit-scrollbar { display: none; }
 .feed-slide { position: relative; height: 100%; scroll-snap-align: start; scroll-snap-stop: always; background: #000; overflow: hidden; }
@@ -229,7 +230,7 @@ body.a-instalar .bottom-nav, body.a-instalar #install-banner, body.a-instalar .c
 .qty-btn { width: 34px; height: 34px; border-radius: 50%; border: none; background: var(--green); color: #fff; font-size: 20px; font-weight: 700; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .qty-btn.minus { background: var(--surface2); color: var(--green); }
 .qty-n { min-width: 18px; text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; }
-.cart-bar { position: fixed; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 448px; bottom: 89px; background: var(--green); color: #fff; border: none; border-radius: 14px; padding: 14px 18px; display: none; align-items: center; justify-content: space-between; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 15px; cursor: pointer; z-index: 150; box-shadow: 0 4px 14px rgba(0,0,0,.2); }
+.cart-bar { position: fixed; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 448px; bottom: 82px; background: var(--green); color: #fff; border: none; border-radius: 14px; padding: 14px 18px; display: none; align-items: center; justify-content: space-between; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 15px; cursor: pointer; z-index: 150; box-shadow: 0 4px 14px rgba(0,0,0,.2); }
 .cart-bar.show { display: flex; }
 .res-card { margin: 0 16px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 4px 14px; }
 .res-line { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--surface2); }
